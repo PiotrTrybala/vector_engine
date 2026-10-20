@@ -6,6 +6,11 @@ public class EngineConfig {
     private int queryBufferMaxSize;
     private int idleTimeout;
 
+    private String rootPassword;
+    private String username;
+    private String password;
+    private String collection;
+
     public int getPort() {
         return port;
     }
@@ -24,6 +29,11 @@ public class EngineConfig {
         EngineConfig config = new EngineConfig();
         config.port = 15575;
         config.queryBufferMaxSize = 16384; // 16kb
+
+        config.collection = "admin";
+        config.username = "admin";
+        config.password = "admin";
+        config.rootPassword = "root";
         return config;
     }
 

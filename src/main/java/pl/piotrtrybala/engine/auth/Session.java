@@ -1,4 +1,4 @@
 package pl.piotrtrybala.engine.auth;
 
-public class Manager {
+public class Session {
 }

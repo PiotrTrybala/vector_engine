@@ -3,6 +3,7 @@ package pl.piotrtrybala.engine;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import pl.piotrtrybala.engine.auth.AuthManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,22 +15,26 @@ public class Engine {
 
     private static Engine engine;
     private final EngineConfig config;
+    private final AuthManager authManager;
     private static final Logger logger = LogManager.getLogger();
 
     private ServerSocket socket;
 
     public Engine() {
         this.config = EngineConfig.defaultConfig();
+        this.authManager = new AuthManager();
         this.init();
     }
 
     public Engine(String configPath) {
         this.config = EngineConfig.fromConfig(configPath);
+        this.authManager = new AuthManager();
         this.init();
     }
 
     public Engine(EngineConfig config) {
         this.config = config;
+        this.authManager = new AuthManager();
         this.init();
     }
 
@@ -55,6 +60,10 @@ public class Engine {
             return new Engine(config);
         }
         return engine;
+    }
+
+    public AuthManager getAuthManager() {
+        return authManager;
     }
 
     public void run() {
@@ -84,9 +93,13 @@ public class Engine {
                     break;
                 }
 
+                // 0. Auth check (is_auth = 1)
+
                 // 1. Parse queries
 
                 // 2. Pass to scheduler
+
+                // 2.5. Executor authorization (can_do_op = 1)
 
                 // 3. Receive response
 
