@@ -9,12 +9,14 @@ public enum Keyword {
     INSERT("INSERT"),
     INTO("INTO"),
     TYPE("TYPE"),
+    VALUE("VALUE"),
     BEGIN("BEGIN"),
     END("END"),
     UPDATE("UPDATE"),
     EMBEDDING("EMBEDDING"),
     SELECT("SELECT"),
     WHERE("WHERE"),
+    AS("AS"),
     OR("OR"),
     AND("AND"),
     METADATA("METADATA"),
@@ -30,6 +32,10 @@ public enum Keyword {
     }
     public String getKeyword() {
         return keyword;
+    }
+
+    public static boolean is(String source, Keyword keyword) {
+        return source.equals(keyword.toString());
     }
 
     public static boolean match(String source, Keyword keyword) throws Exception {

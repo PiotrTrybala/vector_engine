@@ -1,9 +1,6 @@
 package pl.piotrtrybala.engine.query;
 
-import pl.piotrtrybala.engine.query.types.AuthQuery;
-import pl.piotrtrybala.engine.query.types.CreateCollectionQuery;
-import pl.piotrtrybala.engine.query.types.HandshakeQuery;
-import pl.piotrtrybala.engine.query.types.InsertQuery;
+import pl.piotrtrybala.engine.query.types.*;
 
 import java.lang.reflect.Array;
 import java.nio.CharBuffer;
@@ -49,6 +46,9 @@ public class Parser {
             }
             if (QueryMatcher.isInsertQuery(query)) {
                 queries.add(new InsertQuery(query));
+            }
+            if (QueryMatcher.isUpdateQuery(query)) {
+                queries.add(new UpdateQuery(query));
             }
         }
 

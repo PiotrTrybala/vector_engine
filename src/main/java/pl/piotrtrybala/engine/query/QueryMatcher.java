@@ -44,7 +44,6 @@ public class QueryMatcher {
 
     public static boolean isInsertQuery(String query) throws Exception {
         List<String> parts = QueryMatcher.preprocess(query);
-        System.out.println("insert query parts = " + parts);
         return parts.size() == 8 && Keyword.match(parts.getFirst(), Keyword.INSERT)
                 && Keyword.match(parts.get(1), Keyword.INTO)
                 && Keyword.match(parts.get(3), Keyword.TYPE)
@@ -52,5 +51,24 @@ public class QueryMatcher {
                 && Keyword.match(parts.get(7), Keyword.END);
     }
 
+    public static boolean isUpdateQuery(String query) throws Exception {
+        List<String> parts = QueryMatcher.preprocess(query);
+
+        if (!Keyword.match(parts.getFirst(), Keyword.UPDATE)) return false;
+        if (!Keyword.match(parts.get(2), Keyword.VALUE)) return false;
+
+        int whereIndex = -1;
+        for (int i = 2; i < parts.size(); i++) {
+            if (Keyword.is(parts.get(i), Keyword.WHERE)) {
+                if (whereIndex == -1) {
+                    whereIndex = i;
+                } else {
+                    throw new Exception("duplicate where clause");
+                }
+            }
+        }
+
+        return whereIndex != -1;
+    }
 
 }
