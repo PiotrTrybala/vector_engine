@@ -8,11 +8,12 @@ public enum Keyword {
     USE("USE"),
     INSERT("INSERT"),
     INTO("INTO"),
-    TEXT("TEXT"),
+    TYPE("TYPE"),
     BEGIN("BEGIN"),
     END("END"),
     UPDATE("UPDATE"),
     EMBEDDING("EMBEDDING"),
+    SELECT("SELECT"),
     WHERE("WHERE"),
     OR("OR"),
     AND("AND"),
@@ -31,7 +32,7 @@ public enum Keyword {
         return keyword;
     }
 
-    public boolean match(String source, Keyword keyword) throws Exception {
+    public static boolean match(String source, Keyword keyword) throws Exception {
         try {
             Keyword sourceKeyword = Keyword.valueOf(source.trim().toUpperCase());
             return sourceKeyword.equals(keyword);

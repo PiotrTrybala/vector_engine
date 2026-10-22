@@ -116,6 +116,8 @@ public class Engine {
             }
         } catch (IOException e) {
             logger.error("failed to receive data from client: {}", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 client.close();

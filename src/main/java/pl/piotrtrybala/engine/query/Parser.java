@@ -1,5 +1,10 @@
 package pl.piotrtrybala.engine.query;
 
+import pl.piotrtrybala.engine.query.types.AuthQuery;
+import pl.piotrtrybala.engine.query.types.CreateCollectionQuery;
+import pl.piotrtrybala.engine.query.types.HandshakeQuery;
+import pl.piotrtrybala.engine.query.types.InsertQuery;
+
 import java.lang.reflect.Array;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
@@ -12,7 +17,7 @@ public class Parser {
     public Parser() {
     }
 
-    public List<Query> parse(char[] data) {
+    public List<Query> parse(char[] data) throws Exception {
         List<Query> queries = new ArrayList<>();
 
         CharBuffer buffer = CharBuffer.wrap(data);
@@ -32,18 +37,22 @@ public class Parser {
             }
         }
 
-        for (String line : lines) {
-
-
-
+        for (String query : lines) {
+            if (QueryMatcher.isHandshakeQuery(query)) {
+                queries.add(new HandshakeQuery());
+            }
+            if (QueryMatcher.isAuthQuery(query)) {
+                queries.add(new AuthQuery(query));
+            }
+            if (QueryMatcher.isCreateCollectionQuery(query)) {
+                queries.add(new CreateCollectionQuery(query));
+            }
+            if (QueryMatcher.isInsertQuery(query)) {
+                queries.add(new InsertQuery(query));
+            }
         }
 
         return queries;
-    }
-
-    public boolean isHandshake(String line) throws Exception {
-
-        return false;
     }
 
 }
