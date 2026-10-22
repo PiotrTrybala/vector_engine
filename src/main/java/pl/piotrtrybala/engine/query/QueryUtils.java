@@ -104,8 +104,37 @@ public class QueryUtils {
         return metadata;
     }
 
-    public static WhereClause parseWhereClause(List<String> parts) {
-        return new WhereClause();
+    public static WhereClause parseWhereClause(List<String> parts) throws Exception {
+
+        int whereIndex = -1;
+        for (int i = 0; i < parts.size(); i++) {
+            if (Keyword.is(parts.get(i), Keyword.WHERE)) whereIndex = i;
+        }
+
+        if (whereIndex + 1 > parts.size()) throw new Exception("invalid expression");
+
+        Expression left = null;
+        ConditionType cond = null;
+        Expression right = null;
+
+        for (int i = whereIndex + 1; i < parts.size(); i++) {
+
+            if (Keyword.is(parts.get(i), Keyword.OR)
+                    || Keyword.is(parts.get(i), Keyword.AND)) {
+                String leftField = parts.get(i - 3);
+                OperatorType op = OperatorType.fromString(parts.get(i - 2));
+                String leftValue = parts.get(i - 1);
+                left = new Expression(leftField, op, leftValue);
+                cond = ConditionType.valueOf(parts.get(i));
+            }
+        }
+
+        String rightField = parts.get(parts.size() - 3);
+        OperatorType op = OperatorType.fromString(parts.get(parts.size() - 2));
+        String rightValue = parts.getLast();
+        right = new Expression(rightField, op, rightValue);
+
+        return new WhereClause(left, cond, right);
     }
 
 }
