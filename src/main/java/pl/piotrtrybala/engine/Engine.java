@@ -4,12 +4,15 @@ package pl.piotrtrybala.engine;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import pl.piotrtrybala.engine.auth.AuthManager;
+import pl.piotrtrybala.engine.query.Parser;
+import pl.piotrtrybala.engine.query.Query;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Engine {
 
@@ -93,6 +96,10 @@ public class Engine {
                     break;
                 }
 
+                Parser parser = new Parser();
+                List<Query> queries = parser.parse(buffer);
+                System.out.println("queries = " + queries);
+
                 // 0. Auth check (is_auth = 1)
 
                 // 1. Parse queries
@@ -105,7 +112,7 @@ public class Engine {
 
                 // 4. Send response to client
 
-                logger.info("received data: {}", buffer);
+//                logger.info("received data: {}", buffer);
             }
         } catch (IOException e) {
             logger.error("failed to receive data from client: {}", e.getMessage());
