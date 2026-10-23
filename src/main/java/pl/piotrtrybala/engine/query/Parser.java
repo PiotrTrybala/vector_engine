@@ -50,6 +50,9 @@ public class Parser {
             if (QueryMatcher.isUpdateQuery(query)) {
                 queries.add(new UpdateQuery(query));
             }
+            if (QueryMatcher.isSelectQuery(query)) {
+                queries.add(new SelectQuery(query));
+            }
         }
 
         return queries;

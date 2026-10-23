@@ -23,7 +23,8 @@ public enum Keyword {
     LIMIT("LIMIT"),
     ORDER("ORDER"),
     BY("BY"),
-    SIMILAR("SIMILAR");
+    SIMILAR("SIMILAR"),
+    FROM("FROM");
 
     private final String keyword;
 
