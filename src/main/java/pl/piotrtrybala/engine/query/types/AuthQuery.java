@@ -7,16 +7,15 @@ import java.util.List;
 
 public class AuthQuery implements Query {
 
-    private static int USERNAME_INDEX = 1;
-    private static int PASSWORD_INDEX = 2;
-
     private final String username;
     private final String password;
 
     public AuthQuery(String query) {
         List<String> parts = QueryMatcher.preprocess(query);
 
+        int USERNAME_INDEX = 1;
         this.username = parts.get(USERNAME_INDEX).trim();
+        int PASSWORD_INDEX = 2;
         this.password = parts.get(PASSWORD_INDEX).trim();
     }
 

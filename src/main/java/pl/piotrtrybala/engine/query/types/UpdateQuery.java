@@ -1,6 +1,9 @@
 package pl.piotrtrybala.engine.query.types;
 
 import pl.piotrtrybala.engine.query.*;
+import pl.piotrtrybala.engine.query.enums.Keyword;
+import pl.piotrtrybala.engine.query.enums.UpdateEntityType;
+import pl.piotrtrybala.engine.query.expression.Expression;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,29 +11,28 @@ import java.util.List;
 
 public class UpdateQuery implements Query  {
 
-    private final UpdateType type;
+    private final UpdateEntityType type;
 
     private HashMap<String, Object> metadata = new HashMap<>();
     private char[] data = null;
 
-    private WhereClause whereClause;
+    private Expression whereClause;
 
     public UpdateQuery(String query) throws Exception {
         List<String> parts = QueryMatcher.preprocess(query);
 
-        this.type = UpdateType.valueOf(parts.get(1).toUpperCase());
-        System.out.println("update type = " + type);
+        this.type = UpdateEntityType.valueOf(parts.get(1).toUpperCase());
 
-        if (this.type == UpdateType.EMBEDDING) {
+        if (this.type == UpdateEntityType.EMBEDDING) {
             this.data = QueryUtils.parseEmbeddingData(parts);
-        } else if (this.type == UpdateType.METADATA){
+        } else if (this.type == UpdateEntityType.METADATA){
             this.metadata = QueryUtils.parseMetadata(parts);
         }
 
-        this.whereClause = QueryUtils.parseWhereClause(parts);
+        this.whereClause = Expression.parse(QueryUtils.skipUntilKeyword(parts, Keyword.WHERE));
     }
 
-    public UpdateType getType() {
+    public UpdateEntityType getType() {
         return type;
     }
 
@@ -42,7 +44,7 @@ public class UpdateQuery implements Query  {
         return data;
     }
 
-    public WhereClause getWhereClause() {
+    public Expression getWhereClause() {
         return whereClause;
     }
 

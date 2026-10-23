@@ -1,12 +1,12 @@
-package pl.piotrtrybala.engine.query;
+package pl.piotrtrybala.engine.query.enums;
 
-public enum UpdateType {
+public enum UpdateEntityType {
     METADATA("METADATA"),
     EMBEDDING("EMBEDDING"),;
 
     private final String keyword;
 
-    UpdateType(String keyword) {
+    UpdateEntityType(String keyword) {
         this.keyword = keyword;
     }
 

@@ -1,6 +1,6 @@
-package pl.piotrtrybala.engine.query;
+package pl.piotrtrybala.engine.query.enums;
 
-public enum MetadataType {
+public enum MetadataValueType {
     INT("INT"),
     DOUBLE("DOUBLE"),
     TEXT("TEXT"),
@@ -8,7 +8,7 @@ public enum MetadataType {
 
     private String keyword;
 
-    MetadataType(String keyword) {
+    MetadataValueType(String keyword) {
         this.keyword = keyword;
     }
 

@@ -1,12 +1,14 @@
 package pl.piotrtrybala.engine.query;
 
-import java.security.Key;
+import pl.piotrtrybala.engine.query.enums.Keyword;
+import pl.piotrtrybala.engine.query.enums.MetadataValueType;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class QueryUtils {
-
 
     public static char[] parseEmbeddingData(List<String> parts) throws Exception {
 
@@ -60,9 +62,9 @@ public class QueryUtils {
                 throw new Exception("invalid keyword: " + valueParts[1]);
             }
 
-            MetadataType valueType = null;
+            MetadataValueType valueType = null;
             try {
-                valueType = MetadataType.valueOf(valueParts[2].toUpperCase());
+                valueType = MetadataValueType.valueOf(valueParts[2].toUpperCase());
             } catch (Exception e) {
                 throw new Exception("invalid value type: " + valueParts[2]);
             }
@@ -104,37 +106,17 @@ public class QueryUtils {
         return metadata;
     }
 
-    public static WhereClause parseWhereClause(List<String> parts) throws Exception {
-
-        int whereIndex = -1;
-        for (int i = 0; i < parts.size(); i++) {
-            if (Keyword.is(parts.get(i), Keyword.WHERE)) whereIndex = i;
-        }
-
-        if (whereIndex + 1 > parts.size()) throw new Exception("invalid expression");
-
-        Expression left = null;
-        ConditionType cond = null;
-        Expression right = null;
-
-        for (int i = whereIndex + 1; i < parts.size(); i++) {
-
-            if (Keyword.is(parts.get(i), Keyword.OR)
-                    || Keyword.is(parts.get(i), Keyword.AND)) {
-                String leftField = parts.get(i - 3);
-                OperatorType op = OperatorType.fromString(parts.get(i - 2));
-                String leftValue = parts.get(i - 1);
-                left = new Expression(leftField, op, leftValue);
-                cond = ConditionType.valueOf(parts.get(i));
+    public static List<String> skipUntilKeyword(List<String> parts, Keyword keyword) {
+        List<String> output = new ArrayList<>();
+        boolean canAdd = false;
+        for (String s : parts) {
+            if (s.equals(keyword.getKeyword())) {
+                canAdd = true;
+                continue;
             }
+
+            if (canAdd) output.add(s);
         }
-
-        String rightField = parts.get(parts.size() - 3);
-        OperatorType op = OperatorType.fromString(parts.get(parts.size() - 2));
-        String rightValue = parts.getLast();
-        right = new Expression(rightField, op, rightValue);
-
-        return new WhereClause(left, cond, right);
+        return output;
     }
-
 }

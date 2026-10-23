@@ -1,8 +1,8 @@
 package pl.piotrtrybala.engine.query;
 
-import java.security.Key;
+import pl.piotrtrybala.engine.query.enums.Keyword;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +13,8 @@ public class QueryMatcher {
         List<String> parts = new ArrayList<>();
         if (query == null || query.trim().isEmpty()) return parts;
 
-        String regex = "`[^`]*`|\\[[^\\]]*\\]|=|[^\\s,;=]+";
+//        String regex = "`[^`]*`|\\[[^\\]]*\\]|=|[^\\s,;=]+";
+        String regex = "`[^`]*`|\\[[^\\]]*\\]|=|\\(|\\)|[^\\s,;=()]+";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(query);
@@ -21,9 +22,6 @@ public class QueryMatcher {
         while (matcher.find()) {
             parts.add(matcher.group());
         }
-
-
-
         return parts;
     }
 

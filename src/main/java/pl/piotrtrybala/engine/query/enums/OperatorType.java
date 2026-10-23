@@ -1,4 +1,4 @@
-package pl.piotrtrybala.engine.query;
+package pl.piotrtrybala.engine.query.enums;
 
 import java.util.Objects;
 

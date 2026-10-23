@@ -1,6 +1,6 @@
 package pl.piotrtrybala.engine.query.types;
 
-import pl.piotrtrybala.engine.query.EmbeddingType;
+import pl.piotrtrybala.engine.query.enums.EmbeddingType;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.QueryMatcher;
 import pl.piotrtrybala.engine.query.QueryUtils;

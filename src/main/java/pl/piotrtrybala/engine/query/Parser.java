@@ -19,7 +19,7 @@ public class Parser {
 
         CharBuffer buffer = CharBuffer.wrap(data);
 
-        // 1. parse lines
+        // 1. read lines
         StringBuilder builder = new StringBuilder();
         List<String> lines = new ArrayList<>();
 
