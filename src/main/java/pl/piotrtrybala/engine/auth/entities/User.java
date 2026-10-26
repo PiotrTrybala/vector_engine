@@ -1,4 +1,4 @@
-package pl.piotrtrybala.engine.auth;
+package pl.piotrtrybala.engine.auth.entities;
 
 public class User {
 
