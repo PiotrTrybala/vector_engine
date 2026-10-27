@@ -99,8 +99,8 @@ public class Engine {
             char[] buffer = new char[this.config.getQueryBufferMaxSize()];
 
             while (!client.isClosed()) {
-                int result = reader.read(buffer, 0, this.config.getQueryBufferMaxSize());
-                if (result == -1) {
+                int size = reader.read(buffer, 0, this.config.getQueryBufferMaxSize());
+                if (size == -1) {
                     logger.info("client closed the connection");
                     break;
                 }
@@ -111,6 +111,7 @@ public class Engine {
 
                 for (Query query : queries) {
                     ExecutorResult result = this.executor.process(new ExecutorPayload(query));
+                    result.getResult();
                 }
             }
         } catch (IOException e) {

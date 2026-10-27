@@ -1,10 +1,6 @@
 package pl.piotrtrybala;
 
 import pl.piotrtrybala.engine.Engine;
-import pl.piotrtrybala.engine.query.Parser;
-import pl.piotrtrybala.engine.query.Query;
-
-import java.util.List;
 
 public class Main {
     static void main() {
