@@ -1,6 +1,7 @@
 package pl.piotrtrybala.engine.executor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class ExecutorUtils {
 

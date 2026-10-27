@@ -1,5 +1,7 @@
 package pl.piotrtrybala.engine.executor.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.engine.executor.Executor;
 import pl.piotrtrybala.engine.executor.enums.ExecutorErrorType;
 import pl.piotrtrybala.engine.executor.impl.result.HandshakeResult;
@@ -18,17 +20,22 @@ public class STExecutor implements Executor {
     private static final HashSet<QueryType> SUPPORTED_QUERY_TYPES = new HashSet<>(List.of(
             QueryType.HANDSHAKE
     ));
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public ExecutorResult process(ExecutorPayload payload) {
 
+        logger.info("executing payload: {}", payload);
         Query query = payload.getQuery();
 
+        logger.info("checking support for query...");
         if (!SUPPORTED_QUERY_TYPES.contains(query.getQueryType())) {
+            logger.error("unsupported query type: {}", query.getQueryType().toString());
             return new ExecutorError(ExecutorErrorType.UNSUPPORTED_QUERY_TYPE);
         }
 
         if (query instanceof HandshakeQuery) {
+            logger.info("dispatching: {}", query.getQueryType().toString());
             return this.dispatchHandshake((HandshakeQuery) query);
         }
         return null;

@@ -5,7 +5,7 @@ import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 
 public class HandshakeResult implements ExecutorResult {
     @Override
-    public byte[] getResult() {
-        return ExecutorUtils.toBytes("OK");
+    public char[] getResult() {
+        return "OK".toCharArray();
     }
 }

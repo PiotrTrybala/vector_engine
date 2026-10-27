@@ -17,12 +17,11 @@ public class ExecutorError implements ExecutorResult {
 
 
     @Override
-    public byte[] getResult() {
+    public char[] getResult() {
         StringBuilder builder = new StringBuilder();
         builder.append("failed to execute query: ");
         builder.append(this.error.getReason());
 
-        ByteBuffer bBuffer = StandardCharsets.UTF_8.encode(builder.toString());
-        return bBuffer.array();
+        return builder.toString().toCharArray();
     }
 }

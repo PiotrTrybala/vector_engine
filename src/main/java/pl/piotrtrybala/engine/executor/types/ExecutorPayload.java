@@ -13,4 +13,11 @@ public class ExecutorPayload {
     public Query getQuery() {
         return query;
     }
+
+    @Override
+    public String toString() {
+        return "ExecutorPayload{" +
+                "query=" + query +
+                '}';
+    }
 }

@@ -34,6 +34,10 @@ public class Parser {
             }
         }
 
+        if (lines.isEmpty()) {
+            throw new Exception("no separator found");
+        }
+
         for (String query : lines) {
             if (QueryMatcher.isHandshakeQuery(query)) {
                 queries.add(new HandshakeQuery());
