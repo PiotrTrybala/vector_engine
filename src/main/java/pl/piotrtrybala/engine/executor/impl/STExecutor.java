@@ -1,4 +1,6 @@
 package pl.piotrtrybala.engine.executor.impl;
 
-public class STExecutor {
+import pl.piotrtrybala.engine.executor.Executor;
+
+public class STExecutor implements Executor {
 }
