@@ -4,6 +4,10 @@ package pl.piotrtrybala.engine;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import pl.piotrtrybala.engine.auth.AuthManager;
+import pl.piotrtrybala.engine.executor.Executor;
+import pl.piotrtrybala.engine.executor.impl.STExecutor;
+import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
+import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 import pl.piotrtrybala.engine.query.Parser;
 import pl.piotrtrybala.engine.query.Query;
 
@@ -20,6 +24,8 @@ public class Engine {
     private final EngineConfig config;
     private final AuthManager authManager;
     private static final Logger logger = LogManager.getLogger();
+
+    private Executor executor;
 
     private ServerSocket socket;
 
@@ -42,6 +48,9 @@ public class Engine {
     }
 
     private void init() {
+
+        this.executor = new STExecutor();
+
         try {
             logger.info("initializing server port {}", this.config.getPort());
             this.socket = new ServerSocket(this.config.getPort());
@@ -100,19 +109,9 @@ public class Engine {
                 List<Query> queries = parser.parse(buffer);
                 System.out.println("queries = " + queries);
 
-                // 0. Auth check (is_auth = 1)
-
-                // 1. Parse queries
-
-                // 2. Pass to scheduler
-
-                // 2.5. Executor authorization (can_do_op = 1)
-
-                // 3. Receive response
-
-                // 4. Send response to client
-
-//                logger.info("received data: {}", buffer);
+                for (Query query : queries) {
+                    ExecutorResult result = this.executor.process(new ExecutorPayload(query));
+                }
             }
         } catch (IOException e) {
             logger.error("failed to receive data from client: {}", e.getMessage());

@@ -2,6 +2,7 @@ package pl.piotrtrybala.engine.query.types;
 
 import pl.piotrtrybala.engine.query.*;
 import pl.piotrtrybala.engine.query.enums.Keyword;
+import pl.piotrtrybala.engine.query.enums.QueryType;
 import pl.piotrtrybala.engine.query.enums.UpdateEntityType;
 import pl.piotrtrybala.engine.query.expression.Expression;
 
@@ -56,5 +57,10 @@ public class UpdateQuery implements Query  {
                 ", data=" + Arrays.toString(data) +
                 ", whereClause=" + whereClause +
                 '}';
+    }
+
+    @Override
+    public QueryType getQueryType() {
+        return QueryType.UPDATE;
     }
 }

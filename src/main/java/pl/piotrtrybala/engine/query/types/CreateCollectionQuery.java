@@ -2,6 +2,7 @@ package pl.piotrtrybala.engine.query.types;
 
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.QueryMatcher;
+import pl.piotrtrybala.engine.query.enums.QueryType;
 
 import java.util.List;
 
@@ -24,5 +25,10 @@ public class CreateCollectionQuery implements Query {
         return "CreateCollectionQuery{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public QueryType getQueryType() {
+        return QueryType.CREATE_COLLECTION;
     }
 }

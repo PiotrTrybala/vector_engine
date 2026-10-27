@@ -3,6 +3,7 @@ package pl.piotrtrybala.engine.query.types;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.QueryMatcher;
 import pl.piotrtrybala.engine.query.QueryUtils;
+import pl.piotrtrybala.engine.query.enums.QueryType;
 import pl.piotrtrybala.engine.query.enums.SelectType;
 import pl.piotrtrybala.engine.query.expression.Expression;
 
@@ -68,5 +69,10 @@ public class SelectQuery implements Query {
                 ", expression=" + expression +
                 ", limit=" + limit +
                 '}';
+    }
+
+    @Override
+    public QueryType getQueryType() {
+        return QueryType.SELECT;
     }
 }

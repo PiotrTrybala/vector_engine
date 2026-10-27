@@ -4,6 +4,7 @@ import pl.piotrtrybala.engine.query.enums.EmbeddingType;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.QueryMatcher;
 import pl.piotrtrybala.engine.query.QueryUtils;
+import pl.piotrtrybala.engine.query.enums.QueryType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,5 +45,10 @@ public class InsertQuery implements Query {
                 ", type=" + type +
                 ", data=" + Arrays.toString(data) +
                 '}';
+    }
+
+    @Override
+    public QueryType getQueryType() {
+        return QueryType.INSERT;
     }
 }
