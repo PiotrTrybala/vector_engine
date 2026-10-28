@@ -2,10 +2,34 @@ package pl.piotrtrybala;
 
 import pl.piotrtrybala.engine.Engine;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+
 public class Main {
     static void main() {
-        Engine engine = Engine.getInstance();
-        engine.run();
+//        Engine engine = Engine.getInstance();
+//        engine.run();
+
+        String url = "jdbc:sqlite:metadata.db";
+        String schemaPath = "/metadata.sql";
+
+        String schema;
+        try (InputStream inputStream = Main.class.getResourceAsStream(schemaPath)) {
+            assert inputStream != null;
+            schema = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch(IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+
+        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(schema);
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
 
 //        AuthManager authManager = engine.getAuthManager();
 //
