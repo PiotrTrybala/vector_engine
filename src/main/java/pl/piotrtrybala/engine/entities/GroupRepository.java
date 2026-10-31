@@ -9,6 +9,7 @@ public interface GroupRepository {
     Group retrieve(int id) throws SQLException;
     Group retrieve(String name) throws SQLException;
     Group create(String name, Permissions permissions) throws SQLException;
+    void save(Group group) throws SQLException;
     void delete(int id) throws SQLException;
     void delete(String name) throws SQLException;
 }

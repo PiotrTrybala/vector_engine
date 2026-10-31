@@ -8,7 +8,7 @@ public interface UserRepository {
     User retrieve(String name);
 
     User create();
-
+    void save(User user);
     void delete(int id);
     void delete(String name);
 }

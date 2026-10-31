@@ -1,6 +1,7 @@
 package pl.piotrtrybala.engine.auth.entities;
 
 import pl.piotrtrybala.engine.auth.Permissions;
+import pl.piotrtrybala.engine.entities.UserRepository;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -17,12 +18,15 @@ public class User {
     private Timestamp updatedAt;
 
     private Group group;
+    private UserRepository repo;
 
     private static final Random random = new Random();
     private static final String CHARSET = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     private static final int PASSWORD_LENGTH = 16;
 
-    public User() {}
+    public User(UserRepository repo) {
+        this.repo = repo;
+    }
 
     public void assignGroup(Group group) {
         this.group = group;

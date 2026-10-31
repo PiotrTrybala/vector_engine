@@ -80,6 +80,11 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
+    public void save(Group group) throws SQLException {
+        this.create(group.getName(), group.getPermissions());
+    }
+
+    @Override
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM groups WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)){

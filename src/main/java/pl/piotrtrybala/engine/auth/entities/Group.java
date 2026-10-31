@@ -1,6 +1,7 @@
 package pl.piotrtrybala.engine.auth.entities;
 
 import pl.piotrtrybala.engine.auth.Permissions;
+import pl.piotrtrybala.engine.entities.GroupRepository;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -13,7 +14,11 @@ public class Group {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Group() {}
+    private GroupRepository repo;
+
+    public Group(GroupRepository repo) {
+        this.repo = repo;
+    }
 
     public Group(int id, String name, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
@@ -24,10 +29,18 @@ public class Group {
     }
 
     public void addPermission(String permission) {
-
+        this.permissions.add(permission);
     }
 
-    public void flush() {}
+    public void removePermission(String permission) {
+        this.permissions.remove(permission);
+    }
+
+    public void flush() {
+
+        this.repo.
+
+    }
 
     @Override
     public String toString() {

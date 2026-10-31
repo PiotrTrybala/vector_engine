@@ -13,7 +13,7 @@ public class Main {
 
     static Logger LOGGER = LogManager.getLogger();
 
-    static void main() {
+    static void main() throws SQLException {
 //        Engine engine = Engine.getInstance();
 //        engine.run();
 
@@ -35,13 +35,7 @@ public class Main {
 //        } catch(SQLException e) {
 //            e.printStackTrace();
 //        }
-        Connection connection = null;
-        try {
-            connection = ConnectionManager.getConnection();
-        } catch(SQLException e) {
-            LOGGER.error("sqlite error: {}", e.getMessage());
-            return;
-        }
+        Connection connection = ConnectionManager.getConnection();
 
         AuthManager manager = new AuthManager(connection);
 
