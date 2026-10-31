@@ -1,13 +1,27 @@
 package pl.piotrtrybala.engine.auth.entities;
 
+import java.sql.Timestamp;
+
 public class User {
 
-    public void assignGroup(Group group) {
+    private int id;
+    private String username;
+    private String password;
+    private boolean root;
+    private String perms;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
-    }
+    public User() {}
 
-    public void flush() {
 
-    }
+
+//    public void assignGroup(Group group) {
+//
+//    }
+//
+//    public void flush() {
+//
+//    }
 
 }
