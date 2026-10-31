@@ -3,9 +3,7 @@ package pl.piotrtrybala.engine;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import pl.piotrtrybala.engine.auth.AuthManager;
 import pl.piotrtrybala.engine.executor.Executor;
-import pl.piotrtrybala.engine.executor.ExecutorUtils;
 import pl.piotrtrybala.engine.executor.impl.STExecutor;
 import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
 import pl.piotrtrybala.engine.executor.types.ExecutorResult;
@@ -13,10 +11,8 @@ import pl.piotrtrybala.engine.query.Parser;
 import pl.piotrtrybala.engine.query.Query;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +21,7 @@ public class Engine {
 
     private static Engine engine;
     private final EngineConfig config;
-    private final AuthManager authManager;
+//    private final AuthManager authManager;
     private static final Logger logger = LogManager.getLogger();
 
     private Executor executor;
@@ -34,19 +30,19 @@ public class Engine {
 
     public Engine() {
         this.config = EngineConfig.defaultConfig();
-        this.authManager = new AuthManager();
+//        this.authManager = new AuthManager(DatabaseManager.getConnection());
         this.init();
     }
 
     public Engine(String configPath) {
         this.config = EngineConfig.fromConfig(configPath);
-        this.authManager = new AuthManager();
+//        this.authManager = new AuthManager();
         this.init();
     }
 
     public Engine(EngineConfig config) {
         this.config = config;
-        this.authManager = new AuthManager();
+//        this.authManager = new AuthManager();
         this.init();
     }
 
@@ -77,9 +73,9 @@ public class Engine {
         return engine;
     }
 
-    public AuthManager getAuthManager() {
-        return authManager;
-    }
+//    public AuthManager getAuthManager() {
+//        return authManager;
+//    }
 
     public void run() {
         logger.info("accepting connections...");

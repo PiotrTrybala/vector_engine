@@ -20,6 +20,15 @@ public class Permissions {
         return new Permissions(container);
     }
 
+    public String save() {
+        StringBuilder permissions = new StringBuilder();
+        for (String key : perms.keySet()) {
+            permissions.append(key).append(',');
+        }
+        String output = permissions.toString();
+        return output.substring(0, output.length() - 2);
+    }
+
     public void add(String perm) {
         this.perms.put(perm, true);
     }
@@ -32,4 +41,10 @@ public class Permissions {
         return perms.containsKey(perm);
     }
 
+    @Override
+    public String toString() {
+        return "Permissions{" +
+                "perms=" + perms.keySet() +
+                '}';
+    }
 }

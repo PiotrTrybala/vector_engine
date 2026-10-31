@@ -3,11 +3,10 @@ package pl.piotrtrybala.engine.entities;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class DatabaseManager {
+public class ConnectionManager {
     private static final HikariDataSource source;
 
     static {
@@ -25,7 +24,7 @@ public class DatabaseManager {
         source = new HikariDataSource(config);
     }
 
-    private DatabaseManager() {}
+    private ConnectionManager() {}
 
     public static Connection getConnection() throws SQLException {
         return source.getConnection();

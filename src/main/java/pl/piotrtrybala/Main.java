@@ -2,15 +2,11 @@ package pl.piotrtrybala;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.engine.Engine;
 import pl.piotrtrybala.engine.auth.AuthManager;
 import pl.piotrtrybala.engine.auth.entities.Group;
 import pl.piotrtrybala.engine.auth.entities.User;
-import pl.piotrtrybala.engine.entities.DatabaseManager;
+import pl.piotrtrybala.engine.entities.ConnectionManager;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 public class Main {
@@ -41,7 +37,7 @@ public class Main {
 //        }
         Connection connection = null;
         try {
-            connection = DatabaseManager.getConnection();
+            connection = ConnectionManager.getConnection();
         } catch(SQLException e) {
             LOGGER.error("sqlite error: {}", e.getMessage());
             return;
@@ -66,9 +62,11 @@ public class Main {
         admin.assignGroup(adminGroup);
         admin.flush();
 
-        manager.flush();
-
         Group retrievedAdminGroup = manager.retrieveGroup("group1");
+        User retrievedUser = manager.retrieveUser("root");
+
+        LOGGER.info("group: {}", retrievedAdminGroup.toString());
+        LOGGER.info("user: {}", retrievedUser.toString());
 
 
     }

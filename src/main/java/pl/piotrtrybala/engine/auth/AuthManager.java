@@ -13,24 +13,20 @@ public class AuthManager {
         this.connection = connection;
     }
 
+    public Group retrieveGroup(String name) {
+        return new Group();
+    }
+
     public Group createGroup(String name) {
         return new Group();
+    }
+
+    public User retrieveUser(String name) {
+        return new User();
     }
 
     public User createUser(String username, String password) {
         return new User();
     }
-
-    public void flush() {
-
-    }
-
-//    public User createUser(String username, String password) {
-//        return new User();
-//    }
-//
-//    public Group createGroup(String name) {
-//        return new Group();
-//    }
 
 }
