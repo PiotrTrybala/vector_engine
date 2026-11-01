@@ -41,7 +41,6 @@ public class AuthManager {
 
     public User retrieveUser(String username) throws SQLException {
         User user = this.userRepo.retrieve(username);
-        System.out.println("user retrieve user = " + user.toString());
         int groupId = this.userGroupRepo.retrieveGroupId(user.getId());
         if (groupId != -1) {
             Group group = this.groupRepo.retrieve(groupId);

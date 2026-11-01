@@ -20,3 +20,54 @@ Queries
 //            throw new RuntimeException(e);
 //        }
 //
+
+//        Engine engine = Engine.getInstance();
+//        engine.run();
+
+//        String url = "jdbc:sqlite:metadata.db";
+//        String schemaPath = "/metadata.sql";
+//
+//        String schema;
+//        try (InputStream inputStream = Main.class.getResourceAsStream(schemaPath)) {
+//            assert inputStream != null;
+//            schema = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//            return;
+//        }
+//
+//
+//        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
+//            stmt.executeUpdate(schema);
+//        } catch(SQLException e) {
+//            e.printStackTrace();
+//        }
+//        Connection connection = ConnectionManager.getConnection();
+//
+//        AuthManager manager = new AuthManager(connection);
+
+//        Group rootGroup = manager.createGroup("root");
+//        rootGroup.addPermission("*.*");
+//        rootGroup.flush();
+
+//        Group adminGroup = manager.createGroup("group1");
+//        adminGroup.addPermission("collection.create");
+//        adminGroup.addPermission("embedding.insert");
+//        adminGroup.flush();
+
+//        Group retrievedGroup = manager.retrieveGroup("root");
+//        LOGGER.info("group: {}", retrievedGroup.toString());
+
+//        User root = manager.createUser("root", User.generatePassword());
+//        root.assignGroup(retrievedGroup);
+//        root.flush();
+
+//        User admin = manager.createUser("admin", "admin123");
+//        admin.assignGroup(adminGroup);
+//        admin.flush();
+
+//        User retrievedUser = manager.retrieveUser("root");
+//        retrievedUser.assignGroup(retrievedGroup);
+//        retrievedUser.update();
+//
+//        LOGGER.info("user: {}", retrievedUser.toString());

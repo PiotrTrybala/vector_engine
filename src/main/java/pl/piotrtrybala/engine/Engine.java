@@ -3,6 +3,8 @@ package pl.piotrtrybala.engine;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import pl.piotrtrybala.engine.auth.AuthManager;
+import pl.piotrtrybala.engine.entities.ConnectionManager;
 import pl.piotrtrybala.engine.executor.Executor;
 import pl.piotrtrybala.engine.executor.impl.STExecutor;
 import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
@@ -13,36 +15,31 @@ import pl.piotrtrybala.engine.query.Query;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Engine {
 
-    private static Engine engine;
     private final EngineConfig config;
-//    private final AuthManager authManager;
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(Engine.class.getName());
 
     private Executor executor;
-
     private ServerSocket socket;
 
     public Engine() {
         this.config = EngineConfig.defaultConfig();
-//        this.authManager = new AuthManager(DatabaseManager.getConnection());
         this.init();
     }
 
     public Engine(String configPath) {
         this.config = EngineConfig.fromConfig(configPath);
-//        this.authManager = new AuthManager();
         this.init();
     }
 
     public Engine(EngineConfig config) {
         this.config = config;
-//        this.authManager = new AuthManager();
         this.init();
     }
 
@@ -58,24 +55,6 @@ public class Engine {
             throw new RuntimeException(e);
         }
     }
-
-    public static synchronized Engine getInstance() {
-        if (engine == null) {
-            return new Engine();
-        }
-        return engine;
-    }
-
-    public static synchronized Engine getInstance(EngineConfig config) {
-        if (engine == null) {
-            return new Engine(config);
-        }
-        return engine;
-    }
-
-//    public AuthManager getAuthManager() {
-//        return authManager;
-//    }
 
     public void run() {
         logger.info("accepting connections...");

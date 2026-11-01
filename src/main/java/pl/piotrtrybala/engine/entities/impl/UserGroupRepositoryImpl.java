@@ -44,7 +44,12 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         }
 
         int userId = user.getId();
+        if (this.retrieveGroupId(userId) != -1) {
+            return;
+        }
+
         int groupId = user.getGroup().getId();
+
 
         String sql = "INSERT INTO u_groups (uid, gid) VALUES (?, ?);";
 
