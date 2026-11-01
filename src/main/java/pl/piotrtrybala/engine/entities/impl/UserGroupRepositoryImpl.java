@@ -5,6 +5,7 @@ import pl.piotrtrybala.engine.entities.UserGroupRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserGroupRepositoryImpl implements UserGroupRepository {
@@ -13,6 +14,26 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
 
     public UserGroupRepositoryImpl(Connection connection) {
         this.connection = connection;
+    }
+
+    @Override
+    public int retrieveGroupId(int userId) throws SQLException {
+
+        // one group per user
+
+        String sql = "SELECT gid FROM u_groups WHERE uid = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet result = stmt.executeQuery();
+
+            if (result.next()) {
+                return result.getInt("gid");
+            } else {
+                return -1;
+            }
+        } catch (SQLException e) {
+            throw new SQLException("failed to retrieve group id: " + e.getMessage());
+        }
     }
 
     @Override
@@ -27,7 +48,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
 
         String sql = "INSERT INTO u_groups (uid, gid) VALUES (?, ?);";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             stmt.setInt(2, groupId);
             stmt.executeUpdate();

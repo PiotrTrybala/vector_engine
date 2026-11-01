@@ -34,8 +34,22 @@ public class AuthManager {
         return group;
     }
 
-    public User retrieveUser(String name) throws SQLException {
-        return this.userRepo.retrieve(name);
+    public User retrieveUser(int id) throws SQLException {
+        User user = this.userRepo.retrieve(id);
+        return this.retrieveUser(user.getUsername());
+    }
+
+    public User retrieveUser(String username) throws SQLException {
+        User user = this.userRepo.retrieve(username);
+        System.out.println("user retrieve user = " + user.toString());
+        int groupId = this.userGroupRepo.retrieveGroupId(user.getId());
+        if (groupId != -1) {
+            Group group = this.groupRepo.retrieve(groupId);
+            user.setGroup(group);
+        }
+        user.setRepo(this.userRepo);
+        user.setuGroupRepo(this.userGroupRepo);
+        return user;
     }
 
     public User createUser(String username, String password) {

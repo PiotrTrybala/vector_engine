@@ -16,20 +16,26 @@ public class GroupRepositoryImpl implements GroupRepository {
 
     @Override
     public Group retrieve(int id) throws SQLException {
-        String sql = "SELECT * FROM groups WHERE id = ?";
+        String sql = "SELECT * FROM groups WHERE id = ?;";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, id);
             ResultSet result = stmt.executeQuery();
 
-            String name = result.getString("name");
-            String rawPerms = result.getString("perms");
-            Permissions permissions = Permissions.parse(rawPerms);
-            Timestamp createdAt = result.getTimestamp("created_at");
-            Timestamp updatedAt = result.getTimestamp("updated_at");
+            if (result.next()){
+                String name = result.getString("name");
+                String rawPerms = result.getString("perms");
+                Permissions permissions = Permissions.parse(rawPerms);
+                Timestamp createdAt = result.getTimestamp("created_at");
+                Timestamp updatedAt = result.getTimestamp("updated_at");
 
-            return new Group(id, name, permissions, createdAt, updatedAt);
+                return new Group(id, name, permissions, createdAt, updatedAt);
+            } else {
+                throw new SQLException("no group was found: " + id);
+            }
         } catch (SQLException e) {
             throw new SQLException("failed to retrieve group: " + id);
+        } catch (Exception e) {
+            throw new SQLException("failed to parse perms: " + e.getMessage());
         }
     }
 
@@ -49,19 +55,20 @@ public class GroupRepositoryImpl implements GroupRepository {
             return new Group(id, name, permissions, createdAt, updatedAt);
         } catch (SQLException e) {
             throw new SQLException("failed to retrieve group: " + name);
+        } catch (Exception e) {
+            throw new SQLException("failed to parse perms: " + e.getMessage());
         }
     }
 
     @Override
     public Group create(String name, Permissions permissions) throws SQLException {
-        String sql = "INSERT INTO groups(name, perms) VALUES (?, ?);";
+        String sql = "INSERT INTO groups(name, perms) VALUES (?, ?) RETURNING id, created_at, updated_at;";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            System.out.println("permissions string: " + permissions.save());
             stmt.setString(1, name);
             stmt.setString(2, permissions.save());
 
-            stmt.executeUpdate();
-
-            try (ResultSet inserted = stmt.getGeneratedKeys()) {
+            try (ResultSet inserted = stmt.executeQuery()) {
                 if (inserted.next()) {
                     int id = inserted.getInt("id");
                     Timestamp createdAt = inserted.getTimestamp("created_at");
@@ -75,12 +82,26 @@ public class GroupRepositoryImpl implements GroupRepository {
         } catch (SQLException e) {
             throw new SQLException("failed to create group: " + e.getMessage());
         }
-
     }
 
     @Override
-    public void save(Group group) throws SQLException {
-        this.create(group.getName(), group.getPermissions());
+    public Group save(Group group) throws SQLException {
+        return this.create(group.getName(), group.getPermissions());
+    }
+
+    @Override
+    public Group update(Group group) throws SQLException {
+        String sql = "UPDATE groups SET name = ?, perms = ? WHERE id = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, group.getName());
+            stmt.setString(2, group.getPermissions().save());
+            stmt.setInt(3, group.getId());
+
+            stmt.executeUpdate();
+            return group;
+        } catch (SQLException e) {
+            throw new SQLException("failed to create group: " + e.getMessage());
+        }
     }
 
     @Override
@@ -90,7 +111,7 @@ public class GroupRepositoryImpl implements GroupRepository {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new SQLException("failed to create group: " + e.getMessage());
+            throw new SQLException("failed to create group: " + e.getSQLState() + ", " + e.getMessage());
         }
     }
 

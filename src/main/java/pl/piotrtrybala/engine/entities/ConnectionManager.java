@@ -17,6 +17,7 @@ public class ConnectionManager {
         config.setAutoCommit(true);
 
         config.addDataSourceProperty("journal_mode", "WAL");
+        config.addDataSourceProperty("foreign_keys", "ON");
         config.addDataSourceProperty("synchronous", "NORMAL");
 
 //        config.setConnectionInitSql("PRAGMA busy_timeout=5000;");

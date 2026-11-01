@@ -1,9 +1,10 @@
 PRAGMA journal_mode = WAL;
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users
 (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    username   TEXT      NOT NULL,
+    username   TEXT      NOT NULL UNIQUE,
     password   TEXT      NOT NULL,
     root       BOOLEAN   NOT NULL DEFAULT 0,
     perms      TEXT      NOT NULL,
@@ -24,7 +25,7 @@ END;
 CREATE TABLE IF NOT EXISTS groups
 (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    name       TEXT      NOT NULL,
+    name       TEXT      NOT NULL UNIQUE,
     perms      TEXT      NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -43,16 +44,18 @@ END;
 CREATE TABLE IF NOT EXISTS u_groups
 (
     uid INTEGER NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    gid INTEGER NOT NULL REFERENCES groups (id) ON DELETE CASCADE
+    gid INTEGER NOT NULL REFERENCES groups (id) ON DELETE CASCADE,
+    PRIMARY KEY (uid, gid)
 );
 
 CREATE TABLE IF NOT EXISTS collections
 (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    uid        INTEGER   NOT NULL REFERENCES users (id),
+    uid        INTEGER   NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     name       TEXT      NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (uid, name)
 );
 
 CREATE TRIGGER IF NOT EXISTS update_collections_timestamp
@@ -68,7 +71,7 @@ END;
 CREATE TABLE IF NOT EXISTS embeddings
 (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    cid           INTEGER   NOT NULL REFERENCES collections (id),
+    cid           INTEGER   NOT NULL REFERENCES collections (id) ON DELETE CASCADE,
     content       TEXT      NOT NULL,
     content_hash  TEXT      NOT NULL,
     metadata      BLOB,

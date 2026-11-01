@@ -2,14 +2,23 @@ package pl.piotrtrybala.engine.auth;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Permissions {
 
-    private final HashMap<String, Boolean> perms = new HashMap<>();
+    private Map<String, Boolean> perms = new HashMap<>();
 
-    public Permissions(HashMap<String, Boolean> perms) {}
+    public Permissions() {}
+    public Permissions(HashMap<String, Boolean> perms) {
+        this.perms = perms;
+    }
 
-    public static Permissions parse(String perms) {
+    public static Permissions parse(String perms) throws Exception {
+
+        if (perms == null && perms.isEmpty()) {
+            throw new Exception("perms is emtpy");
+        }
 
         List<String> parsed = List.of(perms.split(","));
 
@@ -22,14 +31,12 @@ public class Permissions {
 
     public String save() {
         StringBuilder permissions = new StringBuilder();
-        for (String key : perms.keySet()) {
-            permissions.append(key).append(',');
-        }
-        String output = permissions.toString();
-        return output.substring(0, output.length() - 2);
+        System.out.println("perms = " + perms.keySet());
+        return String.join(",", perms.keySet());
     }
 
     public void add(String perm) {
+        System.out.println("added " + perm);
         this.perms.put(perm, true);
     }
 

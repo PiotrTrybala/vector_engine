@@ -13,7 +13,9 @@ public interface UserRepository {
 
     User create(String username, String password, boolean root, Permissions permissions) throws SQLException;
 
-    void save(User user) throws SQLException;
+    User save(User user) throws SQLException;
+
+    User update(User user) throws SQLException;
 
     void delete(int id) throws SQLException;
 

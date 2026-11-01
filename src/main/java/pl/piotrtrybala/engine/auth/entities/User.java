@@ -3,6 +3,7 @@ package pl.piotrtrybala.engine.auth.entities;
 import pl.piotrtrybala.engine.auth.Permissions;
 import pl.piotrtrybala.engine.entities.UserGroupRepository;
 import pl.piotrtrybala.engine.entities.UserRepository;
+import pl.piotrtrybala.engine.entities.impl.UserRepositoryImpl;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -10,7 +11,7 @@ import java.util.Random;
 
 public class User {
 
-    private int id;
+    private int id = -1;
     private String username;
     private String password;
     private boolean root;
@@ -29,6 +30,7 @@ public class User {
     public User(UserRepository repo, UserGroupRepository uGroupRepo) {
         this.repo = repo;
         this.uGroupRepo = uGroupRepo;
+        this.permissions = new Permissions();
     }
 
     public User(int id, String username, String password, boolean root, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
@@ -47,11 +49,20 @@ public class User {
     }
 
     public void flush() throws SQLException {
-        this.repo.save(this);
+        User saved = this.repo.save(this);
 
         if (this.group != null) {
-            this.uGroupRepo.save(this);
+            this.uGroupRepo.save(saved);
         }
+    }
+
+    public void update() throws SQLException {
+        User user = this.repo.update(this);
+
+        if (this.group != null) {
+            this.uGroupRepo.save(user);
+        }
+
     }
 
     public static String generatePassword() {
@@ -106,6 +117,10 @@ public class User {
         return group;
     }
 
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -113,10 +128,18 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", root=" + root +
-                ", perms='" + permissions + '\'' +
+                ", permissions=" + permissions +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", group=" + group +
                 '}';
     }
 
+    public void setRepo(UserRepository repo) {
+        this.repo = repo;
+    }
+
+    public void setuGroupRepo(UserGroupRepository uGroupRepo) {
+        this.uGroupRepo = uGroupRepo;
+    }
 }

@@ -19,6 +19,7 @@ public class Group {
 
     public Group(GroupRepository repo) {
         this.repo = repo;
+        this.permissions = new Permissions();
     }
 
     public Group(int id, String name, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
@@ -39,6 +40,10 @@ public class Group {
 
     public void flush() throws SQLException {
         this.repo.save(this);
+    }
+
+    public void update() throws SQLException {
+        this.repo.update(this);
     }
 
     @Override
