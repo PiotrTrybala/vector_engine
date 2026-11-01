@@ -3,8 +3,10 @@ package pl.piotrtrybala.engine.auth;
 import pl.piotrtrybala.engine.auth.entities.Group;
 import pl.piotrtrybala.engine.auth.entities.User;
 import pl.piotrtrybala.engine.entities.GroupRepository;
+import pl.piotrtrybala.engine.entities.UserGroupRepository;
 import pl.piotrtrybala.engine.entities.UserRepository;
 import pl.piotrtrybala.engine.entities.impl.GroupRepositoryImpl;
+import pl.piotrtrybala.engine.entities.impl.UserGroupRepositoryImpl;
 import pl.piotrtrybala.engine.entities.impl.UserRepositoryImpl;
 
 import java.sql.Connection;
@@ -14,10 +16,12 @@ public class AuthManager {
 
     private UserRepository userRepo;
     private GroupRepository groupRepo;
+    private UserGroupRepository userGroupRepo;
 
     public AuthManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl(connection);
         this.groupRepo = new GroupRepositoryImpl(connection);
+        this.userGroupRepo = new UserGroupRepositoryImpl(connection);
     }
 
     public Group retrieveGroup(String name) throws SQLException {
@@ -35,7 +39,7 @@ public class AuthManager {
     }
 
     public User createUser(String username, String password) {
-        User user = new User(userRepo);
+        User user = new User(userRepo, userGroupRepo);
         user.setUsername(username);
         user.setPassword(password);
         return user;

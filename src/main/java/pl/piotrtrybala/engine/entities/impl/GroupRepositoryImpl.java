@@ -5,7 +5,6 @@ import pl.piotrtrybala.engine.auth.entities.Group;
 import pl.piotrtrybala.engine.entities.GroupRepository;
 
 import java.sql.*;
-import java.util.concurrent.ExecutionException;
 
 public class GroupRepositoryImpl implements GroupRepository {
 

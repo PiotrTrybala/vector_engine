@@ -4,6 +4,7 @@ import pl.piotrtrybala.engine.auth.Permissions;
 import pl.piotrtrybala.engine.entities.GroupRepository;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class Group {
@@ -36,10 +37,8 @@ public class Group {
         this.permissions.remove(permission);
     }
 
-    public void flush() {
-
-        this.repo.
-
+    public void flush() throws SQLException {
+        this.repo.save(this);
     }
 
     @Override

@@ -1,9 +1,10 @@
 package pl.piotrtrybala.engine.auth.entities;
 
 import pl.piotrtrybala.engine.auth.Permissions;
+import pl.piotrtrybala.engine.entities.UserGroupRepository;
 import pl.piotrtrybala.engine.entities.UserRepository;
 
-import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Random;
 
@@ -19,23 +20,38 @@ public class User {
 
     private Group group;
     private UserRepository repo;
+    private UserGroupRepository uGroupRepo;
 
     private static final Random random = new Random();
     private static final String CHARSET = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     private static final int PASSWORD_LENGTH = 16;
 
-    public User(UserRepository repo) {
+    public User(UserRepository repo, UserGroupRepository uGroupRepo) {
         this.repo = repo;
+        this.uGroupRepo = uGroupRepo;
+    }
+
+    public User(int id, String username, String password, boolean root, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.root = root;
+        this.permissions = permissions;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.group = null;
     }
 
     public void assignGroup(Group group) {
         this.group = group;
     }
 
-    public void flush() {
+    public void flush() throws SQLException {
+        this.repo.save(this);
 
-
-
+        if (this.group != null) {
+            this.uGroupRepo.save(this);
+        }
     }
 
     public static String generatePassword() {
@@ -102,13 +118,5 @@ public class User {
                 ", updatedAt=" + updatedAt +
                 '}';
     }
-
-    //    public void assignGroup(Group group) {
-//
-//    }
-//
-//    public void flush() {
-//
-//    }
 
 }
