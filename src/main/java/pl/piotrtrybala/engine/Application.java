@@ -12,13 +12,15 @@ public class Application {
     private static Application instance;
 
     private Engine engine;
+    private EngineConfig engineConfig;
 
     private static final Logger LOGGER = LogManager.getLogger(Application.class.getName());
 
     public static synchronized Application getInstance() {
         if (instance == null) {
             instance = new Application();
-            instance.engine = new Engine();
+            instance.engineConfig = new EngineConfig();
+            instance.engine = new Engine(instance.engineConfig);
         }
         return instance;
     }
@@ -43,4 +45,7 @@ public class Application {
         engine.run();
     }
 
+    public EngineConfig getEngineConfig() {
+        return engineConfig;
+    }
 }
