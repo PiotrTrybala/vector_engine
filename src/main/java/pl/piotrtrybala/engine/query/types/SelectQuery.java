@@ -20,7 +20,7 @@ public class SelectQuery implements Query {
 
     private Expression expression = null;
 
-    private int limit;
+    private final int limit;
 
     public SelectQuery(String query) throws Exception {
         List<String> tokens = QueryMatcher.preprocess(query);

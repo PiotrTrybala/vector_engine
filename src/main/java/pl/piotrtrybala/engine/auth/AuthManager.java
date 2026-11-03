@@ -17,9 +17,9 @@ import java.sql.SQLException;
 
 public class AuthManager {
 
-    private UserRepository userRepo;
-    private GroupRepository groupRepo;
-    private UserGroupRepository userGroupRepo;
+    private final UserRepository userRepo;
+    private final GroupRepository groupRepo;
+    private final UserGroupRepository userGroupRepo;
 
     private final SessionStorage storage;
 
