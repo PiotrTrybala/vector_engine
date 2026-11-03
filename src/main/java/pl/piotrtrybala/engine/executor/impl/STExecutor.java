@@ -23,7 +23,9 @@ public class STExecutor implements Executor {
 
     private static final HashSet<QueryType> SUPPORTED_QUERY_TYPES = new HashSet<>(List.of(
             QueryType.HANDSHAKE,
-            QueryType.AUTH
+            QueryType.AUTH,
+            QueryType.CREATE_COLLECTION,
+            QueryType.USE
     ));
     private static final Logger logger = LogManager.getLogger();
 

@@ -6,14 +6,15 @@ import java.sql.SQLException;
 
 public class MetadataStorage {
 
-    private MetadataStorage instance;
+    private static MetadataStorage instance;
 
     private CollectionRepository collectionRepository;
 
-    public synchronized MetadataStorage getInstance() {
+    public static synchronized MetadataStorage getInstance() {
         try {
             if (instance == null) {
-                collectionRepository = new CollectionRepositoryImpl(ConnectionManager.getConnection());
+                instance = new MetadataStorage();
+                instance.collectionRepository = new CollectionRepositoryImpl(ConnectionManager.getConnection());
             }
             return instance;
         } catch(SQLException e) {

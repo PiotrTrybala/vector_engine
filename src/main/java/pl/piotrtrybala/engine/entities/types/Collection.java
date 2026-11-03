@@ -12,12 +12,6 @@ public class Collection {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    private final CollectionRepository collectionRepository;
-
-    public Collection(CollectionRepository repository) {
-        this.collectionRepository = repository;
-    }
-
     public Collection(int id, int userId, String name, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;
