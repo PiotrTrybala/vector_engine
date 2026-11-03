@@ -12,45 +12,30 @@ public class Application {
     private static Application instance;
 
     private Engine engine;
-    private static AuthManager authManager;
 
     private static final Logger LOGGER = LogManager.getLogger(Application.class.getName());
 
     public static synchronized Application getInstance() {
-        try {
-            if (instance == null) {
-                instance = new Application();
-                authManager = new AuthManager(ConnectionManager.getConnection());
-                instance.engine = new Engine();
-            }
-            return instance;
-        } catch (SQLException e) {
-            throw new RuntimeException("failed to initialize application instance: " + e.getMessage());
+        if (instance == null) {
+            instance = new Application();
+            instance.engine = new Engine();
         }
+        return instance;
     }
 
     public static synchronized void initialize(EngineConfig config) {
-        try {
-            LOGGER.info("initializing application...");
-            if (instance == null) {
-                instance = new Application();
-                LOGGER.info("creating application instance...");
-                authManager = new AuthManager(ConnectionManager.getConnection());
-                LOGGER.info("created authentication manager...");
-                if (config == null) {
-                    instance.engine = new Engine();
-                } else {
-                    instance.engine = new Engine(config);
-                }
-                LOGGER.info("created database engine...");
+        LOGGER.info("initializing application...");
+        if (instance == null) {
+            instance = new Application();
+            LOGGER.info("creating application instance...");
+            LOGGER.info("created authentication manager...");
+            if (config == null) {
+                instance.engine = new Engine();
+            } else {
+                instance.engine = new Engine(config);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException("failed to initialize application instance: " + e.getMessage());
+            LOGGER.info("created database engine...");
         }
-    }
-
-    public static synchronized AuthManager getAuthManager() {
-        return authManager;
     }
 
     public void run() {

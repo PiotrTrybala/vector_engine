@@ -16,11 +16,11 @@ public class Permissions {
 
     public static Permissions parse(String perms) throws Exception {
 
-        if (perms == null && perms.isEmpty()) {
+        if (perms == null || perms.isEmpty()) {
             throw new Exception("perms is emtpy");
         }
 
-        List<String> parsed = List.of(perms.split(","));
+        List<String> parsed = List.of(perms.trim().split(","));
 
         HashMap<String, Boolean> container = new HashMap<>();
         for (String perm : parsed) {
@@ -30,8 +30,6 @@ public class Permissions {
     }
 
     public String save() {
-        StringBuilder permissions = new StringBuilder();
-        System.out.println("perms = " + perms.keySet());
         return String.join(",", perms.keySet());
     }
 

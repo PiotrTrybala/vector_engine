@@ -13,8 +13,7 @@ public class Main {
 
         Application.initialize(null);
 
-        AuthManager manager = Application.getAuthManager();
-
+        AuthManager manager = AuthManager.getInstance();
         try {
             User user = manager.retrieveUser("root");
             Permissions permissions = user.getPermissions();

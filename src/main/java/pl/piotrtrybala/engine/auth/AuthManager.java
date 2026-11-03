@@ -2,6 +2,7 @@ package pl.piotrtrybala.engine.auth;
 
 import pl.piotrtrybala.engine.auth.entities.Group;
 import pl.piotrtrybala.engine.auth.entities.User;
+import pl.piotrtrybala.engine.entities.ConnectionManager;
 import pl.piotrtrybala.engine.entities.GroupRepository;
 import pl.piotrtrybala.engine.entities.UserGroupRepository;
 import pl.piotrtrybala.engine.entities.UserRepository;
@@ -18,10 +19,23 @@ public class AuthManager {
     private GroupRepository groupRepo;
     private UserGroupRepository userGroupRepo;
 
+    private static AuthManager instance;
+
     public AuthManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl(connection);
         this.groupRepo = new GroupRepositoryImpl(connection);
         this.userGroupRepo = new UserGroupRepositoryImpl(connection);
+    }
+
+    public static synchronized AuthManager getInstance() {
+        try {
+            if (instance == null) {
+                instance = new AuthManager(ConnectionManager.getConnection());
+            }
+            return instance;
+        } catch(SQLException e) {
+            throw new RuntimeException("failed to retrieve auth manager: " + e.getMessage());
+        }
     }
 
     public Group retrieveGroup(String name) throws SQLException {
