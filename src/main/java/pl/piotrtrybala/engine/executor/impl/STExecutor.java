@@ -4,12 +4,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.engine.executor.Executor;
 import pl.piotrtrybala.engine.executor.enums.ExecutorErrorType;
+import pl.piotrtrybala.engine.executor.impl.result.AuthResult;
 import pl.piotrtrybala.engine.executor.impl.result.HandshakeResult;
 import pl.piotrtrybala.engine.executor.types.ExecutorError;
 import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
 import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.enums.QueryType;
+import pl.piotrtrybala.engine.query.types.AuthQuery;
 import pl.piotrtrybala.engine.query.types.HandshakeQuery;
 
 import java.util.HashSet;
@@ -18,7 +20,8 @@ import java.util.List;
 public class STExecutor implements Executor {
 
     private static final HashSet<QueryType> SUPPORTED_QUERY_TYPES = new HashSet<>(List.of(
-            QueryType.HANDSHAKE
+            QueryType.HANDSHAKE,
+            QueryType.AUTH
     ));
     private static final Logger logger = LogManager.getLogger();
 
@@ -34,14 +37,23 @@ public class STExecutor implements Executor {
             return new ExecutorError(ExecutorErrorType.UNSUPPORTED_QUERY_TYPE);
         }
 
+        logger.info("dispatching: {}", query.getQueryType().toString());
         if (query instanceof HandshakeQuery) {
-            logger.info("dispatching: {}", query.getQueryType().toString());
             return this.dispatchHandshake((HandshakeQuery) query);
         }
+
+        if (query instanceof AuthQuery) {
+            return this.dispatchAuth((AuthQuery) query);
+        }
+
         return null;
     }
 
     public ExecutorResult dispatchHandshake(HandshakeQuery query) {
         return new HandshakeResult();
+    }
+
+    public ExecutorResult dispatchAuth(AuthQuery query) {
+        return new AuthResult(query);
     }
 }

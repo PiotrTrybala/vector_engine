@@ -53,6 +53,15 @@ public class AuthManager {
         return this.retrieveUser(user.getUsername());
     }
 
+    public User authenticateUser(String username, String password) throws Exception {
+        User user = this.retrieveUser(username);
+        if (user.getPassword().equals(password)) {
+            throw new Exception("failed to authenticate user");
+        }
+
+        return user;
+    }
+
     public User retrieveUser(String username) throws SQLException {
         User user = this.userRepo.retrieve(username);
         int groupId = this.userGroupRepo.retrieveGroupId(user.getId());
