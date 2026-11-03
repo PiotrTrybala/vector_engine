@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.engine.executor.Executor;
 import pl.piotrtrybala.engine.executor.enums.ExecutorErrorType;
 import pl.piotrtrybala.engine.executor.impl.result.AuthResult;
+import pl.piotrtrybala.engine.executor.impl.result.CreateCollectionResult;
 import pl.piotrtrybala.engine.executor.impl.result.HandshakeResult;
 import pl.piotrtrybala.engine.executor.types.ExecutorError;
 import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
@@ -12,6 +13,7 @@ import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.enums.QueryType;
 import pl.piotrtrybala.engine.query.types.AuthQuery;
+import pl.piotrtrybala.engine.query.types.CreateCollectionQuery;
 import pl.piotrtrybala.engine.query.types.HandshakeQuery;
 
 import java.util.HashSet;
@@ -40,21 +42,29 @@ public class STExecutor implements Executor {
         logger.info("dispatching: {}", query.getQueryType().toString());
 
         if (query instanceof HandshakeQuery) {
-            return this.dispatchHandshake((HandshakeQuery) query);
+            return dispatchHandshakeQuery((HandshakeQuery) query);
         }
 
         if (query instanceof AuthQuery) {
-            return this.dispatchAuth((AuthQuery) query);
+            return dispatchAuthQuery((AuthQuery) query);
+        }
+
+        if (query instanceof CreateCollectionQuery) {
+            return dispatchCreateCollectionQuery((CreateCollectionQuery) query);
         }
 
         return null;
     }
 
-    public ExecutorResult dispatchHandshake(HandshakeQuery query) {
+    public ExecutorResult dispatchHandshakeQuery(HandshakeQuery query) {
         return new HandshakeResult();
     }
 
-    public ExecutorResult dispatchAuth(AuthQuery query) {
+    public ExecutorResult dispatchAuthQuery(AuthQuery query) {
         return new AuthResult(query);
+    }
+
+    public ExecutorResult dispatchCreateCollectionQuery(CreateCollectionQuery query) {
+        return new CreateCollectionResult(query);
     }
 }
