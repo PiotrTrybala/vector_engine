@@ -53,10 +53,10 @@ public class EngineConfig {
         config.maxEmbeddingSize = 768;
 
         config.collection = "admin";
-        config.auth = new AuthEngineConfig();
-        config.auth.username = "admin";
-        config.auth.password = "admin";
-        config.auth.rootPassword = "root";
+        config.authEngineConfig = new AuthEngineConfig();
+        config.authEngineConfig.username = "admin";
+        config.authEngineConfig.password = "admin";
+        config.authEngineConfig.rootPassword = "root";
         return config;
     }
 

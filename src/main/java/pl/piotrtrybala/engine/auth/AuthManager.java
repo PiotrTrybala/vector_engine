@@ -63,8 +63,10 @@ public class AuthManager {
     }
 
     public User authenticateUser(String username, String password) throws Exception {
+        System.out.println("retrieving user: " + username);
         User user = this.retrieveUser(username);
-        if (user.getPassword().equals(password)) {
+        System.out.println("user found: " + user.toString());
+        if (!user.getPassword().equals(password)) {
             throw new Exception("failed to authenticate user");
         }
 

@@ -38,6 +38,7 @@ public class STExecutor implements Executor {
         }
 
         logger.info("dispatching: {}", query.getQueryType().toString());
+
         if (query instanceof HandshakeQuery) {
             return this.dispatchHandshake((HandshakeQuery) query);
         }

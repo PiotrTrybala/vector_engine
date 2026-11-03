@@ -12,18 +12,18 @@ public class Main {
     static void main() {
 
         Application.initialize(null);
-
-        AuthManager manager = AuthManager.getInstance();
-        try {
-            User user = manager.retrieveUser("root");
-            Permissions permissions = user.getPermissions();
-            permissions.add("config.config.config");
-            user.update();
-
-            System.out.println(user);
-        } catch(SQLException e) {
-            e.printStackTrace();
-        }
+        Application.getInstance().run();
+//        AuthManager manager = AuthManager.getInstance();
+//        try {
+//            User user = manager.retrieveUser("root");
+//            Permissions permissions = user.getPermissions();
+//            permissions.add("config.config.config");
+//            user.update();
+//
+//            System.out.println(user);
+//        } catch(SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 }
 

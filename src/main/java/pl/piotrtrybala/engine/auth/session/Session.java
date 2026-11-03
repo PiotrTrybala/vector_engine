@@ -21,4 +21,11 @@ public class Session {
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "createdAt=" + createdAt +
+                '}';
+    }
 }

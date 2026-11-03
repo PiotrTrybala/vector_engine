@@ -37,6 +37,8 @@ public class Application {
                 instance.engine = new Engine(config);
             }
             LOGGER.info("created database engine...");
+
+            // add root user
         }
     }
 
