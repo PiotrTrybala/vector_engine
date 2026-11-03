@@ -1,5 +1,6 @@
 package pl.piotrtrybala.engine.executor.impl.result;
 
+import pl.piotrtrybala.engine.auth.AuthManager;
 import pl.piotrtrybala.engine.executor.ExecutorUtils;
 import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 

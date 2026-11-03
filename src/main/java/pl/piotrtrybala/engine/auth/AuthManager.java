@@ -2,6 +2,8 @@ package pl.piotrtrybala.engine.auth;
 
 import pl.piotrtrybala.engine.auth.entities.Group;
 import pl.piotrtrybala.engine.auth.entities.User;
+import pl.piotrtrybala.engine.auth.session.SessionStorage;
+import pl.piotrtrybala.engine.auth.session.impl.SessionStorageImpl;
 import pl.piotrtrybala.engine.entities.ConnectionManager;
 import pl.piotrtrybala.engine.entities.GroupRepository;
 import pl.piotrtrybala.engine.entities.UserGroupRepository;
@@ -19,12 +21,19 @@ public class AuthManager {
     private GroupRepository groupRepo;
     private UserGroupRepository userGroupRepo;
 
+    private final SessionStorage storage;
+
     private static AuthManager instance;
 
     public AuthManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl(connection);
         this.groupRepo = new GroupRepositoryImpl(connection);
         this.userGroupRepo = new UserGroupRepositoryImpl(connection);
+        this.storage = new SessionStorageImpl();
+    }
+
+    public synchronized SessionStorage getStorage() {
+        return storage;
     }
 
     public static synchronized AuthManager getInstance() {
