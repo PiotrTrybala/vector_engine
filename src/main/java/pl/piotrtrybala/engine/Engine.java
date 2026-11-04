@@ -22,34 +22,27 @@ import java.util.List;
 
 public class Engine {
 
-    private final EngineConfig config;
+    private final ApplicationConfig.EngineConfig config;
     private static final Logger logger = LogManager.getLogger(Engine.class.getName());
 
     private Executor executor;
     private ServerSocket socket;
 
     public Engine() {
-        this.config = EngineConfig.defaultConfig();
+        this.config = new ApplicationConfig.EngineConfig();
         this.init();
     }
 
-    public Engine(String configPath) {
-        this.config = EngineConfig.fromConfig(configPath);
-        this.init();
-    }
-
-    public Engine(EngineConfig config) {
+    public Engine(ApplicationConfig.EngineConfig config) {
         this.config = config;
         this.init();
     }
 
     private void init() {
-
         this.executor = new STExecutor();
-
         try {
-            logger.info("initializing server port {}", this.config.getPort());
-            this.socket = new ServerSocket(this.config.getPort());
+            logger.info("initializing engine on port {}", this.config.port);
+            this.socket = new ServerSocket(this.config.port);
         } catch (IOException e) {
             logger.error("failed to initialize server: {}", e.getMessage());
             throw new RuntimeException(e);
@@ -73,19 +66,19 @@ public class Engine {
     private void handleClient(Socket client) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))) {
-            this.socket.setSoTimeout(this.config.getIdleTimeout());
+            this.socket.setSoTimeout(this.config.idleTimeout);
 
-            char[] buffer = new char[this.config.getQueryBufferMaxSize()];
+            char[] buffer = new char[this.config.maxQueryBufferSize];
 
             while (!client.isClosed()) {
                 Arrays.fill(buffer, (char) 0);
-                int size = reader.read(buffer, 0, this.config.getQueryBufferMaxSize());
+                int size = reader.read(buffer, 0, this.config.maxQueryBufferSize);
                 if (size == -1) {
                     logger.info("client closed the connection");
                     break;
                 }
                 Parser parser = new Parser();
-                List<Query> queries = new ArrayList<>();
+                List<Query> queries;
                 try {
                     queries = parser.parse(buffer);
                     System.out.println(queries);

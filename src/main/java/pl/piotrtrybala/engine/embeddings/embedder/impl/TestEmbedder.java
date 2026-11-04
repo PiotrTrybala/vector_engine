@@ -8,7 +8,10 @@ import java.util.Random;
 public class TestEmbedder implements Embedder {
 
     private final Random rand;
-    private static final int EMBEDDING_SIZE = Application.getInstance().getEngineConfig().getBufferManagerConfig().embeddingSize;
+    private static final int EMBEDDING_SIZE = Application.getInstance()
+            .getConfig()
+            .getEmbedderConfig()
+            .embeddingSize;
 
     public TestEmbedder() {
         this.rand = new Random();

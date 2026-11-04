@@ -7,7 +7,7 @@ public class ApplicationConfig {
     public static final String DEFAULT_PASSWORD = "admin";
 
     // auth
-    private static class AuthConfig {
+    public static class AuthConfig {
         public final String rootPassword;
         public final String username;
         public final String password;
@@ -31,7 +31,7 @@ public class ApplicationConfig {
     public static final int DEFAULT_PROCESSING_WORKER_POOL_SIZE = 10;
 
     // engine parameters
-    private static class EngineConfig {
+    public static class EngineConfig {
         public final int port;
         public final int idleTimeout;
         public final int maxQueryBufferSize;
@@ -56,7 +56,7 @@ public class ApplicationConfig {
     public static final int DEFAULT_MAX_WRITE_BUFFER_SIZE = Short.MAX_VALUE;
 
     // buffer
-    private static class EmbedderConfig {
+    public static class EmbedderConfig {
         public final int embeddingSize;
         public final int maxWriteBufferSize;
 

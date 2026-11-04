@@ -24,7 +24,8 @@ public enum Keyword {
     ORDER("ORDER"),
     BY("BY"),
     SIMILAR("SIMILAR"),
-    FROM("FROM");
+    FROM("FROM"),
+    SHOW("SHOW");
 
     private final String keyword;
 

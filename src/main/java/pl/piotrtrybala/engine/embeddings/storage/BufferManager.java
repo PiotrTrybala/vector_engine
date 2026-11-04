@@ -3,6 +3,7 @@ package pl.piotrtrybala.engine.embeddings.storage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.engine.Application;
+import pl.piotrtrybala.engine.ApplicationConfig;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -37,8 +38,9 @@ public class BufferManager {
 
     private static final String PATH = "./vectors.bin";
 
-    private static final int DATA_SIZE = Integer.BYTES + (Float.BYTES * Application.getInstance().getEngineConfig().getBufferManagerConfig().embeddingSize);
-    private static final int BUFFER_SIZE = Application.getInstance().getEngineConfig().getBufferManagerConfig().maxBufferSize;
+    private static final ApplicationConfig.EmbedderConfig embeddingConfig = Application.getInstance().getConfig().getEmbedderConfig();
+    private static final int DATA_SIZE = Integer.BYTES + (Float.BYTES * embeddingConfig.embeddingSize);
+    private static final int BUFFER_SIZE = embeddingConfig.maxWriteBufferSize;
     private final ByteBuffer writeBuffer;
 
     private BufferManager() {
@@ -74,7 +76,7 @@ public class BufferManager {
                 throw new Exception("inconsistent data: " + id + " != " + vectorId);
             }
 
-            float[] data = new float[Application.getInstance().getEngineConfig().getBufferManagerConfig().embeddingSize];
+            float[] data = new float[embeddingConfig.embeddingSize];
             buffer.asFloatBuffer().get(data);
 
             return new Vector(id, data);

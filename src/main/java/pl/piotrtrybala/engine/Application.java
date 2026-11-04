@@ -9,49 +9,45 @@ import java.sql.SQLException;
 
 public class Application {
 
-    private static Application instance;
+    private static final Logger LOGGER = LogManager.getLogger(Application.class.getName());
 
     private ApplicationConfig config;
 
     private Engine engine;
-    private EngineConfig engineConfig;
 
-    private static final Logger LOGGER = LogManager.getLogger(Application.class.getName());
+    public static Application instance;
+
+    private Application() {}
+
+    public static synchronized void init() {
+        Application.init(null);
+    }
+
+    public static synchronized void init(ApplicationConfig config) {
+        if (config == null) {
+            config = new ApplicationConfig();
+        }
+
+        if (instance == null) {
+            instance = new Application();
+            instance.engine = new Engine(config.getEngineConfig());
+        }
+    }
 
     public static synchronized Application getInstance() {
         if (instance == null) {
-            instance = new Application();
-            instance.engineConfig = new EngineConfig();
-            instance.engine = new Engine(instance.engineConfig);
+            throw new RuntimeException("failed to initialize application");
         }
         return instance;
     }
 
-
-
-    public static synchronized void initialize(EngineConfig config) {
-        LOGGER.info("initializing application...");
-        if (instance == null) {
-            instance = new Application();
-            LOGGER.info("creating application instance...");
-            LOGGER.info("created authentication manager...");
-            if (config == null) {
-                instance.engine = new Engine();
-            } else {
-                instance.engine = new Engine(config);
-            }
-            LOGGER.info("created database engine...");
-
-            // add root user
-        }
+    public ApplicationConfig getConfig() {
+        return config;
     }
 
     public void run() {
-        LOGGER.info("running application");
+        LOGGER.info("running engine...");
         engine.run();
     }
 
-    public EngineConfig getEngineConfig() {
-        return engineConfig;
-    }
 }

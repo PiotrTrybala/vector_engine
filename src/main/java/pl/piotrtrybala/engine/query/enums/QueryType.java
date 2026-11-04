@@ -7,5 +7,6 @@ public enum QueryType {
     INSERT,
     CREATE_COLLECTION,
     UPDATE,
-    USE
+    USE,
+    SHOW
 }

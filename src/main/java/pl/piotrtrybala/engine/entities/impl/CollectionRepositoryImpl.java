@@ -4,6 +4,8 @@ import pl.piotrtrybala.engine.entities.CollectionRepository;
 import pl.piotrtrybala.engine.entities.types.Collection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CollectionRepositoryImpl implements CollectionRepository {
 
@@ -11,6 +13,29 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
     public CollectionRepositoryImpl(Connection connection) {
         this.connection = connection;
+    }
+
+    @Override
+    public List<Collection> list(int userId) throws SQLException {
+
+        String sql = "SELECT * FROM collections WHERE uid = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            List<Collection> collectionList = new ArrayList<>();
+            stmt.setInt(1, userId);
+
+            ResultSet result = stmt.executeQuery();
+            while(result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                Timestamp createdAt = result.getTimestamp("created_at");
+                Timestamp updatedAt = result.getTimestamp("updated_at");
+                collectionList.add(new Collection(id, userId, name, createdAt, updatedAt));
+            }
+            return collectionList;
+        } catch(SQLException e) {
+            throw new SQLException("failed to retrieve collections");
+        }
     }
 
     @Override

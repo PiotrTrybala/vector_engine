@@ -7,14 +7,13 @@ import pl.piotrtrybala.engine.executor.enums.ExecutorErrorType;
 import pl.piotrtrybala.engine.executor.impl.result.AuthResult;
 import pl.piotrtrybala.engine.executor.impl.result.CreateCollectionResult;
 import pl.piotrtrybala.engine.executor.impl.result.HandshakeResult;
+import pl.piotrtrybala.engine.executor.impl.result.UseCollectionResult;
 import pl.piotrtrybala.engine.executor.types.ExecutorError;
 import pl.piotrtrybala.engine.executor.types.ExecutorPayload;
 import pl.piotrtrybala.engine.executor.types.ExecutorResult;
 import pl.piotrtrybala.engine.query.Query;
 import pl.piotrtrybala.engine.query.enums.QueryType;
-import pl.piotrtrybala.engine.query.types.AuthQuery;
-import pl.piotrtrybala.engine.query.types.CreateCollectionQuery;
-import pl.piotrtrybala.engine.query.types.HandshakeQuery;
+import pl.piotrtrybala.engine.query.types.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +24,8 @@ public class STExecutor implements Executor {
             QueryType.HANDSHAKE,
             QueryType.AUTH,
             QueryType.CREATE_COLLECTION,
-            QueryType.USE
+            QueryType.USE,
+            QueryType.SHOW
     ));
     private static final Logger logger = LogManager.getLogger();
 
@@ -55,6 +55,14 @@ public class STExecutor implements Executor {
             return dispatchCreateCollectionQuery((CreateCollectionQuery) query);
         }
 
+        if (query instanceof UseCollectionQuery) {
+            return dispatchUseCollectionQuery((UseCollectionQuery) query);
+        }
+
+        if (query instanceof ShowQuery) {
+
+        }
+
         return null;
     }
 
@@ -68,5 +76,13 @@ public class STExecutor implements Executor {
 
     public ExecutorResult dispatchCreateCollectionQuery(CreateCollectionQuery query) {
         return new CreateCollectionResult(query);
+    }
+
+    public ExecutorResult dispatchUseCollectionQuery(UseCollectionQuery query) {
+        return new UseCollectionResult(query);
+    }
+
+    public ExecutorResult dispatchShowQuery(ShowQuery query) {
+        return new ShowResult(query);
     }
 }

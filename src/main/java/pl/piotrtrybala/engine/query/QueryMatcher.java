@@ -83,4 +83,9 @@ public class QueryMatcher {
         return selectIndex == 0 && tokens.size() >= 4;
     }
 
+    public static boolean isShowQuery(String query) throws Exception {
+        List<String> tokens = QueryMatcher.preprocess(query);
+        return Keyword.is(tokens.getFirst(), Keyword.SHOW) && tokens.size() == 2;
+    }
+
 }

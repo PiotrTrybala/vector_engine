@@ -3,8 +3,11 @@ package pl.piotrtrybala.engine.entities;
 import pl.piotrtrybala.engine.entities.types.Collection;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public interface CollectionRepository {
+
+    List<Collection> list(int userId) throws SQLException;
 
     Collection retrieve(int id) throws SQLException;
 
