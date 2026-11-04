@@ -11,6 +11,8 @@ public class Application {
 
     private static Application instance;
 
+    private ApplicationConfig config;
+
     private Engine engine;
     private EngineConfig engineConfig;
 
@@ -24,6 +26,8 @@ public class Application {
         }
         return instance;
     }
+
+
 
     public static synchronized void initialize(EngineConfig config) {
         LOGGER.info("initializing application...");
