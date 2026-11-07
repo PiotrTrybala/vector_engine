@@ -10,6 +10,7 @@ import pl.piotrtrybala.database.executor.types.ExecutorResult;
 import pl.piotrtrybala.database.query.enums.EntityType;
 import pl.piotrtrybala.database.query.types.ShowQuery;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ShowResult implements ExecutorResult {
@@ -45,8 +46,14 @@ public class ShowResult implements ExecutorResult {
             String result = "User{id=" + user.getId() + ", username=" + user.getUsername() + "}";
             return result.toCharArray();
         }
+        List<Collection> collectionList;
+        try {
+            collectionList = MetadataStorage.getInstance().getCollectionRepository().list(user.getId());
 
-        List<Collection> collectionList = MetadataStorage.getInstance().getCollectionRepository().list(user.getId());
+        } catch (SQLException e) {
+            String message = "Failed to list collections: " + e.getMessage();
+            return message.toCharArray();
+        }
 
         StringBuilder builder = new StringBuilder();
 

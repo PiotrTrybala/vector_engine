@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.enums.ExecutorErrorType;
-import pl.piotrtrybala.database.executor.impl.result.AuthResult;
-import pl.piotrtrybala.database.executor.impl.result.CreateCollectionResult;
-import pl.piotrtrybala.database.executor.impl.result.HandshakeResult;
-import pl.piotrtrybala.database.executor.impl.result.UseCollectionResult;
+import pl.piotrtrybala.database.executor.impl.result.*;
 import pl.piotrtrybala.database.executor.types.ExecutorError;
 import pl.piotrtrybala.database.executor.types.ExecutorPayload;
 import pl.piotrtrybala.database.executor.types.ExecutorResult;
@@ -60,7 +57,7 @@ public class STExecutor implements Executor {
         }
 
         if (query instanceof ShowQuery) {
-
+            return dispatchShowQuery((ShowQuery) query);
         }
 
         return null;
