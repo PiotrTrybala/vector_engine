@@ -14,7 +14,7 @@ public class Entrypoint {
 
     private Engine engine;
 
-    public static Entrypoint instance;
+    private static Entrypoint instance;
 
     private static volatile boolean initialized = false;
 

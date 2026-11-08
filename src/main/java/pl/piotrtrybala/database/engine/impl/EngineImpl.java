@@ -11,6 +11,7 @@ import pl.piotrtrybala.database.executor.types.ExecutorPayload;
 import pl.piotrtrybala.database.executor.types.ExecutorResult;
 import pl.piotrtrybala.database.query.Parser;
 import pl.piotrtrybala.database.query.Query;
+import pl.piotrtrybala.database.query.QueryException;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -54,7 +55,7 @@ public class EngineImpl implements Engine {
         try {
             LOGGER.info("init database on port {}", this.config.port);
             this.serverSocket = new ServerSocket(this.config.port);
-            this.serverSocket.setSoTimeout(this.config.idleTimeout);
+//            this.serverSocket.setSoTimeout(this.config.idleTimeout);
         } catch(IOException e) {
             LOGGER.error("error during database init: {}", e.getMessage());
             throw new EngineException(e.getMessage());
@@ -75,7 +76,7 @@ public class EngineImpl implements Engine {
         }
     }
 
-    public void handleClient(Socket clientSocket) {
+    private void handleClient(Socket clientSocket) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
@@ -95,21 +96,29 @@ public class EngineImpl implements Engine {
                 List<Query> queries;
                 try {
                     queries = parser.parse(buffer);
-                    System.out.println(queries);
                     for (Query query : queries) {
-                        LOGGER.info("starting processing {}", query.getQueryType().toString());
+                        System.out.println(query.toString());
+                    }
+                    LOGGER.info("parsed {} queries", queries.size());
+                    for (Query query : queries) {
+                        LOGGER.info("starting processjing {}", query.getQueryType().toString());
                         ExecutorResult result = executor.process(new ExecutorPayload(query));
                         char[] output = result.getResult();
                         LOGGER.info("executor processed with result: {}", output);
                         writer.write(output);
                         writer.flush();
                     }
-                } catch(Exception e) {
+                } catch(QueryException e) {
+                    LOGGER.error("query - failed to parse query: {}", e.getMessage());
+                    writer.write(e.getMessage());
+                    writer.flush();
+                } catch (Exception e) {
                     LOGGER.error("failed to parse query: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();
                 }
             }
+
 
 
         } catch(IOException e) {

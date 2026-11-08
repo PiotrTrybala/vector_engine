@@ -26,6 +26,7 @@ public class ShowResult implements ExecutorResult {
     public char[] getResult() {
 
         UseTargetType useTargetType = query.getEntityType();
+        System.out.println(useTargetType.getTarget());
 
         Session session = this.sessionStorage.retrieve(null);
         if (session == null) {

@@ -1,7 +1,8 @@
 package pl.piotrtrybala.database.query.types;
 
 import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryMatcher;
+import pl.piotrtrybala.database.query.QueryClassifier;
+import pl.piotrtrybala.database.query.QueryException;
 import pl.piotrtrybala.database.query.QueryUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 import pl.piotrtrybala.database.query.enums.SelectType;
@@ -22,8 +23,8 @@ public class SelectQuery implements Query {
 
     private final int limit;
 
-    public SelectQuery(String query) throws Exception {
-        List<String> tokens = QueryMatcher.preprocess(query);
+    public SelectQuery(String query) throws QueryException {
+        List<String> tokens = QueryUtils.preprocess(query);
 
         this.type = QueryUtils.parseSelectType(tokens);
 

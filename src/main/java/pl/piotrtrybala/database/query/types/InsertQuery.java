@@ -1,8 +1,9 @@
 package pl.piotrtrybala.database.query.types;
 
+import pl.piotrtrybala.database.query.QueryException;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
 import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryMatcher;
+import pl.piotrtrybala.database.query.QueryClassifier;
 import pl.piotrtrybala.database.query.QueryUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
@@ -18,8 +19,8 @@ public class InsertQuery implements Query {
     private final EmbeddingType type;
     private final char[] data;
 
-    public InsertQuery(String query) throws Exception {
-        List<String> parts = QueryMatcher.preprocess(query);
+    public InsertQuery(String query) throws QueryException {
+        List<String> parts = QueryUtils.preprocess(query);
 
         this.collectionName = parts.get(COLLECTION_NAME_INDEX).trim();
         this.type = EmbeddingType.valueOf(parts.get(TYPE_INDEX).trim().toUpperCase());

@@ -19,8 +19,8 @@ public class UpdateQuery implements Query  {
 
     private Expression whereClause;
 
-    public UpdateQuery(String query) throws Exception {
-        List<String> parts = QueryMatcher.preprocess(query);
+    public UpdateQuery(String query) throws QueryException {
+        List<String> parts = QueryUtils.preprocess(query);
 
         this.type = UpdateEntityType.valueOf(parts.get(1).toUpperCase());
 

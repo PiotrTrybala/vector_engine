@@ -21,7 +21,7 @@ public class STExecutor implements Executor {
 
     private static class Handler {
 
-        Class<? extends ExecutorResult> resultType;
+        private final Class<? extends ExecutorResult> resultType;
 
         public Handler(Class<? extends ExecutorResult> result) {
             this.resultType = result;

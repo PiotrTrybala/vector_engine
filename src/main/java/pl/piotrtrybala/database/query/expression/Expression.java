@@ -1,5 +1,6 @@
 package pl.piotrtrybala.database.query.expression;
 
+import pl.piotrtrybala.database.query.QueryException;
 import pl.piotrtrybala.database.query.enums.ConditionType;
 import pl.piotrtrybala.database.query.enums.OperatorType;
 
@@ -18,7 +19,7 @@ public class Expression {
     private OperatorType op;
     private Object value;
 
-    public static Expression parse(List<String> parts) throws Exception {
+    public static Expression parse(List<String> parts) throws ExpressionException {
 
         List<List<String>> split = Expression.split(parts);
 
@@ -32,14 +33,14 @@ public class Expression {
 
             List<String> expr = split.getFirst();
             if (expr.size() != 3) {
-                throw new Exception("invalid expression: " + expr);
+                throw new ExpressionException("invalid expression: " + expr);
             }
 
             expression.key = expr.getFirst().trim();
             expression.op = OperatorType.fromString(expr.get(1));
             expression.value = Expression.parseValue(expr.getLast());
         } else {
-            throw new Exception("invalid expression: not enough tokens");
+            throw new ExpressionException("invalid expression: not enough tokens");
         }
 
         return expression;

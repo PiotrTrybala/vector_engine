@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.query.types;
 
 import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryMatcher;
+import pl.piotrtrybala.database.query.QueryUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class AuthQuery implements Query {
     private final String password;
 
     public AuthQuery(String query) {
-        List<String> parts = QueryMatcher.preprocess(query);
+        List<String> parts = QueryUtils.preprocess(query);
 
         int USERNAME_INDEX = 1;
         this.username = parts.get(USERNAME_INDEX).trim();
@@ -46,3 +46,4 @@ public class AuthQuery implements Query {
         return QueryType.AUTH;
     }
 }
+

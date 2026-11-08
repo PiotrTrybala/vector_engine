@@ -5,6 +5,7 @@ import pl.piotrtrybala.database.query.enums.QueryType;
 
 public class HandshakeQuery implements Query {
 
+
     public HandshakeQuery() {}
 
     @Override
