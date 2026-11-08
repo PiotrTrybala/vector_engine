@@ -28,6 +28,6 @@ public class UseCollectionQuery implements Query {
 
     @Override
     public QueryType getQueryType() {
-        return QueryType.USE;
+        return QueryType.USE_COLLECTION;
     }
 }

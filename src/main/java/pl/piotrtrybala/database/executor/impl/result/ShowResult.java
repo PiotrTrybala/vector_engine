@@ -7,7 +7,7 @@ import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.entities.MetadataStorage;
 import pl.piotrtrybala.database.entities.types.Collection;
 import pl.piotrtrybala.database.executor.types.ExecutorResult;
-import pl.piotrtrybala.database.query.enums.EntityType;
+import pl.piotrtrybala.database.query.enums.UseTargetType;
 import pl.piotrtrybala.database.query.types.ShowQuery;
 
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ public class ShowResult implements ExecutorResult {
     @Override
     public char[] getResult() {
 
-        EntityType entityType = query.getEntityType();
+        UseTargetType useTargetType = query.getEntityType();
 
         Session session = this.sessionStorage.retrieve(null);
         if (session == null) {
@@ -34,7 +34,7 @@ public class ShowResult implements ExecutorResult {
         User user = session.getUser();
         Collection currentCollection = session.getCurrentCollection();
 
-        if (entityType == EntityType.COLLECTION) {
+        if (useTargetType == UseTargetType.COLLECTION) {
             if (currentCollection == null) {
                 return "You must select collection".toCharArray();
             }
@@ -42,7 +42,7 @@ public class ShowResult implements ExecutorResult {
             return currentCollection.toString().toCharArray();
         }
 
-        if (entityType == EntityType.USER) {
+        if (useTargetType == UseTargetType.USER) {
             String result = "User{id=" + user.getId() + ", username=" + user.getUsername() + "}";
             return result.toCharArray();
         }

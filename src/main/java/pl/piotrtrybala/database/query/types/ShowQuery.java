@@ -2,18 +2,18 @@ package pl.piotrtrybala.database.query.types;
 
 import pl.piotrtrybala.database.query.Query;
 import pl.piotrtrybala.database.query.QueryMatcher;
-import pl.piotrtrybala.database.query.enums.EntityType;
+import pl.piotrtrybala.database.query.enums.UseTargetType;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
 
 public class ShowQuery implements Query {
 
-    private EntityType entityType;
+    private UseTargetType useTargetType;
 
     public ShowQuery(String query) {
         List<String> parts = QueryMatcher.preprocess(query);
-        this.entityType = EntityType.valueOf(parts.getLast());
+        this.useTargetType = UseTargetType.valueOf(parts.getLast());
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ShowQuery implements Query {
         return QueryType.SHOW;
     }
 
-    public EntityType getEntityType() {
-        return entityType;
+    public UseTargetType getEntityType() {
+        return useTargetType;
     }
 }

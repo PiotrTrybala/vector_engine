@@ -1,24 +1,24 @@
 package pl.piotrtrybala.database.query.enums;
 
-public enum EntityType {
+public enum UseTargetType {
     COLLECTIONS("COLLECTIONS"), // all user collections
     USER("USER"), // current user
     COLLECTION("COLLECTION"),;// current collection
 
-    private final String type;
+    private final String target;
 
-    EntityType(String type) {
-        this.type = type;
+    UseTargetType(String target) {
+        this.target = target;
     }
 
-    public String getType() {
-        return type;
+    public String getTarget() {
+        return target;
     }
 
     @Override
     public String toString() {
-        return "EntityType{" +
-                "type='" + type + '\'' +
+        return "UseTargetType{" +
+                "target='" + target + '\'' +
                 '}';
     }
 }
