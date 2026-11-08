@@ -90,13 +90,15 @@ public class EngineImpl implements Engine {
                     break;
                 }
 
+                LOGGER.info("received buffer: {}", buffer);
+
                 List<Query> queries;
                 try {
                     queries = parser.parse(buffer);
+                    System.out.println(queries);
                     for (Query query : queries) {
-                        ExecutorResult result = executor.process(
-                                new ExecutorPayload(query)
-                        );
+                        LOGGER.info("starting processing {}", query.getQueryType().toString());
+                        ExecutorResult result = executor.process(new ExecutorPayload(query));
                         char[] output = result.getResult();
                         LOGGER.info("executor processed with result: {}", output);
                         writer.write(output);

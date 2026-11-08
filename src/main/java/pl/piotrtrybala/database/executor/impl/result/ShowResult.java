@@ -39,7 +39,7 @@ public class ShowResult implements ExecutorResult {
                 return "You must select collection".toCharArray();
             }
 
-            return currentCollection.toString().toCharArray();
+            return currentCollection.getName().toCharArray();
         }
 
         if (useTargetType == UseTargetType.USER) {

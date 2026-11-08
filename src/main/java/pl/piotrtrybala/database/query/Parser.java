@@ -57,6 +57,10 @@ public class Parser {
             if(QueryMatcher.isShowQuery(query)) {
                 queries.add(new ShowQuery(query));
             }
+
+            if (QueryMatcher.isUseQuery(query)) {
+                queries.add(new UseCollectionQuery(query));
+            }
         }
 
         return queries;

@@ -88,4 +88,9 @@ public class QueryMatcher {
         return Keyword.is(tokens.getFirst(), Keyword.SHOW) && tokens.size() == 2;
     }
 
+    public static boolean isUseQuery(String query) throws Exception {
+        List<String> tokens = QueryMatcher.preprocess(query);
+        return Keyword.is(tokens.getFirst(), Keyword.USE) && tokens.size() == 2;
+    }
+
 }
