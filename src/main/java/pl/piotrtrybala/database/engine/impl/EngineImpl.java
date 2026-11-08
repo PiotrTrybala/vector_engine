@@ -101,10 +101,10 @@ public class EngineImpl implements Engine {
                     }
                     LOGGER.info("parsed {} queries", queries.size());
                     for (Query query : queries) {
-                        LOGGER.info("starting processjing {}", query.getQueryType().toString());
+                        LOGGER.info("starting processing {}", query.getQueryType().toString());
                         ExecutorResult result = executor.process(new ExecutorPayload(query));
                         char[] output = result.getResult();
-                        LOGGER.info("executor processed with result: {}", output);
+                        LOGGER.info("executor processed with result");
                         writer.write(output);
                         writer.flush();
                     }
@@ -118,13 +118,15 @@ public class EngineImpl implements Engine {
                     writer.flush();
                 }
             }
-
-
-
         } catch(IOException e) {
             LOGGER.error("failed to receive data from client: {}", e.getMessage());
         } finally {
             try {
+                if (!clientSocket.isClosed()) {
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+                    writer.write("CLOSE");
+                    writer.flush();
+                }
                 clientSocket.close();
                 LOGGER.info("client disconnected");
             } catch(IOException e) {
