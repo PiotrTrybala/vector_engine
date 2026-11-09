@@ -4,10 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
 import pl.piotrtrybala.database.entities.EmbeddingRepository;
+import pl.piotrtrybala.database.entities.MetadataUtils;
 import pl.piotrtrybala.database.entities.RepositoryException;
 import pl.piotrtrybala.database.entities.types.Collection;
 import pl.piotrtrybala.database.entities.types.Embedding;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
@@ -39,20 +41,24 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     @Override
     public Embedding create(int collectionId, char[] data, HashMap<String, Object> metadata) throws RepositoryException {
 
-        String sql = "INSERT INTO collections(cid, content, content_hash, metadata) VALUES (?, ?, ?, ?) RETURNING id, created_at, updated_at;";
+        String sql = "INSERT INTO collections(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
 
         try {
             connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            String contentHash = EmbeddingUtils.hash(data);
+            byte[] bytes = EmbeddingUtils.toBytes(data);
 
+            String contentHash = EmbeddingUtils.hash(bytes);
+            byte[] parsedMetadata = MetadataUtils.save(metadata);
+            String metadataHash = EmbeddingUtils.hash(parsedMetadata);
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, collectionId);
-                stmt.setBytes(2, EmbeddingUtils.toBytes(data));
+                stmt.setBytes(2, bytes);
                 stmt.setString(3, contentHash);
-                stmt.setString(4, metadata);
+                stmt.setBytes(4, parsedMetadata);
+                stmt.setString(5, metadataHash);
 
                 try (ResultSet inserted = stmt.executeQuery()) {
                     if (inserted.next()) {
@@ -61,7 +67,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
                         Timestamp updatedAt = inserted.getTimestamp("updated_at");
 
                         connection.commit();
-                        return new Collection(id, collectionId, data, contentHash, metadata, metadataHash, createdAt, updatedAt);
+                        return new Embedding(id, collectionId, bytes, contentHash, metadata, metadataHash, createdAt, updatedAt);
                     } else {
                         connection.rollback();
                         throw new RepositoryException("failed to create embedding: no row returned");

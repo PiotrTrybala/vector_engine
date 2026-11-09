@@ -7,14 +7,14 @@ public class Embedding {
 
     private int id = -1;
     private int collectionId;
-    private String content;
+    private byte[] content;
     private String contentHash;
     private HashMap<String, Object> metadata;
     private String metadataHash;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    public Embedding(int id, int collectionId, String content, String contentHash, HashMap<String, Object> metadata, String metadataHash, Timestamp createdAt, Timestamp updatedAt) {
+    public Embedding(int id, int collectionId, byte[] content, String contentHash, HashMap<String, Object> metadata, String metadataHash, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.collectionId = collectionId;
         this.content = content;

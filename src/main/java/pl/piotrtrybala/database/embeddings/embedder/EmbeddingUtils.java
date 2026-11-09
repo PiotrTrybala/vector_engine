@@ -17,11 +17,10 @@ public class EmbeddingUtils {
         return bytes;
     }
 
-    public static String hash(char[] data) {
+    public static String hash(byte[] data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-
-            byte[] hashBytes = digest.digest(EmbeddingUtils.toBytes(data));
+            byte[] hashBytes = digest.digest(data);
 
             StringBuilder hexString = new StringBuilder();
 
