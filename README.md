@@ -1,47 +1,124 @@
-# vector_engine
+# vector_engine - CHONKER
+
+## Query language
+
+These are queries that Chonker supports:
+- HANDSHAKE [x]
+- AUTH [x]
+- PASSWORD [_]
+- CREATE COLLECTION [x]
+- USE COLLECTION [x]
+- SHOW [x]
+- INSERT [x]
+- UPDATE [x]
+- DELETE [_]
+
+### Queries documentation
+
+#### HANDSHAKE <i>(implemented)</i>
+Used for testing connection to database
+
+        HANDSHAKE;
+
+#### AUTH <i>(implemented)</i>
+Used for authenticating with database using credentials
+
+        AUTH <username> <password>;
+
+Parameters:
+- username: username associated with user account
+- password: password associated with user account
+
+Result:
+- <b>OK</b>: User is successfully authenticated
+- <b>InvalidPassword</b>: user password is invalid
+- <b>NoUserFound</b>: user with given credentials is not found
+
+#### Password <i><b>(not implemented)</i></b>
+Used for changing user's password
+
+        PASSWORD <new_password>;
+
+Parameters:
+- new_password: New password for <u>currently signed in</u> user
+
+Result:
+- <b>OK</b>: password successfully changed
+- <b>InvalidPassword</b>: invalid password was provided
 
 Queries
-        Parser parser = new Parser();
 
-//        String source = "HANDSHAKE;" +
-//                "AUTH username password;" +
-//                "CREATE COLLECTION test;"+
-//                "USE COLLECTION test;" +
-//                "INSERT INTO test TYPE text BEGIN `this is sample text for testing embedding` END;" +
-//                "UPDATE embedding VALUE BEGIN `this is new value for embedding` END WHERE vector = [0.3, 0.4, 0.5] OR id = 1;" +
-//                "UPDATE metadata VALUE [key:12 as int,key2:\"value2\" as text, key3:0.0 as double, key4:true as boolean] WHERE vector = [0.3, 0.4, 0.5] OR id = 1;" +
-//                "SELECT METADATA [key, key2] FROM test WHERE vector=[0.3, 0.4, 0.5] OR id = 1 LIMIT 3;" + // select metadata from similar texts
-//                "SELECT TEXT FROM test WHERE vector = [0.3, 0.4, 0.5] OR id = 1 LIMIT 3;"; // select similar text
-//
-//        List<Query> queries = null;
-//        try {
-//            queries = parser.parse(source.toCharArray());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//
+#### Create Collection <i>(implemented)</i>
+Used for creating new collection
 
-//        Engine engine = Engine.getInstance();
-//        engine.run();
+Required permission: <u>collection.create</u>
 
-//        String url = "jdbc:sqlite:metadata.db";
-//        String schemaPath = "/metadata.sql";
-//
-//        String schema;
-//        try (InputStream inputStream = Main.class.getResourceAsStream(schemaPath)) {
-//            assert inputStream != null;
-//            schema = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-//        } catch(IOException e) {
-//            e.printStackTrace();
-//            return;
-//        }
-//
-//
-//        try (Connection conn = DriverManager.getConnection(url); Statement stmt = conn.createStatement()) {
-//            stmt.executeUpdate(schema);
-//        } catch(SQLException e) {
-//            e.printStackTrace();
-//        }
+        CREATE COLLECTION <name>;
+
+Parameters:
+- name: collection name to be created
+
+Result:
+- <b>OK</b>: collection is created
+- <b>CollectionExists</b>: collection with this name already exists
+
+#### Use Collection <i>(implemented)</i>
+Selects collection to work with
+
+Required permissions: <u>collection.use</u>
+
+        USE COLLECTION <name>;
+
+Parameters:
+- <b>OK</b>: collection is now used for operations
+- <b>NoCollectionFound</b>: collection with this name was not found
+- <b>Unauthorized</b>: user does not have required permissions to perform this operation 
+
+#### Show <i>(implemented)</i>
+Shows different entities in database
+
+Required permissions: <u>database.show</u>
+
+        SHOW <COLLECTIONS | COLLECTION | USER | EMBEDDINGS>;
+
+Parameters:
+- target: target of show command, which are as follows:
+  - <i>COLLECTIONS</i>: show all collections created by current user
+  - <i>COLLECTION</i>: show currently chosen collection (selected by <b>USE</b> command)
+  - <i>USER</i>: show currently signed in user
+  - <i>EMBEDDINGS</i>: show all embeddings from current collection (selected by <b>USE</b> command)
+
+Result:
+- <b>OK</b>: shows data related to target
+- <b>NoCollectionSelected</b>: in target <i>COLLECTION</i> when there is no collection selected
+- <b>UserNotAuthenticated</b>: in target <i>USER</i> when user is not authenticated
+
+#### Insert <i>(implemented)</i>
+Inserts new data into collection
+
+Required permissions: <u>collection.insert</u>
+
+        INSERT INTO <collection_name> TYPE <content_type> BEGIN `<content>` END;
+
+Parameters:
+- collection_name: name of collection for data to be inserted in
+- content_type: what type content is inserted. Supported:
+  - <b>TEXT</b>: text content
+- content: actual content passed to query
+
+Result:
+- <b>OK</b>: data was inserted
+- <b>InsertError</b>: there was a problem with inserting new data
+
+
+
+        UPDATE <METADATA | EMBEDDING> VALUE <BEGIN `<content>` END | [key:value as int,key:value as string, key:value as double, key:value as boolean] WHERE <expression | vector=<embedding> OR id = <value> >;
+
+
+
+
+        SELECT <METADATA [key, ...] | TEXT> FROM <collection_name> WHERE vector=<embedding> OR id = [values] LIMIT <value>;
+
 //        Connection connection = ConnectionManager.getConnection();
 //
 //        AuthManager manager = new AuthManager(connection);
