@@ -13,7 +13,7 @@ public interface EmbeddingRepository {
 
     Embedding retrieve(int collectionId, String name) throws RepositoryException;
 
-    Embedding create(int collectionId, char[] data, HashMap<String, Object> metadata) throws RepositoryException;
+    Embedding create(int collectionId, byte[] data, HashMap<String, Object> metadata) throws RepositoryException;
 
     Embedding save(Embedding embedding) throws RepositoryException;
 

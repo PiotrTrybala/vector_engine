@@ -41,11 +41,11 @@ public class Embedding {
         this.collectionId = collectionId;
     }
 
-    public String getContent() {
+    public byte[] getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 
