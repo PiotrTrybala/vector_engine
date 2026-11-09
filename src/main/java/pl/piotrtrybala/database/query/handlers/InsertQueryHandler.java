@@ -10,7 +10,7 @@ import pl.piotrtrybala.database.query.types.SelectQuery;
 public class InsertQueryHandler implements QueryHandler {
     @Override
     public boolean canParse(String query) throws QueryException {
-        return QueryClassifier.isSelectQuery(query);
+        return QueryClassifier.isInsertQuery(query);
     }
 
     @Override

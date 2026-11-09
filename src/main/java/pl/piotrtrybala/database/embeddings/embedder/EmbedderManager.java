@@ -1,5 +1,7 @@
 package pl.piotrtrybala.database.embeddings.embedder;
 
+import pl.piotrtrybala.database.Entrypoint;
+import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.embeddings.embedder.impl.TestEmbedder;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
 
@@ -12,14 +14,23 @@ public class EmbedderManager {
 
     private static EmbedderManager instance;
 
-    private EmbedderManager() {
+    private EmbedderManager(EntrypointConfig.EmbedderConfig config) {
         this.embedders = new HashMap<>();
-        this.embedders.put(EmbeddingType.TEXT, new TestEmbedder());
+        this.embedders.put(EmbeddingType.TEXT, new TestEmbedder(
+                config.embeddingSize,
+                ));
+    }
+
+    public static synchronized void initialize(EntrypointConfig.EmbedderConfig config) {
+        if (instance != null) {
+            throw new IllegalStateException("EmbedderManager is already initialized");
+        }
+        instance = new EmbedderManager(config);
     }
 
     public static synchronized EmbedderManager getInstance() {
         if (instance == null) {
-            instance = new EmbedderManager();
+            throw new IllegalStateException("manager should be initialized");
         }
         return instance;
     }

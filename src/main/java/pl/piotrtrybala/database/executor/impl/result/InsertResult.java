@@ -78,7 +78,7 @@ public class InsertResult implements ExecutorResult {
             return "Failed to insert new embedding".toCharArray();
         }
 
-        String message = "New embedding added, Id = ";
+        String message = "New embedding added, id = " + embedding.getId();
         return message.toCharArray();
     }
 }

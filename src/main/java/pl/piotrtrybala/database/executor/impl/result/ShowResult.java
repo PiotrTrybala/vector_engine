@@ -59,6 +59,7 @@ public class ShowResult implements ExecutorResult {
             try {
                 embeddingList = MetadataStorage.getInstance().getEmbeddingRepository().list(currentCollection.getId());
             } catch (RepositoryException e) {
+                System.out.println(e.getMessage());
                 return "Failed to list embeddings".toCharArray();
             }
 

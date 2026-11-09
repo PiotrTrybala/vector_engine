@@ -56,6 +56,7 @@ public class STExecutor implements Executor {
         this.queryHandlers.put(QueryType.CREATE_COLLECTION, new Handler(CreateCollectionResult.class));
         this.queryHandlers.put(QueryType.USE_COLLECTION, new Handler(UseCollectionResult.class));
         this.queryHandlers.put(QueryType.SHOW, new Handler(ShowResult.class));
+        this.queryHandlers.put(QueryType.INSERT, new Handler(InsertResult.class));
     }
 
     @Override

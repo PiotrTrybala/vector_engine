@@ -27,7 +27,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     @Override
     public List<Embedding> list(int collectionId) throws RepositoryException {
 
-        String sql = "SELECT * FROM collections WHERE id = ?";
+        String sql = "SELECT * FROM embeddings WHERE cid = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             List<Embedding> embeddings = new ArrayList<>();
@@ -106,7 +106,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
             }
 
         } catch(SQLException e) {
-            throw new RepositoryException("failed to retrieve embedding with id: " + id);
+            throw new RepositoryException("failed to retrieve embedding with cid: " + collectionId);
         }
     }
 

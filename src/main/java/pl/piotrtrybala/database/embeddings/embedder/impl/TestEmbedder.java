@@ -8,23 +8,17 @@ import java.util.Random;
 public class TestEmbedder implements Embedder {
 
     private final Random rand;
-    private static final int EMBEDDING_SIZE = Entrypoint.getInstance()
-            .getConfig()
-            .getEmbedderConfig()
-            .embeddingSize;
+    private final int embeddingDimensions;
 
-    public TestEmbedder() {
-        this.rand = new Random();
-    }
-
-    public TestEmbedder(int seed) {
-        this.rand = new Random(seed);
+    public TestEmbedder(int embeddingsDimension) {
+        this.rand = new Random(123);
+        this.embeddingDimensions = embeddingsDimension;
     }
 
     @Override
     public float[] create(byte[] data) {
-        float[] embedding = new float[EMBEDDING_SIZE];
-        for (int i = 0; i < EMBEDDING_SIZE; i++) {
+        float[] embedding = new float[embeddingDimensions];
+        for (int i = 0; i < embeddingDimensions; i++) {
             embedding[i] = (2 * rand.nextFloat()) - 1; // -1 to 1
         }
         return embedding;
