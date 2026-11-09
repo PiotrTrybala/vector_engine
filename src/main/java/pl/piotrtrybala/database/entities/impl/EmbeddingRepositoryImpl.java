@@ -113,15 +113,18 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     @Override
     public Embedding create(int collectionId, byte[] data, HashMap<String, Object> metadata) throws RepositoryException {
 
-        String sql = "INSERT INTO collections(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
+        String sql = "INSERT INTO embeddings(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
 
         try {
             connection.getAutoCommit();
             connection.setAutoCommit(false);
 
+            int id;
             String contentHash = EmbeddingUtils.hash(data);
             byte[] parsedMetadata = MetadataUtils.save(metadata);
             String metadataHash = EmbeddingUtils.hash(parsedMetadata);
+            Timestamp createdAt;
+            Timestamp updatedAt;
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, collectionId);
@@ -132,19 +135,20 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
 
                 try (ResultSet inserted = stmt.executeQuery()) {
                     if (inserted.next()) {
-                        int id = inserted.getInt("id");
-                        Timestamp createdAt = inserted.getTimestamp("created_at");
-                        Timestamp updatedAt = inserted.getTimestamp("updated_at");
-
-                        connection.commit();
-                        return new Embedding(id, collectionId, data, contentHash, metadata, metadataHash, createdAt, updatedAt);
+                        id = inserted.getInt("id");
+                        createdAt = inserted.getTimestamp("created_at");
+                        updatedAt = inserted.getTimestamp("updated_at");
                     } else {
                         connection.rollback();
                         throw new RepositoryException("failed to create embedding: no row returned");
                     }
                 }
             }
+
+            connection.commit();
+            return new Embedding(id, collectionId, data, contentHash, metadata, metadataHash, createdAt, updatedAt);
         } catch (SQLException e) {
+            LOGGER.error("failed to commit transaction: {}", e.getMessage());
             try {
                 connection.rollback();
             } catch (SQLException ex) {
@@ -154,7 +158,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
             try {
                 connection.setAutoCommit(true);
             } catch (SQLException e) {
-                LOGGER.error("failed to execute auto commit: {}", e.getMessage());
+                LOGGER.error("failed to insert embedding: {}", e.getMessage());
             }
         }
 

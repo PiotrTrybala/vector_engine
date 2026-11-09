@@ -1,15 +1,15 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.AuthManager;
 import pl.piotrtrybala.database.auth.entities.User;
 import pl.piotrtrybala.database.auth.session.Session;
-import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.embeddings.embedder.Embedder;
 import pl.piotrtrybala.database.embeddings.embedder.EmbedderException;
-import pl.piotrtrybala.database.embeddings.embedder.EmbedderManager;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
 import pl.piotrtrybala.database.entities.MetadataStorage;
-import pl.piotrtrybala.database.entities.MetadataUtils;
 import pl.piotrtrybala.database.entities.RepositoryException;
 import pl.piotrtrybala.database.entities.types.Collection;
 import pl.piotrtrybala.database.entities.types.Embedding;
@@ -17,14 +17,12 @@ import pl.piotrtrybala.database.executor.types.ExecutorResult;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
 import pl.piotrtrybala.database.query.types.InsertQuery;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class InsertResult implements ExecutorResult {
+
+    private static final Logger LOGGER = LogManager.getLogger(InsertResult.class.getName());
 
     private final InsertQuery query;
 
@@ -41,7 +39,7 @@ public class InsertResult implements ExecutorResult {
 
         Embedder embedder = null;
         try {
-            embedder = EmbedderManager.getInstance().getEmbedder(embeddingType);
+            embedder = EmbeddingManager.getInstance().getEmbedder(embeddingType);
         } catch (EmbedderException e) {
             String message = "This data type is not supported: " + embeddingType.getType();
             return message.toCharArray();
@@ -67,14 +65,14 @@ public class InsertResult implements ExecutorResult {
         Embedding embedding = null;
         try {
             float[] vector = embedder.create(data);
-
             embedding = MetadataStorage.getInstance().getEmbeddingRepository().create(
                 selectedCollection.getId(),
                     data,
                     new HashMap<>()
             );
-
+            EmbeddingManager.getInstance().getIndex().add(embedding.getId(), vector);
         } catch (RepositoryException e) {
+            LOGGER.error("could not add embedding: {}", e.getMessage());
             return "Failed to insert new embedding".toCharArray();
         }
 

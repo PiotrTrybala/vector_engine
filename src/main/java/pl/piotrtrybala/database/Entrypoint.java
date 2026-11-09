@@ -2,7 +2,7 @@ package pl.piotrtrybala.database;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.embeddings.embedder.EmbedderManager;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.engine.impl.EngineImpl;
@@ -26,7 +26,9 @@ public class Entrypoint {
         Entrypoint.init(null);
         Entrypoint.initialized = true;
 
-        EmbedderManager.initialize(this.config.getEmbedderConfig());
+        EntrypointConfig config = Entrypoint.getInstance().getConfig();
+
+        EmbeddingManager.initialize(config.getEmbedderConfig());
     }
 
     public static synchronized void init(EntrypointConfig config) {
@@ -36,6 +38,7 @@ public class Entrypoint {
 
         if (instance == null) {
             instance = new Entrypoint();
+            instance.config = config;
             instance.engine = new EngineImpl(config.getEngineConfig());
         }
     }

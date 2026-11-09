@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.embeddings.storage;
+package pl.piotrtrybala.database.embeddings;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

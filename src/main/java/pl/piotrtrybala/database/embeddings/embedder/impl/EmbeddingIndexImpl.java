@@ -1,12 +1,10 @@
-package pl.piotrtrybala.database.embeddings.storage.impl;
+package pl.piotrtrybala.database.embeddings.embedder.impl;
 
-import com.github.jelmerk.hnswlib.core.DistanceFunction;
 import com.github.jelmerk.hnswlib.core.DistanceFunctions;
 import com.github.jelmerk.hnswlib.core.Item;
 import com.github.jelmerk.hnswlib.core.hnsw.HnswIndex;
-import jdk.jshell.spi.ExecutionControl;
 import pl.piotrtrybala.database.Entrypoint;
-import pl.piotrtrybala.database.embeddings.storage.EmbeddingIndex;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingIndex;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,14 +14,15 @@ import java.util.stream.Collectors;
 
 public class EmbeddingIndexImpl implements EmbeddingIndex {
 
-    private static final int EMBEDDING_DIMENSIONS = Entrypoint.getInstance().getConfig().getEmbedderConfig().embeddingSize;
 
     static class FloatVectorItem implements Item<Integer, float[]> {
         private final int id;
+        private final int dimensions;
         private final float[] vector;
 
-        public FloatVectorItem(int id, float[] vector) {
+        public FloatVectorItem(int id, int dimensions, float[] vector) {
             this.id = id;
+            this.dimensions = dimensions;
             this.vector = vector;
         }
 
@@ -39,13 +38,15 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
 
         @Override
         public int dimensions() {
-            return EMBEDDING_DIMENSIONS;
+            return dimensions;
         }
     }
 
     private final HnswIndex<Integer, float[], FloatVectorItem, Float> index;
+    private final int dimensions;
 
     public EmbeddingIndexImpl(int maxElements, int dimensions, int m, int efConstruction) {
+        this.dimensions = dimensions;
         this.index = HnswIndex.newBuilder(dimensions, DistanceFunctions.FLOAT_COSINE_DISTANCE, maxElements)
                 .withM(m)
                 .withEfConstruction(efConstruction)
@@ -54,7 +55,7 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
 
     @Override
     public void add(int id, float[] vector) {
-        FloatVectorItem item = new FloatVectorItem(id, vector);
+        FloatVectorItem item = new FloatVectorItem(id, dimensions, vector);
         index.add(item);
     }
 

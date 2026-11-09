@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.embeddings.storage;
+package pl.piotrtrybala.database.embeddings.embedder;
 
 import java.io.IOException;
 

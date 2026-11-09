@@ -109,11 +109,11 @@ public class EngineImpl implements Engine {
                         writer.flush();
                     }
                 } catch(QueryException e) {
-                    LOGGER.error("query - failed to parse query: {}", e.getMessage());
+                    LOGGER.error("failed to parse query: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();
                 } catch (Exception e) {
-                    LOGGER.error("failed to parse query: {}", e.getMessage());
+                    LOGGER.error("failed to execute query: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();
                 }
