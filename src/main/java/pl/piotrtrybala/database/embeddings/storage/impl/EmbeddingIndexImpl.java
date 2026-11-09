@@ -76,6 +76,7 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
 
     @Override
     public void save(String path) throws IOException {
+        index.save(Path.of(path));
         System.out.println("not implemented");
     }
 

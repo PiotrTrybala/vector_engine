@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS embeddings
 (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     cid           INTEGER   NOT NULL REFERENCES collections (id) ON DELETE CASCADE,
-    content       TEXT      NOT NULL,
+    content       BLOB      NOT NULL,
     content_hash  TEXT      NOT NULL,
     metadata      BLOB,
     metadata_hash TEXT      NOT NULL,

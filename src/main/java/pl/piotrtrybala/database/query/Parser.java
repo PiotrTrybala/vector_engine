@@ -52,11 +52,9 @@ public class Parser {
         }
 
         for (String query : rawQueries) {
-            System.out.println("query: " + query);
             boolean matched = false;
             for (QueryHandler handler : this.handlers) {
                 if (handler.canParse(query)) {
-                    System.out.println("handler = " + handler.getClass().getName());
                     queries.add(handler.parse(query));
                     matched = true;
                     break;
@@ -65,31 +63,6 @@ public class Parser {
             if (!matched) {
                 throw new QueryException("unknown query: " + query);
             }
-
-//            if (QueryClassifier.isHandshakeQuery(query)) {
-//                queries.add(new HandshakeQuery());
-//            }
-//            if (QueryClassifier.isAuthQuery(query)) {
-//                queries.add(new AuthQuery(query));
-//            }
-//            if (QueryClassifier.isCreateCollectionQuery(query)) {
-//                queries.add(new CreateCollectionQuery(query));
-//            }
-//            if (QueryClassifier.isInsertQuery(query)) {
-//                queries.add(new InsertQuery(query));
-//            }
-//            if (QueryClassifier.isUpdateQuery(query)) {
-//                queries.add(new UpdateQuery(query));
-//            }
-//            if (QueryClassifier.isSelectQuery(query)) {
-//                queries.add(new SelectQuery(query));
-//            }
-//            if (QueryClassifier.isShowQuery(query)) {
-//                queries.add(new ShowQuery(query));
-//            }
-//            if (QueryClassifier.isUseQuery(query)) {
-//                queries.add(new UseCollectionQuery(query));
-//            }
         }
 
         return queries;
