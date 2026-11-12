@@ -1,7 +1,7 @@
-package pl.piotrtrybala.database.entities.impl;
+package pl.piotrtrybala.database.storage.impl;
 
-import pl.piotrtrybala.database.entities.CollectionRepository;
-import pl.piotrtrybala.database.entities.types.Collection;
+import pl.piotrtrybala.database.storage.repositories.CollectionRepository;
+import pl.piotrtrybala.database.storage.types.Collection;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,26 +1,26 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
-import pl.piotrtrybala.database.auth.AuthManager;
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
-import pl.piotrtrybala.database.entities.MetadataStorage;
-import pl.piotrtrybala.database.entities.RepositoryException;
-import pl.piotrtrybala.database.entities.types.Collection;
-import pl.piotrtrybala.database.entities.types.Embedding;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.storage.MetadataStorage;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.types.Collection;
+import pl.piotrtrybala.database.storage.types.Embedding;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.enums.UseTargetType;
 import pl.piotrtrybala.database.query.types.ShowQuery;
 
 import java.sql.SQLException;
 import java.util.List;
 
-public class ShowResult implements ExecutorResult {
+public class ShowResult implements Result {
     private final SessionStorage sessionStorage;
     private final ShowQuery query;
 
     public ShowResult(ShowQuery query) {
-        this.sessionStorage = AuthManager.getInstance().getStorage();
+        this.sessionStorage = AuthenticationManager.getInstance().getStorage();
         this.query = query;
     }
 

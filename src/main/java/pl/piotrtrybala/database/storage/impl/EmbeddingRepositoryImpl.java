@@ -1,15 +1,13 @@
-package pl.piotrtrybala.database.entities.impl;
+package pl.piotrtrybala.database.storage.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
-import pl.piotrtrybala.database.entities.EmbeddingRepository;
-import pl.piotrtrybala.database.entities.MetadataUtils;
-import pl.piotrtrybala.database.entities.RepositoryException;
-import pl.piotrtrybala.database.entities.types.Collection;
-import pl.piotrtrybala.database.entities.types.Embedding;
+import pl.piotrtrybala.database.storage.repositories.EmbeddingRepository;
+import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.types.Embedding;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;

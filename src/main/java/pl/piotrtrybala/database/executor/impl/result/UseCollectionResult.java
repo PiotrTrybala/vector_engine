@@ -1,24 +1,23 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
-import pl.piotrtrybala.database.Entrypoint;
-import pl.piotrtrybala.database.auth.AuthManager;
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
-import pl.piotrtrybala.database.entities.MetadataStorage;
-import pl.piotrtrybala.database.entities.types.Collection;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.storage.MetadataStorage;
+import pl.piotrtrybala.database.storage.types.Collection;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.types.UseCollectionQuery;
 
 import java.sql.SQLException;
 
-public class UseCollectionResult implements ExecutorResult {
+public class UseCollectionResult implements Result {
 
     private final SessionStorage sessionStorage;
     private final UseCollectionQuery query;
 
     public UseCollectionResult(UseCollectionQuery query) {
-        this.sessionStorage = AuthManager.getInstance().getStorage();
+        this.sessionStorage = AuthenticationManager.getInstance().getStorage();
         this.query = query;
     }
 

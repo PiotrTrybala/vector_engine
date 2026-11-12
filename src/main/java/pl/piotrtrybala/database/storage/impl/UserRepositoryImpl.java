@@ -1,8 +1,8 @@
-package pl.piotrtrybala.database.entities.impl;
+package pl.piotrtrybala.database.storage.impl;
 
-import pl.piotrtrybala.database.auth.Permissions;
-import pl.piotrtrybala.database.auth.entities.User;
-import pl.piotrtrybala.database.entities.UserRepository;
+import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.types.User;
+import pl.piotrtrybala.database.storage.repositories.UserRepository;
 
 import java.sql.*;
 

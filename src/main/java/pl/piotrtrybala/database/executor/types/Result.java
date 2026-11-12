@@ -1,5 +1,5 @@
 package pl.piotrtrybala.database.executor.types;
 
-public interface ExecutorResult {
+public interface Result {
     char[] getResult();
 }

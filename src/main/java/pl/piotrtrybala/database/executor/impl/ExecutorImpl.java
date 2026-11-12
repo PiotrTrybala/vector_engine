@@ -5,29 +5,27 @@ import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.enums.ExecutorErrorType;
 import pl.piotrtrybala.database.executor.impl.result.*;
-import pl.piotrtrybala.database.executor.types.ExecutorError;
-import pl.piotrtrybala.database.executor.types.ExecutorPayload;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.executor.types.Error;
+import pl.piotrtrybala.database.executor.types.Payload;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.Query;
 import pl.piotrtrybala.database.query.enums.QueryType;
-import pl.piotrtrybala.database.query.types.*;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class STExecutor implements Executor {
+public class ExecutorImpl implements Executor {
 
     private static class Handler {
 
-        private final Class<? extends ExecutorResult> resultType;
+        private final Class<? extends Result> resultType;
 
-        public Handler(Class<? extends ExecutorResult> result) {
+        public Handler(Class<? extends Result> result) {
             this.resultType = result;
         }
 
-        public ExecutorResult dispatch(Query query) {
+        public Result dispatch(Query query) {
             try {
                 return resultType.getConstructor(query.getClass()).newInstance(query);
             } catch(InvocationTargetException e) {
@@ -35,20 +33,20 @@ public class STExecutor implements Executor {
                 if (cause instanceof RuntimeException) {
                     throw (RuntimeException) cause;
                 }
-                return new ExecutorError(ExecutorErrorType.INVALID_RESULT_TYPE);
+                return new Error(ExecutorErrorType.INVALID_RESULT_TYPE);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException e) {
                 LOGGER.error("error with dispatching {}: {}", query.getQueryType().toString(), e.getMessage());
-                return new ExecutorError(ExecutorErrorType.INVALID_RESULT_TYPE);
+                return new Error(ExecutorErrorType.INVALID_RESULT_TYPE);
             }
         }
 
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(STExecutor.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(ExecutorImpl.class.getName());
 
     private final Map<QueryType, Handler> queryHandlers;
 
-    public STExecutor() {
+    public ExecutorImpl() {
         this.queryHandlers = new HashMap<>();
 
         this.queryHandlers.put(QueryType.HANDSHAKE, new Handler(HandshakeResult.class));
@@ -60,7 +58,7 @@ public class STExecutor implements Executor {
     }
 
     @Override
-    public ExecutorResult process(ExecutorPayload payload) {
+    public Result process(Payload payload) {
         LOGGER.info("processing query...");
         Query query = payload.getQuery();
 

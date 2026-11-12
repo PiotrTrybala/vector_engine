@@ -2,22 +2,22 @@ package pl.piotrtrybala.database.executor.impl.result;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.auth.AuthManager;
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.types.AuthQuery;
 
-public class AuthResult implements ExecutorResult {
+public class AuthResult implements Result {
 
     private static final Logger LOGGER = LogManager.getLogger(AuthResult.class.getName());
 
     private final AuthQuery query;
-    private final AuthManager instance;
+    private final AuthenticationManager instance;
 
     public AuthResult(AuthQuery query) {
         this.query = query;
-        this.instance = AuthManager.getInstance();
+        this.instance = AuthenticationManager.getInstance();
     }
 
     @Override

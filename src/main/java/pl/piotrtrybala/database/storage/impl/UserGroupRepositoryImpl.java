@@ -1,7 +1,7 @@
-package pl.piotrtrybala.database.entities.impl;
+package pl.piotrtrybala.database.storage.impl;
 
-import pl.piotrtrybala.database.auth.entities.User;
-import pl.piotrtrybala.database.entities.UserGroupRepository;
+import pl.piotrtrybala.database.storage.types.User;
+import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,7 +49,6 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         }
 
         int groupId = user.getGroup().getId();
-
 
         String sql = "INSERT INTO u_groups (uid, gid) VALUES (?, ?);";
 

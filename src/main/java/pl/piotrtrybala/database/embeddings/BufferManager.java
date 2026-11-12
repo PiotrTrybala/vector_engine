@@ -39,8 +39,8 @@ public class BufferManager {
     private static final String PATH = "./vectors.bin";
 
     private static final EntrypointConfig.EmbedderConfig embeddingConfig = Entrypoint.getInstance().getConfig().getEmbedderConfig();
-    private static final int DATA_SIZE = Integer.BYTES + (Float.BYTES * embeddingConfig.embeddingSize);
-    private static final int BUFFER_SIZE = embeddingConfig.maxWriteBufferSize;
+    private static final int DATA_SIZE = Integer.BYTES + (Float.BYTES * embeddingConfig.embeddingSize());
+    private static final int BUFFER_SIZE = embeddingConfig.maxWriteBufferSize();
     private final ByteBuffer writeBuffer;
 
     private BufferManager() {
@@ -76,7 +76,7 @@ public class BufferManager {
                 throw new Exception("inconsistent data: " + id + " != " + vectorId);
             }
 
-            float[] data = new float[embeddingConfig.embeddingSize];
+            float[] data = new float[embeddingConfig.embeddingSize()];
             buffer.asFloatBuffer().get(data);
 
             return new Vector(id, data);

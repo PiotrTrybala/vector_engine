@@ -19,10 +19,10 @@ public class EmbeddingManager {
     private EmbeddingManager(EntrypointConfig.EmbedderConfig config) {
         this.embedders = new HashMap<>();
         this.embedders.put(EmbeddingType.TEXT, new TestEmbedder(
-                config.embeddingSize
+                config.embeddingSize()
         ));
         // adjust that values
-        this.index = new EmbeddingIndexImpl(10000, config.embeddingSize, 16, 20);
+        this.index = new EmbeddingIndexImpl(10000, config.embeddingSize(), 16, 20);
     }
 
     public static synchronized void initialize(EntrypointConfig.EmbedderConfig config) {

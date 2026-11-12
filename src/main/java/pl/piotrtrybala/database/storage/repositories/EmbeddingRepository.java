@@ -1,6 +1,7 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage.repositories;
 
-import pl.piotrtrybala.database.entities.types.Embedding;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.types.Embedding;
 
 import java.util.HashMap;
 import java.util.List;

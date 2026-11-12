@@ -2,25 +2,25 @@ package pl.piotrtrybala.database.executor.impl.result;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.auth.AuthManager;
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.embeddings.embedder.Embedder;
 import pl.piotrtrybala.database.embeddings.embedder.EmbedderException;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
-import pl.piotrtrybala.database.entities.MetadataStorage;
-import pl.piotrtrybala.database.entities.RepositoryException;
-import pl.piotrtrybala.database.entities.types.Collection;
-import pl.piotrtrybala.database.entities.types.Embedding;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.storage.MetadataStorage;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.types.Collection;
+import pl.piotrtrybala.database.storage.types.Embedding;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
 import pl.piotrtrybala.database.query.types.InsertQuery;
 
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class InsertResult implements ExecutorResult {
+public class InsertResult implements Result {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertResult.class.getName());
 
@@ -45,11 +45,11 @@ public class InsertResult implements ExecutorResult {
             return message.toCharArray();
         }
 
-        if (!AuthManager.getInstance().getStorage().has(null)) {
+        if (!AuthenticationManager.getInstance().getStorage().has(null)) {
             return "User is not authenticated".toCharArray();
         }
 
-        Session session = AuthManager.getInstance().getStorage().retrieve(null);
+        Session session = AuthenticationManager.getInstance().getStorage().retrieve(null);
 
         User user = session.getUser();
         Collection selectedCollection = session.getCurrentCollection();

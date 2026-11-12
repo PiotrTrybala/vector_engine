@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -20,8 +20,6 @@ public class ConnectionManager {
         config.addDataSourceProperty("foreign_keys", "ON");
         config.addDataSourceProperty("synchronous", "NORMAL");
 
-//        config.setConnectionInitSql("PRAGMA busy_timeout=5000;");
-
         source = new HikariDataSource(config);
     }
 
@@ -32,7 +30,7 @@ public class ConnectionManager {
     }
 
     public static void shutdown() {
-        if (!source.isClosed()) {
+        if (!source.isClosed()){
             source.close();
         }
     }

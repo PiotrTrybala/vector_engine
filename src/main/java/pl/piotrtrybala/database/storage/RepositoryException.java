@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage;
 
 import java.sql.SQLException;
 

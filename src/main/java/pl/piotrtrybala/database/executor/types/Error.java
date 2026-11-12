@@ -2,11 +2,11 @@ package pl.piotrtrybala.database.executor.types;
 
 import pl.piotrtrybala.database.executor.enums.ExecutorErrorType;
 
-public class ExecutorError implements ExecutorResult {
+public class Error implements Result {
 
     private ExecutorErrorType error;
 
-    public ExecutorError(ExecutorErrorType error) {
+    public Error(ExecutorErrorType error) {
         this.error = error;
     }
 

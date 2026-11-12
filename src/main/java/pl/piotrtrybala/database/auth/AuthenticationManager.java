@@ -1,21 +1,22 @@
 package pl.piotrtrybala.database.auth;
 
-import pl.piotrtrybala.database.auth.entities.Group;
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.EntrypointConfig;
+import pl.piotrtrybala.database.storage.types.Group;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.auth.session.impl.SessionStorageImpl;
-import pl.piotrtrybala.database.entities.ConnectionManager;
-import pl.piotrtrybala.database.entities.GroupRepository;
-import pl.piotrtrybala.database.entities.UserGroupRepository;
-import pl.piotrtrybala.database.entities.UserRepository;
-import pl.piotrtrybala.database.entities.impl.GroupRepositoryImpl;
-import pl.piotrtrybala.database.entities.impl.UserGroupRepositoryImpl;
-import pl.piotrtrybala.database.entities.impl.UserRepositoryImpl;
+import pl.piotrtrybala.database.storage.ConnectionManager;
+import pl.piotrtrybala.database.storage.repositories.GroupRepository;
+import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
+import pl.piotrtrybala.database.storage.repositories.UserRepository;
+import pl.piotrtrybala.database.storage.impl.GroupRepositoryImpl;
+import pl.piotrtrybala.database.storage.impl.UserGroupRepositoryImpl;
+import pl.piotrtrybala.database.storage.impl.UserRepositoryImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AuthManager {
+public class AuthenticationManager {
 
     private final UserRepository userRepo;
     private final GroupRepository groupRepo;
@@ -23,9 +24,9 @@ public class AuthManager {
 
     private final SessionStorage storage;
 
-    private static AuthManager instance;
+    private static AuthenticationManager instance;
 
-    public AuthManager(Connection connection) {
+    private AuthenticationManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl(connection);
         this.groupRepo = new GroupRepositoryImpl(connection);
         this.userGroupRepo = new UserGroupRepositoryImpl(connection);
@@ -36,15 +37,23 @@ public class AuthManager {
         return storage;
     }
 
-    public static synchronized AuthManager getInstance() {
-        try {
-            if (instance == null) {
-                instance = new AuthManager(ConnectionManager.getConnection());
-            }
-            return instance;
-        } catch(SQLException e) {
-            throw new RuntimeException("failed to retrieve auth manager: " + e.getMessage());
+    public static synchronized void initialize(EntrypointConfig.AuthConfig config) {
+
+        if (instance != null) {
+            throw new IllegalStateException("AuthenticationManager is already initialized");
         }
+        try {
+            instance = new AuthenticationManager(ConnectionManager.getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException("Could retrieve connection to metadata: " + e.getMessage());
+        }
+    }
+
+    public static synchronized AuthenticationManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("AuthenticationManager should be initialized");
+        }
+        return instance;
     }
 
     public Group retrieveGroup(String name) throws SQLException {

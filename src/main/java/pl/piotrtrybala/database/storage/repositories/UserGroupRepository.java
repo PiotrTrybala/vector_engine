@@ -1,6 +1,6 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage.repositories;
 
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.storage.types.User;
 
 import java.sql.SQLException;
 

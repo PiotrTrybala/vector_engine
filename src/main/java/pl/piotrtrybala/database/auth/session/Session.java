@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.auth.session;
 
-import pl.piotrtrybala.database.auth.entities.User;
-import pl.piotrtrybala.database.entities.types.Collection;
+import pl.piotrtrybala.database.storage.types.User;
+import pl.piotrtrybala.database.storage.types.Collection;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ public class Session {
     private final User user;
     private final Date createdAt;
 
-    private pl.piotrtrybala.database.entities.types.Collection currentCollection;
+    private pl.piotrtrybala.database.storage.types.Collection currentCollection;
 
     public Session(User user) {
         this.user = user;
@@ -25,7 +25,7 @@ public class Session {
         return createdAt;
     }
 
-    public void setCurrentCollection(pl.piotrtrybala.database.entities.types.Collection collection){
+    public void setCurrentCollection(pl.piotrtrybala.database.storage.types.Collection collection){
         this.currentCollection = collection;
     }
 

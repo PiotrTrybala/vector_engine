@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.entities.types;
+package pl.piotrtrybala.database.storage.types;
 
 import java.sql.Timestamp;
 import java.util.HashMap;

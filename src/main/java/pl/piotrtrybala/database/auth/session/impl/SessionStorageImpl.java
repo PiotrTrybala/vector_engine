@@ -1,6 +1,6 @@
 package pl.piotrtrybala.database.auth.session.impl;
 
-import pl.piotrtrybala.database.auth.entities.User;
+import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
 

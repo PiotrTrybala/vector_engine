@@ -1,6 +1,6 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage.repositories;
 
-import pl.piotrtrybala.database.entities.types.Collection;
+import pl.piotrtrybala.database.storage.types.Collection;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -1,8 +1,8 @@
-package pl.piotrtrybala.database.auth.entities;
+package pl.piotrtrybala.database.storage.types;
 
-import pl.piotrtrybala.database.auth.Permissions;
-import pl.piotrtrybala.database.entities.UserGroupRepository;
-import pl.piotrtrybala.database.entities.UserRepository;
+import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
+import pl.piotrtrybala.database.storage.repositories.UserRepository;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;

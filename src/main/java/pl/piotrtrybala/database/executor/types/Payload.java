@@ -2,11 +2,11 @@ package pl.piotrtrybala.database.executor.types;
 
 import pl.piotrtrybala.database.query.Query;
 
-public class ExecutorPayload {
+public class Payload {
 
     private final Query query;
 
-    public ExecutorPayload(Query query) {
+    public Payload(Query query) {
         this.query = query;
     }
 

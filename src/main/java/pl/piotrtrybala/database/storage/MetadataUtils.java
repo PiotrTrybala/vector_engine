@@ -1,7 +1,8 @@
-package pl.piotrtrybala.database.entities;
+package pl.piotrtrybala.database.storage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
 
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,10 @@ import java.util.Map;
 public class MetadataUtils {
 
     private static final Gson GSON = new Gson();
+
+    public static String hashPassword(String password) {
+        return EmbeddingUtils.hash(EmbeddingUtils.toBytes(password.toCharArray()));
+    }
 
     public static HashMap<String, Object> parse(byte[] metadata) {
         if (metadata == null || metadata.length == 0) {
@@ -28,7 +33,6 @@ public class MetadataUtils {
         if (metadata == null) {
             return new byte[0];
         }
-
         String jsonString = GSON.toJson(metadata);
         return jsonString.getBytes(StandardCharsets.UTF_8);
     }

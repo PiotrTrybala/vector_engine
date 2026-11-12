@@ -1,8 +1,8 @@
 package pl.piotrtrybala.database.executor;
 
-import pl.piotrtrybala.database.executor.types.ExecutorPayload;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.executor.types.Payload;
+import pl.piotrtrybala.database.executor.types.Result;
 
 public interface Executor {
-    ExecutorResult process(ExecutorPayload payload);
+    Result process(Payload payload);
 }

@@ -6,9 +6,9 @@ import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.impl.STExecutor;
-import pl.piotrtrybala.database.executor.types.ExecutorPayload;
-import pl.piotrtrybala.database.executor.types.ExecutorResult;
+import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
+import pl.piotrtrybala.database.executor.types.Payload;
+import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.Parser;
 import pl.piotrtrybala.database.query.Query;
 import pl.piotrtrybala.database.query.QueryException;
@@ -51,10 +51,10 @@ public class EngineImpl implements Engine {
 
     @Override
     public void init() throws EngineException {
-        this.executor = new STExecutor();
+        this.executor = new ExecutorImpl();
         try {
-            LOGGER.info("init database on port {}", this.config.port);
-            this.serverSocket = new ServerSocket(this.config.port);
+            LOGGER.info("init database on port {}", this.config.port());
+            this.serverSocket = new ServerSocket(this.config.port());
 //            this.serverSocket.setSoTimeout(this.config.idleTimeout);
         } catch(IOException e) {
             LOGGER.error("error during database init: {}", e.getMessage());
@@ -80,11 +80,11 @@ public class EngineImpl implements Engine {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            char[] buffer = new char[this.config.maxQueryBufferSize];
+            char[] buffer = new char[this.config.maxQueryBufferSize()];
 
             while(!clientSocket.isClosed()) {
                 Arrays.fill(buffer, (char) 0);
-                int size = reader.read(buffer, 0, this.config.maxQueryBufferSize);
+                int size = reader.read(buffer, 0, this.config.maxQueryBufferSize());
                 if (size == -1) {
                     LOGGER.info("client has closed connection");
                     clientSocket.close();
@@ -102,7 +102,7 @@ public class EngineImpl implements Engine {
                     LOGGER.info("parsed {} queries", queries.size());
                     for (Query query : queries) {
                         LOGGER.info("starting processing {}", query.getQueryType().toString());
-                        ExecutorResult result = executor.process(new ExecutorPayload(query));
+                        Result result = executor.process(new Payload(query));
                         char[] output = result.getResult();
                         LOGGER.info("executor processed with result");
                         writer.write(output);
