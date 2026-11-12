@@ -9,7 +9,8 @@ public class Permissions {
     private Map<String, Boolean> perms = new HashMap<>();
 
     public Permissions() {}
-    public Permissions(HashMap<String, Boolean> perms) {
+
+    private Permissions(HashMap<String, Boolean> perms) {
         this.perms = perms;
     }
 
@@ -29,12 +30,15 @@ public class Permissions {
     }
 
     public String save() {
+        int permsSize = perms.keySet().size();
         return String.join(",", perms.keySet());
     }
 
     public void add(String perm) {
-        System.out.println("added " + perm);
-        this.perms.put(perm, true);
+        if (perm.isEmpty()) {
+            return;
+        }
+        this.perms.put(perm.trim(), true);
     }
 
     public void remove(String perm) {
