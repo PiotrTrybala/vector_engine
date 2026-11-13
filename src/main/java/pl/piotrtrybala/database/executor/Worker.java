@@ -1,4 +1,4 @@
 package pl.piotrtrybala.database.executor;
 
-public class Worker {
+public interface Worker {
 }
