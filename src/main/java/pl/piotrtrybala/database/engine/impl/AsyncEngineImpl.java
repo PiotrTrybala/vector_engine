@@ -4,11 +4,11 @@ import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 
-public class AsyncEngine implements Engine {
+public class AsyncEngineImpl implements Engine {
 
     private final EntrypointConfig.EngineConfig config;
 
-    public AsyncEngine(EntrypointConfig.EngineConfig config) {
+    public AsyncEngineImpl(EntrypointConfig.EngineConfig config) {
         this.config = config;
     }
 
