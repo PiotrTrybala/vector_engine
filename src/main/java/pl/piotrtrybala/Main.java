@@ -7,7 +7,6 @@ public class Main {
     static void main() {
         Entrypoint.init();
         Entrypoint.getInstance().run();
-        Entrypoint.shutdown();
     }
 }
 

@@ -23,7 +23,6 @@ public class AuthResult implements Result {
     @Override
     public char[] getResult() {
         try {
-            LOGGER.info("checking {} with {}", query.getUsername(), query.getPassword());
             User user = this.instance.authenticateUser(
                     query.getUsername(),
                     query.getPassword()

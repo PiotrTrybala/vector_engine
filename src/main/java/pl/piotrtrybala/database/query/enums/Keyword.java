@@ -27,7 +27,8 @@ public enum Keyword {
     BY("BY"),
     SIMILAR("SIMILAR"),
     FROM("FROM"),
-    SHOW("SHOW");
+    SHOW("SHOW"),
+    PASSWORD("PASSWORD");
 
     private final String keyword;
 

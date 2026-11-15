@@ -1,6 +1,7 @@
 package pl.piotrtrybala.database.auth;
 
 import pl.piotrtrybala.database.EntrypointConfig;
+import pl.piotrtrybala.database.storage.MetadataUtils;
 import pl.piotrtrybala.database.storage.types.Group;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
@@ -75,7 +76,8 @@ public class AuthenticationManager {
         System.out.println("retrieving user: " + username);
         User user = this.retrieveUser(username);
         System.out.println("user found: " + user.toString());
-        if (!user.getPassword().equals(password)) {
+        String passwordHash = MetadataUtils.hashPassword(password);
+        if (!user.getPassword().equals(passwordHash)) {
             throw new Exception("failed to authenticate user");
         }
 

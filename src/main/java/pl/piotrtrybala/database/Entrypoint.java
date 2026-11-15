@@ -35,6 +35,8 @@ public class Entrypoint {
         AuthenticationManager.initialize(config.getAuthConfig());
         EmbeddingManager.initialize(config.getEmbedderConfig());
         MetadataStorage.initialize();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(Entrypoint::shutdown));
     }
 
     public static synchronized void init(EntrypointConfig config) {

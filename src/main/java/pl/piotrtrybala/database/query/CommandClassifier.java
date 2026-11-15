@@ -74,4 +74,9 @@ public class CommandClassifier {
         return Keyword.match(tokens.getFirst(), Keyword.USE) && tokens.size() == 2;
     }
 
+    public static boolean isPasswordCommand(String query) throws CommandException {
+        List<String> tokens = CommandUtils.preprocess(query);
+        return Keyword.match(tokens.getFirst(), Keyword.PASSWORD) && tokens.size() == 2;
+    }
+
 }

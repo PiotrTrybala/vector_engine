@@ -55,6 +55,7 @@ public class ExecutorImpl implements Executor {
         this.queryHandlers.put(QueryType.USE_COLLECTION, new Handler(UseCollectionResult.class));
         this.queryHandlers.put(QueryType.SHOW, new Handler(ShowResult.class));
         this.queryHandlers.put(QueryType.INSERT, new Handler(InsertResult.class));
+        this.queryHandlers.put(QueryType.PASSWORD, new Handler(PasswordResult.class));
     }
 
     @Override
