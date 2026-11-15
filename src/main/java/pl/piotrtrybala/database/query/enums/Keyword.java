@@ -1,6 +1,6 @@
 package pl.piotrtrybala.database.query.enums;
 
-import pl.piotrtrybala.database.query.QueryException;
+import pl.piotrtrybala.database.query.CommandException;
 
 public enum Keyword {
     HANDSHAKE("HANDSHAKE"),
@@ -42,12 +42,12 @@ public enum Keyword {
         return source.equals(keyword.toString());
     }
 
-    public static boolean match(String source, Keyword keyword) throws QueryException {
+    public static boolean match(String source, Keyword keyword) throws CommandException {
         try {
             Keyword sourceKeyword = Keyword.valueOf(source.trim().toUpperCase());
             return sourceKeyword.equals(keyword);
         } catch(Exception e) {
-            throw new QueryException("invalid keyword: " + keyword);
+            throw new CommandException("invalid keyword: " + keyword);
         }
     }
 }

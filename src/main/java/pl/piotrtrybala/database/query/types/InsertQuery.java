@@ -1,16 +1,15 @@
 package pl.piotrtrybala.database.query.types;
 
-import pl.piotrtrybala.database.query.QueryException;
+import pl.piotrtrybala.database.query.CommandException;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
-import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryClassifier;
-import pl.piotrtrybala.database.query.QueryUtils;
+import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.query.CommandUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class InsertQuery implements Query {
+public class InsertQuery implements Command {
 
     private final static int COLLECTION_NAME_INDEX = 2;
     private final static int TYPE_INDEX = 4;
@@ -19,12 +18,12 @@ public class InsertQuery implements Query {
     private final EmbeddingType type;
     private final char[] data;
 
-    public InsertQuery(String query) throws QueryException {
-        List<String> parts = QueryUtils.preprocess(query);
+    public InsertQuery(String query) throws CommandException {
+        List<String> parts = CommandUtils.preprocess(query);
 
         this.collectionName = parts.get(COLLECTION_NAME_INDEX).trim();
         this.type = EmbeddingType.valueOf(parts.get(TYPE_INDEX).trim().toUpperCase());
-        this.data = QueryUtils.parseEmbeddingData(parts);
+        this.data = CommandUtils.parseEmbeddingData(parts);
     }
 
     public String getCollectionName() {

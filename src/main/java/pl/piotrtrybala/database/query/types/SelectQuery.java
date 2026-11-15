@@ -1,9 +1,8 @@
 package pl.piotrtrybala.database.query.types;
 
-import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryClassifier;
-import pl.piotrtrybala.database.query.QueryException;
-import pl.piotrtrybala.database.query.QueryUtils;
+import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.query.CommandException;
+import pl.piotrtrybala.database.query.CommandUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 import pl.piotrtrybala.database.query.enums.SelectType;
 import pl.piotrtrybala.database.query.expression.Expression;
@@ -11,7 +10,7 @@ import pl.piotrtrybala.database.query.expression.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectQuery implements Query {
+public class SelectQuery implements Command {
 
     private final SelectType type;
 
@@ -23,22 +22,22 @@ public class SelectQuery implements Query {
 
     private final int limit;
 
-    public SelectQuery(String query) throws QueryException {
-        List<String> tokens = QueryUtils.preprocess(query);
+    public SelectQuery(String query) throws CommandException {
+        List<String> tokens = CommandUtils.preprocess(query);
 
-        this.type = QueryUtils.parseSelectType(tokens);
+        this.type = CommandUtils.parseSelectType(tokens);
 
         if (this.type == SelectType.METADATA) {
-            this.metadata = QueryUtils.parseMetadataKeys(tokens);
+            this.metadata = CommandUtils.parseMetadataKeys(tokens);
         } else {
             this.metadata = new ArrayList<>();
         }
 
-        this.collection = QueryUtils.parseCollectionName(tokens);
+        this.collection = CommandUtils.parseCollectionName(tokens);
 
-        this.expression = Expression.parse(QueryUtils.retrieveExpressionTokens(tokens));
+        this.expression = Expression.parse(CommandUtils.retrieveExpressionTokens(tokens));
 
-        this.limit = QueryUtils.parseLimit(tokens);
+        this.limit = CommandUtils.parseLimit(tokens);
     }
 
     public SelectType getType() {

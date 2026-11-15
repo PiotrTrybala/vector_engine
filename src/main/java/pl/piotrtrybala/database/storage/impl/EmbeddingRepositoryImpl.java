@@ -118,9 +118,9 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
             connection.setAutoCommit(false);
 
             int id;
-            String contentHash = EmbeddingUtils.hash(data);
+            String contentHash = EmbeddingUtils.sha256hash(data);
             byte[] parsedMetadata = MetadataUtils.save(metadata);
-            String metadataHash = EmbeddingUtils.hash(parsedMetadata);
+            String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
             Timestamp createdAt;
             Timestamp updatedAt;
 
@@ -179,9 +179,9 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
             connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            String contentHash = EmbeddingUtils.hash(embedding.getContent());
+            String contentHash = EmbeddingUtils.sha256hash(embedding.getContent());
             byte[] parsedMetadata = MetadataUtils.save(embedding.getMetadata());
-            String metadataHash = EmbeddingUtils.hash(parsedMetadata);
+            String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, embedding.getCollectionId());

@@ -1,6 +1,7 @@
 package pl.piotrtrybala.database.storage.types;
 
 import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.MetadataUtils;
 import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
 import pl.piotrtrybala.database.storage.repositories.UserRepository;
 
@@ -35,7 +36,7 @@ public class User {
     public User(int id, String username, String password, boolean root, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.username = username;
-        this.password = password;
+        this.password = MetadataUtils.hashPassword(password); // SHA256
         this.root = root;
         this.permissions = permissions;
         this.createdAt = createdAt;

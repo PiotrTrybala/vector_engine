@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class UpdateQuery implements Query  {
+public class UpdateQuery implements Command {
 
     private final UpdateEntityType type;
 
@@ -19,18 +19,18 @@ public class UpdateQuery implements Query  {
 
     private Expression whereClause;
 
-    public UpdateQuery(String query) throws QueryException {
-        List<String> parts = QueryUtils.preprocess(query);
+    public UpdateQuery(String query) throws CommandException {
+        List<String> parts = CommandUtils.preprocess(query);
 
         this.type = UpdateEntityType.valueOf(parts.get(1).toUpperCase());
 
         if (this.type == UpdateEntityType.EMBEDDING) {
-            this.data = QueryUtils.parseEmbeddingData(parts);
+            this.data = CommandUtils.parseEmbeddingData(parts);
         } else if (this.type == UpdateEntityType.METADATA){
-            this.metadata = QueryUtils.parseMetadata(parts);
+            this.metadata = CommandUtils.parseMetadata(parts);
         }
 
-        this.whereClause = Expression.parse(QueryUtils.skipUntilKeyword(parts, Keyword.WHERE));
+        this.whereClause = Expression.parse(CommandUtils.skipUntilKeyword(parts, Keyword.WHERE));
     }
 
     public UpdateEntityType getType() {

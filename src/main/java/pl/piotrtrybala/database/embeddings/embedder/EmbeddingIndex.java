@@ -11,7 +11,6 @@ public interface EmbeddingIndex {
     List<IndexSearchResult> search(float[] queryVector, int k);
 
     void save(String path) throws IOException;
-    void load(String path) throws IOException;
 
     class IndexSearchResult {
         private final int id;

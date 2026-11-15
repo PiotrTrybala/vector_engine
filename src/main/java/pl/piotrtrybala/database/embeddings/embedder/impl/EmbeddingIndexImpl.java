@@ -3,7 +3,10 @@ package pl.piotrtrybala.database.embeddings.embedder.impl;
 import com.github.jelmerk.hnswlib.core.DistanceFunctions;
 import com.github.jelmerk.hnswlib.core.Item;
 import com.github.jelmerk.hnswlib.core.hnsw.HnswIndex;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.Entrypoint;
+import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingIndex;
 
 import java.io.IOException;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 
 public class EmbeddingIndexImpl implements EmbeddingIndex {
 
+    private static final Logger LOGGER = LogManager.getLogger(EmbeddingIndexImpl.class.getName());
 
     static class FloatVectorItem implements Item<Integer, float[]> {
         private final int id;
@@ -42,8 +46,11 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
         }
     }
 
-    private final HnswIndex<Integer, float[], FloatVectorItem, Float> index;
-    private final int dimensions;
+    private final Object resizeLock = new Object();
+    private HnswIndex<Integer, float[], FloatVectorItem, Float> index;
+    private int dimensions;
+
+    public EmbeddingIndexImpl() {}
 
     public EmbeddingIndexImpl(int maxElements, int dimensions, int m, int efConstruction) {
         this.dimensions = dimensions;
@@ -53,9 +60,24 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
                 .build();
     }
 
+    private EmbeddingIndexImpl(HnswIndex<Integer, float[], FloatVectorItem, Float> index, int dimensions) {
+        this.index = index;
+        this.dimensions = dimensions;
+    }
+
+
     @Override
     public void add(int id, float[] vector) {
         FloatVectorItem item = new FloatVectorItem(id, dimensions, vector);
+
+        synchronized (resizeLock) {
+            if (index.size() >= index.getMaxItemCount()) {
+                int resizedMaxCount = index.getMaxItemCount() * 2;
+                LOGGER.info("resizing index to new size: {}", resizedMaxCount);
+                index.resize(resizedMaxCount);
+            }
+        }
+
         index.add(item);
     }
 
@@ -78,11 +100,14 @@ public class EmbeddingIndexImpl implements EmbeddingIndex {
     @Override
     public void save(String path) throws IOException {
         index.save(Path.of(path));
-        System.out.println("not implemented");
     }
 
-    @Override
-    public void load(String path) throws IOException {
-        System.out.println("not implemented");
+    public static EmbeddingIndex load(String path, int dimensions) throws IOException {
+        HnswIndex<Integer, float[], FloatVectorItem, Float> index = HnswIndex.load(Path.of(path));
+        return new EmbeddingIndexImpl(index, dimensions);
+    }
+
+    public boolean isLoaded() {
+        return this.index != null;
     }
 }

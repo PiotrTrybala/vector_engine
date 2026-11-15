@@ -1,18 +1,17 @@
 package pl.piotrtrybala.database.query.types;
 
-import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryClassifier;
-import pl.piotrtrybala.database.query.QueryUtils;
+import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.query.CommandUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
 
-public class UseCollectionQuery implements Query {
+public class UseCollectionQuery implements Command {
 
     private final String collectionName;
 
     public UseCollectionQuery(String query) {
-        List<String> parts = QueryUtils.preprocess(query);
+        List<String> parts = CommandUtils.preprocess(query);
         this.collectionName = parts.getLast().trim();
 
         System.out.println("collection name = " + collectionName);

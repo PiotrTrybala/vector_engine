@@ -8,5 +8,6 @@ public enum QueryType {
     CREATE_COLLECTION,
     USE_COLLECTION,
     UPDATE,
-    SHOW
+    SHOW,
+    PASSWORD
 }

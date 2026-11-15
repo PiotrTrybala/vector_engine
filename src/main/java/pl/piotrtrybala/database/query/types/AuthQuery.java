@@ -1,18 +1,18 @@
 package pl.piotrtrybala.database.query.types;
 
-import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryUtils;
+import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.query.CommandUtils;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
 
-public class AuthQuery implements Query {
+public class AuthQuery implements Command {
 
     private final String username;
     private final String password;
 
     public AuthQuery(String query) {
-        List<String> parts = QueryUtils.preprocess(query);
+        List<String> parts = CommandUtils.preprocess(query);
 
         int USERNAME_INDEX = 1;
         this.username = parts.get(USERNAME_INDEX).trim();

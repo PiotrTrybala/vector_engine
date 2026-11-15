@@ -3,6 +3,7 @@ package pl.piotrtrybala.database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingIndex;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
@@ -34,7 +35,6 @@ public class Entrypoint {
         AuthenticationManager.initialize(config.getAuthConfig());
         EmbeddingManager.initialize(config.getEmbedderConfig());
         MetadataStorage.initialize();
-
     }
 
     public static synchronized void init(EntrypointConfig config) {
@@ -73,6 +73,7 @@ public class Entrypoint {
     }
 
     public static synchronized void shutdown() throws RuntimeException {
+        EmbeddingManager.shutdown();
         ConnectionManager.shutdown();
     }
 

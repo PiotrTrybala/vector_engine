@@ -1,6 +1,5 @@
 package pl.piotrtrybala.database.query.expression;
 
-import pl.piotrtrybala.database.query.QueryException;
 import pl.piotrtrybala.database.query.enums.ConditionType;
 import pl.piotrtrybala.database.query.enums.OperatorType;
 

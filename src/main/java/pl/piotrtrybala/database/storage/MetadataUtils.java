@@ -14,7 +14,7 @@ public class MetadataUtils {
     private static final Gson GSON = new Gson();
 
     public static String hashPassword(String password) {
-        return EmbeddingUtils.hash(EmbeddingUtils.toBytes(password.toCharArray()));
+        return EmbeddingUtils.sha256hash(EmbeddingUtils.toBytes(password.toCharArray()));
     }
 
     public static HashMap<String, Object> parse(byte[] metadata) {

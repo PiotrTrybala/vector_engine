@@ -17,7 +17,7 @@ public class EmbeddingUtils {
         return bytes;
     }
 
-    public static String hash(byte[] data) {
+    public static String sha256hash(byte[] data) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hashBytes = digest.digest(data);

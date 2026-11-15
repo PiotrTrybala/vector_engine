@@ -8,7 +8,7 @@ import pl.piotrtrybala.database.executor.impl.result.*;
 import pl.piotrtrybala.database.executor.types.Error;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.Query;
+import pl.piotrtrybala.database.query.Command;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +25,7 @@ public class ExecutorImpl implements Executor {
             this.resultType = result;
         }
 
-        public Result dispatch(Query query) {
+        public Result dispatch(Command query) {
             try {
                 return resultType.getConstructor(query.getClass()).newInstance(query);
             } catch(InvocationTargetException e) {
@@ -60,7 +60,7 @@ public class ExecutorImpl implements Executor {
     @Override
     public Result process(Payload payload) {
         LOGGER.info("processing query...");
-        Query query = payload.getQuery();
+        Command query = payload.getQuery();
 
         LOGGER.info("dispatching {}", query.getQueryType().toString());
 

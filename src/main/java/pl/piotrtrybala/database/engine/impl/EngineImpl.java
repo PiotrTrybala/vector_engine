@@ -10,8 +10,8 @@ import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.Parser;
-import pl.piotrtrybala.database.query.Query;
-import pl.piotrtrybala.database.query.QueryException;
+import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.query.CommandException;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -93,14 +93,14 @@ public class EngineImpl implements Engine {
 
                 LOGGER.info("received buffer: {}", buffer);
 
-                List<Query> queries;
+                List<Command> queries;
                 try {
                     queries = parser.parse(buffer);
-                    for (Query query : queries) {
+                    for (Command query : queries) {
                         System.out.println(query.toString());
                     }
                     LOGGER.info("parsed {} queries", queries.size());
-                    for (Query query : queries) {
+                    for (Command query : queries) {
                         LOGGER.info("starting processing {}", query.getQueryType().toString());
                         Result result = executor.process(new Payload(query));
                         char[] output = result.getResult();
@@ -108,7 +108,7 @@ public class EngineImpl implements Engine {
                         writer.write(output);
                         writer.flush();
                     }
-                } catch(QueryException e) {
+                } catch(CommandException e) {
                     LOGGER.error("failed to parse query: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();

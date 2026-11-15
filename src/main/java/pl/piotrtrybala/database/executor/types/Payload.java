@@ -1,16 +1,16 @@
 package pl.piotrtrybala.database.executor.types;
 
-import pl.piotrtrybala.database.query.Query;
+import pl.piotrtrybala.database.query.Command;
 
 public class Payload {
 
-    private final Query query;
+    private final Command query;
 
-    public Payload(Query query) {
+    public Payload(Command query) {
         this.query = query;
     }
 
-    public Query getQuery() {
+    public Command getQuery() {
         return query;
     }
 

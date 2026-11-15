@@ -1,8 +1,8 @@
 package pl.piotrtrybala.database.query.expression;
 
-import pl.piotrtrybala.database.query.QueryException;
+import pl.piotrtrybala.database.query.CommandException;
 
-public class ExpressionException extends QueryException {
+public class ExpressionException extends CommandException {
     public ExpressionException(String message) {
         super(message);
     }
