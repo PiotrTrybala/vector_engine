@@ -2,7 +2,8 @@ package pl.piotrtrybala.database.query.enums;
 
 public enum ConditionType {
     OR("OR"),
-    AND("AND"),;
+    AND("AND"),
+    NONE("NONE");
 
     private final String keyword;
 
@@ -19,5 +20,9 @@ public enum ConditionType {
         return "ConditionType{" +
                 "keyword='" + keyword + '\'' +
                 '}';
+    }
+
+    public static boolean is(String token, ConditionType condition) {
+        return condition.keyword.equals(token.toUpperCase());
     }
 }

@@ -16,7 +16,7 @@ public class InsertQuery implements Command {
 
     private final String collectionName;
     private final EmbeddingType type;
-    private final char[] data;
+    private final byte[] data;
 
     public InsertQuery(String query) throws CommandException {
         List<String> parts = CommandUtils.preprocess(query);
@@ -34,7 +34,7 @@ public class InsertQuery implements Command {
         return type;
     }
 
-    public char[] getData() {
+    public byte[] getData() {
         return data;
     }
 

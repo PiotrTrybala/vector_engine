@@ -15,7 +15,7 @@ public class UpdateQuery implements Command {
     private final UpdateEntityType type;
 
     private HashMap<String, Object> metadata = new HashMap<>();
-    private char[] data = null;
+    private byte[] data = null;
 
     private Expression whereClause;
 
@@ -41,7 +41,7 @@ public class UpdateQuery implements Command {
         return metadata;
     }
 
-    public char[] getData() {
+    public byte[] getData() {
         return data;
     }
 

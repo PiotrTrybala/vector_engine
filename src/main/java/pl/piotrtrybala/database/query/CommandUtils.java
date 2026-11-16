@@ -4,6 +4,7 @@ import pl.piotrtrybala.database.query.enums.Keyword;
 import pl.piotrtrybala.database.query.enums.MetadataValueType;
 import pl.piotrtrybala.database.query.enums.SelectType;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public class CommandUtils {
 
     public static int DEFAULT_LIMIT = 5;
 
-    public static char[] parseEmbeddingData(List<String> tokens) throws CommandException {
+    public static byte[] parseEmbeddingData(List<String> tokens) throws CommandException {
 
         int dataIndex = -1;
         for (int i = 0; i < tokens.size(); i++) {
@@ -27,7 +28,7 @@ public class CommandUtils {
         String data = tokens.get(dataIndex + 1);
 
         if (data.startsWith("`") && data.endsWith("`")) {
-            return data.substring(1, data.length() - 1).toCharArray();
+            return StandardCharsets.UTF_8.encode(data.substring(1, data.length() - 1)).array();
         }
 
         throw new CommandException("invalid data expression");
