@@ -31,7 +31,7 @@ public class AuthenticationManager {
 
     private AuthenticationManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl();
-        this.groupRepo = new GroupRepositoryImpl(connection);
+        this.groupRepo = new GroupRepositoryImpl();
         this.userGroupRepo = new UserGroupRepositoryImpl(connection);
         this.storage = new SessionStorageImpl();
     }
@@ -57,21 +57,6 @@ public class AuthenticationManager {
             throw new IllegalStateException("AuthenticationManager should be initialized");
         }
         return instance;
-    }
-
-    public Group retrieveGroup(String name) throws SQLException {
-        return this.groupRepo.retrieve(name);
-    }
-
-    public Group createGroup(String name) {
-        Group group = new Group(groupRepo);
-        group.setName(name);
-        return group;
-    }
-
-    public User retrieveUser(int id) throws RepositoryException {
-        Optional<User> user = this.userRepo.findById(id);
-        return this.retrieveUser(user.get().getUsername());
     }
 
     public User authenticateUser(String username, String password) throws Exception {

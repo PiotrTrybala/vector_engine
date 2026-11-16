@@ -1,22 +1,13 @@
 package pl.piotrtrybala.database.storage.repositories;
 
 import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.Repository;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.Searchable;
 import pl.piotrtrybala.database.storage.types.Group;
+import pl.piotrtrybala.database.storage.types.search.GroupSearchOptions;
 
 import java.sql.SQLException;
+import java.util.List;
 
-public interface GroupRepository {
-    Group retrieve(int id) throws SQLException;
-
-    Group retrieve(String name) throws SQLException;
-
-    Group create(String name, Permissions permissions) throws SQLException;
-
-    Group save(Group group) throws SQLException;
-
-    Group update(Group group) throws SQLException;
-
-    void delete(int id) throws SQLException;
-
-    void delete(String name) throws SQLException;
-}
+public interface GroupRepository extends Repository<Group, Integer> { }

@@ -1,128 +1,158 @@
 package pl.piotrtrybala.database.storage.impl;
 
 import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.ConnectionManager;
+import pl.piotrtrybala.database.storage.Repository;
+import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Group;
 import pl.piotrtrybala.database.storage.repositories.GroupRepository;
+import pl.piotrtrybala.database.storage.types.search.GroupSearchOptions;
 
+import javax.swing.text.html.Option;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static jdk.nio.zipfs.ZipFileAttributeView.AttrID.group;
 
 public class GroupRepositoryImpl implements GroupRepository {
 
-    private Connection connection;
-
-    public GroupRepositoryImpl(Connection connection) {
-        this.connection = connection;
-    }
+    public GroupRepositoryImpl() {}
 
     @Override
-    public Group retrieve(int id) throws SQLException {
-        String sql = "SELECT * FROM groups WHERE id = ?;";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, id);
-            ResultSet result = stmt.executeQuery();
+    public Optional<Group> findById(Integer id) throws RepositoryException {
+        String sql = "SELECT * FROM groups WHERE id = ?";
 
-            if (result.next()){
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) throw new RepositoryException("could not found user: " + id);
+
                 String name = result.getString("name");
                 String rawPerms = result.getString("perms");
-                Permissions permissions = Permissions.parse(rawPerms);
+                Permissions permissions = null;
+                try {
+                    permissions = Permissions.parse(rawPerms);
+                } catch(Exception e) {
+                    throw new RepositoryException("failed to parse permissions: " + e.getMessage());
+                }
                 Timestamp createdAt = result.getTimestamp("created_at");
                 Timestamp updatedAt = result.getTimestamp("updated_at");
 
-                return new Group(id, name, permissions, createdAt, updatedAt);
-            } else {
-                throw new SQLException("no group was found: " + id);
+                return Optional.of(new Group(id, name, permissions, createdAt, updatedAt));
             }
-        } catch (SQLException e) {
-            throw new SQLException("failed to retrieve group: " + id);
-        } catch (Exception e) {
-            throw new SQLException("failed to parse perms: " + e.getMessage());
+
+        } catch(SQLException e) {
+            throw new RepositoryException("failed to retrieve group: " + id);
         }
     }
 
-    @Override
-    public Group retrieve(String name) throws SQLException {
+    public Optional<Group> findByName(String name) throws RepositoryException {
         String sql = "SELECT * FROM groups WHERE name = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+
             stmt.setString(1, name);
-            ResultSet result = stmt.executeQuery();
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) throw new RepositoryException("could not found user: " + id);
 
-            int id = result.getInt("id");
-            String rawPerms = result.getString("perms");
-            Permissions permissions = Permissions.parse(rawPerms);
-            Timestamp createdAt = result.getTimestamp("created_at");
-            Timestamp updatedAt = result.getTimestamp("updated_at");
+                int id = result.getInt("id");
+                String rawPerms = result.getString("perms");
+                Permissions permissions = null;
+                try {
+                    permissions = Permissions.parse(rawPerms);
+                } catch(Exception e) {
+                    throw new RepositoryException("failed to parse permissions: " + e.getMessage());
+                }
+                Timestamp createdAt = result.getTimestamp("created_at");
+                Timestamp updatedAt = result.getTimestamp("updated_at");
 
-            return new Group(id, name, permissions, createdAt, updatedAt);
-        } catch (SQLException e) {
-            throw new SQLException("failed to retrieve group: " + name);
-        } catch (Exception e) {
-            throw new SQLException("failed to parse perms: " + e.getMessage());
+                return Optional.of(new Group(id, name, permissions, createdAt, updatedAt));
+            }
+
+        } catch(SQLException e) {
+            throw new RepositoryException("failed to retrieve group: " + name);
         }
     }
 
     @Override
-    public Group create(String name, Permissions permissions) throws SQLException {
-        String sql = "INSERT INTO groups(name, perms) VALUES (?, ?) RETURNING id, created_at, updated_at;";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            System.out.println("permissions string: " + permissions.save());
-            stmt.setString(1, name);
-            stmt.setString(2, permissions.save());
+    public List<Group> findAll() throws RepositoryException {
+        String sql = "SELECT * FROM groups;";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+            List<Group> groups = new ArrayList<>();
+            try(ResultSet result = stmt.executeQuery()) {
+                while(result.next()) {
+                    int id = result.getInt("id");
+                    String name = result.getString("name");
+                    String rawPerms = result.getString("perms");
+                    Permissions permissions = null;
+                    try {
+                        permissions = Permissions.parse(rawPerms);
+                    } catch(Exception e) {
+                        throw new RepositoryException("failed to parse permissions: " + e.getMessage());
+                    }
+                    Timestamp createdAt = result.getTimestamp("created_at");
+                    Timestamp updatedAt = result.getTimestamp("updated_at");
 
-            try (ResultSet inserted = stmt.executeQuery()) {
-                if (inserted.next()) {
-                    int id = inserted.getInt("id");
-                    Timestamp createdAt = inserted.getTimestamp("created_at");
-                    Timestamp updatedAt = inserted.getTimestamp("updated_at");
-
-                    return new Group(id, name, permissions, createdAt, updatedAt);
-                } else {
-                    throw new SQLException("failed to create group, no id");
+                    groups.add(new Group(id, name, permissions, createdAt, updatedAt));
                 }
             }
+            return groups;
         } catch (SQLException e) {
-            throw new SQLException("failed to create group: " + e.getMessage());
+            throw new RepositoryException("failed to list all groups: " + e.getMessage());
         }
     }
 
     @Override
-    public Group save(Group group) throws SQLException {
-        return this.create(group.getName(), group.getPermissions());
+    public Integer insert(Group entity) throws RepositoryException {
+        String sql = "INSERT INTO groups(name, perms) VALUES (?, ?) RETURNING id;";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, entity.getName());
+            stmt.setString(2, entity.getPermissions().save());
+
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) throw new RepositoryException("failed to create new group");
+                return result.getInt("id");
+            }
+        } catch(SQLException e) {
+            throw new RepositoryException("failed to create new group: " + e.getMessage());
+        }
     }
 
     @Override
-    public Group update(Group group) throws SQLException {
+    public boolean update(Group entity) throws RepositoryException {
         String sql = "UPDATE groups SET name = ?, perms = ? WHERE id = ?;";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, group.getName());
-            stmt.setString(2, group.getPermissions().save());
-            stmt.setInt(3, group.getId());
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, entity.getName());
+            stmt.setString(2, entity.getPermissions().save());
+            stmt.setInt(3, entity.getId());
 
-            stmt.executeUpdate();
-            return group;
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            throw new SQLException("failed to create group: " + e.getMessage());
+            throw new RepositoryException("failed to create group: " + e.getMessage());
         }
     }
 
     @Override
-    public void delete(int id) throws SQLException {
+    public boolean delete(Integer id) throws RepositoryException {
         String sql = "DELETE FROM groups WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)){
             stmt.setInt(1, id);
-            stmt.executeUpdate();
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            throw new SQLException("failed to create group: " + e.getSQLState() + ", " + e.getMessage());
+            throw new RepositoryException("failed to delete group: " + e.getSQLState() + ", " + e.getMessage());
         }
     }
 
-    @Override
-    public void delete(String name) throws SQLException {
+    public boolean delete(String name) throws RepositoryException {
         String sql = "DELETE FROM groups WHERE name = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)){
             stmt.setString(1, name);
-            stmt.executeUpdate();
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            throw new SQLException("failed to create group: " + e.getMessage());
+            throw new RepositoryException("failed to create group: " + e.getMessage());
         }
     }
 }

@@ -148,3 +148,73 @@ Result:
 //        retrievedUser.update();
 //
 //        LOGGER.info("user: {}", retrievedUser.toString());
+
+public GroupRepositoryImpl(Connection connection) {
+this.connection = connection;
+}
+
+    @Override
+    public Group create(String name, Permissions permissions) throws SQLException {
+        String sql = "INSERT INTO groups(name, perms) VALUES (?, ?) RETURNING id, created_at, updated_at;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            System.out.println("permissions string: " + permissions.save());
+            stmt.setString(1, name);
+            stmt.setString(2, permissions.save());
+
+            try (ResultSet inserted = stmt.executeQuery()) {
+                if (inserted.next()) {
+                    int id = inserted.getInt("id");
+                    Timestamp createdAt = inserted.getTimestamp("created_at");
+                    Timestamp updatedAt = inserted.getTimestamp("updated_at");
+
+                    return new Group(id, name, permissions, createdAt, updatedAt);
+                } else {
+                    throw new SQLException("failed to create group, no id");
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("failed to create group: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Group save(Group group) throws SQLException {
+        return this.create(group.getName(), group.getPermissions());
+    }
+
+    @Override
+    public Group update(Group group) throws SQLException {
+        String sql = "UPDATE groups SET name = ?, perms = ? WHERE id = ?;";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, group.getName());
+            stmt.setString(2, group.getPermissions().save());
+            stmt.setInt(3, group.getId());
+
+            stmt.executeUpdate();
+            return group;
+        } catch (SQLException e) {
+            throw new SQLException("failed to create group: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(int id) throws SQLException {
+        String sql = "DELETE FROM groups WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("failed to create group: " + e.getSQLState() + ", " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(String name) throws SQLException {
+        String sql = "DELETE FROM groups WHERE name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLException("failed to create group: " + e.getMessage());
+        }
+    }
