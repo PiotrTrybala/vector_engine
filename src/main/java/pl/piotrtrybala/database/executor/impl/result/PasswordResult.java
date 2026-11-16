@@ -6,6 +6,7 @@ import pl.piotrtrybala.database.auth.AuthenticationManager;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.types.PasswordCommand;
+import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.User;
 
 public class PasswordResult implements Result {
@@ -33,7 +34,7 @@ public class PasswordResult implements Result {
         user.setPassword(password);
 
         try {
-            user.update();
+            AuthenticationManager.getInstance().getUserRepo().update(user);
         } catch (Exception e) {
             String message = "failed to change password: " + e.getMessage();
             return message.toCharArray();

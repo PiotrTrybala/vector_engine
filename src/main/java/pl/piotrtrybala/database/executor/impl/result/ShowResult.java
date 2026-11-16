@@ -57,7 +57,7 @@ public class ShowResult implements Result {
             }
             List<Embedding> embeddingList;
             try {
-                embeddingList = MetadataStorage.getInstance().getEmbeddingRepository().list(currentCollection.getId());
+                embeddingList = MetadataStorage.getInstance().getEmbeddingRepository().findAll(currentCollection.getId());
             } catch (RepositoryException e) {
                 System.out.println(e.getMessage());
                 return "Failed to list embeddings".toCharArray();
@@ -69,8 +69,8 @@ public class ShowResult implements Result {
 
         List<Collection> collectionList;
         try {
-            collectionList = MetadataStorage.getInstance().getCollectionRepository().list(user.getId());
-        } catch (SQLException e) {
+            collectionList = MetadataStorage.getInstance().getCollectionRepository().findAll(user.getId());
+        } catch (RepositoryException e) {
             String message = "Failed to list collections: " + e.getMessage();
             return message.toCharArray();
         }

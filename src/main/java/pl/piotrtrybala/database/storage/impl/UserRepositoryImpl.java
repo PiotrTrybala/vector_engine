@@ -35,8 +35,8 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RepositoryException("failed to parse perms: " + e.getMessage());
         }
     }
-
-    public Optional<User> findByUsername(String username) throws Exception {
+    @Override
+    public Optional<User> findByUsername(String username) throws RepositoryException {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, username);

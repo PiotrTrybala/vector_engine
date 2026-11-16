@@ -1,6 +1,7 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
@@ -10,6 +11,7 @@ import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.types.UseCommand;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class UseResult implements Result {
 
@@ -39,11 +41,15 @@ public class UseResult implements Result {
         Collection collection = null;
 
         try {
-            collection = MetadataStorage.getInstance().getCollectionRepository().retrieve(
+            Optional<Collection> c = MetadataStorage.getInstance().getCollectionRepository().findById(
                     user.getId(),
                     collectionName
             );
-        } catch(SQLException e) {
+
+            if (c.isPresent()) {
+                collection = c.get();
+            }
+        } catch(RepositoryException e) {
             return "This collection could not be found".toCharArray();
         }
 

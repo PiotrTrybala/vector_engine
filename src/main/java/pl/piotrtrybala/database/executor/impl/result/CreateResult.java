@@ -2,6 +2,7 @@ package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.auth.AuthenticationManager;
 import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
@@ -41,8 +42,8 @@ public class CreateResult implements Result {
             int userId = user.getId();
             String name = query.getName();
             try {
-                Collection collection = repo.create(userId, name);
-            } catch (SQLException e) {
+                MetadataStorage.getInstance().getCollectionRepository().insert(new Collection(userId, name));
+            } catch (RepositoryException e) {
                 return "Failed to create collection".toCharArray();
             }
         } else {

@@ -19,6 +19,7 @@ import pl.piotrtrybala.database.query.types.InsertCommand;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class InsertResult implements Result {
 
@@ -55,28 +56,38 @@ public class InsertResult implements Result {
         Collection selectedCollection = session.getCurrentCollection();
         if (selectedCollection == null) {
             try {
-                selectedCollection = MetadataStorage.getInstance().getCollectionRepository().retrieve(user.getId(), collectionName);
-            } catch (SQLException e) {
+                Optional<Collection> collection = MetadataStorage.getInstance().getCollectionRepository().findById(user.getId(), collectionName);
+                if (collection.isPresent()) {
+                    selectedCollection = collection.get();
+                }
+            } catch (RepositoryException e) {
                 String message = "This collection does not exists: " + collectionName;
                 return message.toCharArray();
             }
         }
 
-        Embedding embedding = null;
+        if (selectedCollection == null) {
+            return "Collection was not found".toCharArray();
+        }
+
+        int id;
+
         try {
             float[] vector = embedder.create(data);
-            embedding = MetadataStorage.getInstance().getEmbeddingRepository().create(
-                selectedCollection.getId(),
-                    data,
-                    new HashMap<>()
+            id = MetadataStorage.getInstance().getEmbeddingRepository().insert(
+                    new Embedding(selectedCollection.getId(),
+                            data,
+                            new HashMap<>())
             );
-            EmbeddingManager.getInstance().getIndex().add(embedding.getId(), vector);
+
+            Optional<Embedding> emb = MetadataStorage.getInstance().getEmbeddingRepository().findById(id);
+            emb.ifPresent(embedding -> EmbeddingManager.getInstance().getIndex().add(embedding.getId(), vector));
         } catch (RepositoryException e) {
             LOGGER.error("could not add embedding: {}", e.getMessage());
             return "Failed to insert new embedding".toCharArray();
         }
 
-        String message = "New embedding added, id = " + embedding.getId();
+        String message = "New embedding added, id = " + id;
         return message.toCharArray();
     }
 }

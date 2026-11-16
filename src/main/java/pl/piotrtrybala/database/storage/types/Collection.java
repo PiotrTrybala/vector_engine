@@ -10,6 +10,10 @@ public class Collection {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    public Collection(int userId, String name) {
+        this.userId = userId;
+        this.name = name;
+    }
     public Collection(int id, int userId, String name, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;

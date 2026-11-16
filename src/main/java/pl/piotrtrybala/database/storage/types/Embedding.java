@@ -20,6 +20,13 @@ public class Embedding {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    public Embedding(int collectionId, byte[] content, HashMap<String, Object> metadata) {
+        this.collectionId = collectionId;
+        this.content = content;
+        this.metadata = metadata;
+    }
+
+
     public Embedding(int id, int collectionId, byte[] content, String contentHash, HashMap<String, Object> metadata, String metadataHash, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.collectionId = collectionId;

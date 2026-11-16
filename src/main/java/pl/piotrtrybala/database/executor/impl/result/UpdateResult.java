@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class UpdateResult implements Result {
 
@@ -44,11 +45,14 @@ public class UpdateResult implements Result {
 
         if (collection == null) {
             try {
-                collection = MetadataStorage.getInstance().getCollectionRepository().retrieve(
+                Optional<Collection> c = MetadataStorage.getInstance().getCollectionRepository().findById(
                         user.getId(),
                         collectionName
                 );
-            } catch(SQLException e) {
+                if (c.isPresent()) {
+                    collection = c.get();
+                }
+            } catch (RepositoryException e) {
                 String message = "Collection could not be found: " + collectionName;
                 return message.toCharArray();
             }
@@ -59,7 +63,7 @@ public class UpdateResult implements Result {
             if (where == null) {
                 List<Embedding> embeddingsList = new ArrayList<>();
                 try {
-                    embeddingsList = MetadataStorage.getInstance().getEmbeddingRepository().list(
+                    embeddingsList = MetadataStorage.getInstance().getEmbeddingRepository().findAll(
                             collection.getId()
                     );
                 } catch (RepositoryException e) {
@@ -71,11 +75,11 @@ public class UpdateResult implements Result {
                 try {
                     for (Embedding e : embeddingsList) {
                         e.setMetadata(metadata);
-                        e.update();
+                        MetadataStorage.getInstance().getEmbeddingRepository().update(e);
                     }
-                } catch(RepositoryException e) {
+                } catch (RepositoryException e) {
                     String message = "could not update embedding metadata";
-                    return  message.toCharArray();
+                    return message.toCharArray();
                 }
             } else {
                 // match expression
@@ -86,18 +90,20 @@ public class UpdateResult implements Result {
 
                 if (idValue != null) {
                     int id = (int) idValue;
-                    Embedding embedding = null;
+                    Optional<Embedding> embedding;
                     try {
-                        embedding = MetadataStorage.getInstance().getEmbeddingRepository().retrieve(id);
-                    } catch(RepositoryException e) {
+                        embedding = MetadataStorage.getInstance().getEmbeddingRepository().findById(id);
+                    } catch (RepositoryException e) {
                         String message = "Could not found embedding with id: " + id;
                         return message.toCharArray();
                     }
 
                     try {
-                        embedding.setMetadata(metadata);
-                        embedding.update();
-                    } catch(RepositoryException e) {
+                        if (embedding.isPresent()) {
+                            embedding.get().setMetadata(metadata);
+                            MetadataStorage.getInstance().getEmbeddingRepository().update(embedding.get());
+                        }
+                    } catch (RepositoryException e) {
                         String message = "could not update embedding with id: " + id;
                         return message.toCharArray();
                     }
@@ -116,7 +122,6 @@ public class UpdateResult implements Result {
         // UpdateEntityType.EMBEDDING
 
         // only id (modify only content of one embedding)
-
 
 
         return "Not implemented".toCharArray();

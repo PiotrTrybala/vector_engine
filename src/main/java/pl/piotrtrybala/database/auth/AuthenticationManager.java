@@ -15,6 +15,7 @@ import pl.piotrtrybala.database.storage.impl.GroupRepositoryImpl;
 import pl.piotrtrybala.database.storage.impl.UserGroupRepositoryImpl;
 import pl.piotrtrybala.database.storage.impl.UserRepositoryImpl;
 
+import javax.swing.text.html.Option;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -32,12 +33,20 @@ public class AuthenticationManager {
     private AuthenticationManager(Connection connection) {
         this.userRepo = new UserRepositoryImpl();
         this.groupRepo = new GroupRepositoryImpl();
-        this.userGroupRepo = new UserGroupRepositoryImpl(connection);
+        this.userGroupRepo = new UserGroupRepositoryImpl(this.userRepo, this.groupRepo);
         this.storage = new SessionStorageImpl();
     }
 
-    public synchronized SessionStorage getStorage() {
+    public SessionStorage getStorage() {
         return storage;
+    }
+
+    public GroupRepository getGroupRepo() {
+        return groupRepo;
+    }
+
+    public UserRepository getUserRepo() {
+        return userRepo;
     }
 
     public static synchronized void initialize(EntrypointConfig.AuthConfig config) {
@@ -59,27 +68,26 @@ public class AuthenticationManager {
         return instance;
     }
 
-    public User authenticateUser(String username, String password) throws Exception {
+    public Optional<User> authenticateUser(String username, String password) throws Exception {
         System.out.println("retrieving user: " + username);
-        User user = this.retrieveUser(username);
+        Optional<User> user = this.retrieveUser(username);
         System.out.println("user found: " + user.toString());
         String passwordHash = MetadataUtils.hashPassword(password);
-        if (!user.getPassword().equals(passwordHash)) {
+        if (user.isPresent() && !user.get().getPassword().equals(passwordHash)) {
             throw new Exception("failed to authenticate user");
         }
 
         return user;
     }
 
-    public User retrieveUser(String username) throws SQLException {
-        User user = this.userRepo.retrieve(username);
-        int groupId = this.userGroupRepo.retrieveGroupId(user.getId());
-        if (groupId != -1) {
-            Group group = this.groupRepo.retrieve(groupId);
-            user.setGroup(group);
-        }
-        user.setRepo(this.userRepo);
-        user.setuGroupRepo(this.userGroupRepo);
+    public Optional<User> retrieveUser(String username) throws RepositoryException {
+        Optional<User> user = this.userRepo.findByUsername(username);
+        if (user.isEmpty()) return Optional.empty();
+
+        Optional<Group> group = this.userGroupRepo.getGroupByUserId(user.get().getId());
+        if (group.isEmpty()) return user;
+
+        user.get().setGroup(group.get());
         return user;
     }
 

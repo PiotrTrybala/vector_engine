@@ -8,6 +8,8 @@ import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.types.AuthCommand;
 
+import java.util.Optional;
+
 public class AuthResult implements Result {
 
     private static final Logger LOGGER = LogManager.getLogger(AuthResult.class.getName());
@@ -23,12 +25,15 @@ public class AuthResult implements Result {
     @Override
     public char[] getResult() {
         try {
-            User user = this.instance.authenticateUser(
+            Optional<User> user = this.instance.authenticateUser(
                     query.getUsername(),
                     query.getPassword()
             );
+            if (user.isEmpty()) {
+                return "User is not found".toCharArray();
+            }
 
-            Session session = this.instance.getStorage().create(user);
+            Session session = this.instance.getStorage().create(user.get());
             LOGGER.info("created new session: {}", session);
         } catch (Exception e) {
             return "Failed to authenticate user".toCharArray();
