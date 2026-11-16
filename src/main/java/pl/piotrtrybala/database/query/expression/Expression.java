@@ -23,6 +23,9 @@ public class Expression {
     }
 
     public static Expression parse(List<String> tokens) throws ExpressionException {
+        if (tokens.isEmpty()) {
+            return null;
+        }
         Expression expression = new Expression();
         expression.root = Node.parse(tokens);
         return expression;

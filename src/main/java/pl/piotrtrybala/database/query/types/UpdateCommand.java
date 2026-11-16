@@ -17,7 +17,7 @@ public class UpdateCommand implements Command {
     private HashMap<String, Object> metadata = new HashMap<>();
     private byte[] data = null;
 
-    private Expression whereClause;
+    private Expression where = null;
 
     public UpdateCommand(String query) throws CommandException {
         List<String> parts = CommandUtils.preprocess(query);
@@ -30,7 +30,7 @@ public class UpdateCommand implements Command {
             this.metadata = CommandUtils.parseMetadata(parts);
         }
 
-        this.whereClause = Expression.parse(CommandUtils.skipUntilKeyword(parts, Keyword.WHERE));
+        this.where = Expression.parse(CommandUtils.skipUntilKeyword(parts, Keyword.WHERE));
     }
 
     public UpdateEntityType getType() {
@@ -45,17 +45,17 @@ public class UpdateCommand implements Command {
         return data;
     }
 
-    public Expression getWhereClause() {
-        return whereClause;
+    public Expression getWhere() {
+        return where;
     }
 
     @Override
     public String toString() {
-        return "UpdateQuery{" +
+        return "UpdateCommand{" +
                 "type=" + type +
                 ", metadata=" + metadata +
                 ", data=" + Arrays.toString(data) +
-                ", whereClause=" + whereClause +
+                ", where=" + where +
                 '}';
     }
 

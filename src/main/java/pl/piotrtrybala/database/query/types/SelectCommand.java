@@ -18,7 +18,7 @@ public class SelectCommand implements Command {
 
     private final String collection;
 
-    private Expression expression = null;
+    private Expression where = null;
 
     private final int limit;
 
@@ -35,7 +35,7 @@ public class SelectCommand implements Command {
 
         this.collection = CommandUtils.parseCollectionName(tokens);
 
-        this.expression = Expression.parse(CommandUtils.retrieveExpressionTokens(tokens));
+        this.where = Expression.parse(CommandUtils.retrieveExpressionTokens(tokens));
 
         this.limit = CommandUtils.parseLimit(tokens);
     }
@@ -53,7 +53,7 @@ public class SelectCommand implements Command {
     }
 
     public Expression getExpression() {
-        return expression;
+        return where;
     }
 
     public int getLimit() {
@@ -66,7 +66,7 @@ public class SelectCommand implements Command {
                 "type=" + type +
                 ", metadata=" + metadata +
                 ", collection='" + collection + '\'' +
-                ", expression=" + expression +
+                ", where=" + where +
                 ", limit=" + limit +
                 '}';
     }
