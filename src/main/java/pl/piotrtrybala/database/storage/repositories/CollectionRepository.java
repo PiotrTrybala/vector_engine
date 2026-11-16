@@ -9,6 +9,8 @@ public interface CollectionRepository {
 
     List<Collection> list(int userId) throws SQLException;
 
+    <T> List<Collection> search(int userId, T options);
+
     Collection retrieve(int id) throws SQLException;
 
     Collection retrieve(int userId, String name) throws SQLException;

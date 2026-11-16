@@ -10,6 +10,7 @@ public interface EmbeddingRepository {
 
     List<Embedding> list(int collectionId) throws RepositoryException;
 
+
     Embedding retrieve(int id) throws RepositoryException;
 
     Embedding retrieve(int collectionId, String name) throws RepositoryException;

@@ -39,6 +39,14 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     }
 
     @Override
+    public <T> List<Collection> search(int userId, T options) {
+
+
+
+        return List.of();
+    }
+
+    @Override
     public Collection retrieve(int id) throws SQLException {
         String sql = "SELECT * FROM collections WHERE id = ?";
 

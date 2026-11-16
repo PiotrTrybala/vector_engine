@@ -1,5 +1,11 @@
 package pl.piotrtrybala.database.storage.types;
 
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
+import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.repositories.EmbeddingRepository;
+
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 
@@ -14,6 +20,12 @@ public class Embedding {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
+    private EmbeddingRepository repository;
+
+    public Embedding(EmbeddingRepository repository) {
+        this.repository = repository;
+    }
+
     public Embedding(int id, int collectionId, byte[] content, String contentHash, HashMap<String, Object> metadata, String metadataHash, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.collectionId = collectionId;
@@ -23,6 +35,14 @@ public class Embedding {
         this.metadataHash = metadataHash;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public void flush() throws RepositoryException {
+        this.repository.save(this);
+    }
+
+    public void update() throws RepositoryException {
+        this.repository.update(this);
     }
 
     public int getId() {
@@ -63,6 +83,9 @@ public class Embedding {
 
     public void setMetadata(HashMap<String, Object> metadata) {
         this.metadata = metadata;
+        this.metadataHash = EmbeddingUtils.sha256hash(
+                MetadataUtils.save(metadata)
+        );
     }
 
     public String getMetadataHash() {

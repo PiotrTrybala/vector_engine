@@ -35,7 +35,7 @@ public class InsertResult implements Result {
 
         String collectionName = query.getCollectionName();
         EmbeddingType embeddingType = query.getType();
-        byte[] data = EmbeddingUtils.toBytes(this.query.getData());
+        byte[] data = this.query.getData();
 
         Embedder embedder = null;
         try {

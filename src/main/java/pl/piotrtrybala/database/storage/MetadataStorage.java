@@ -12,8 +12,8 @@ public class MetadataStorage {
 
     private static MetadataStorage instance;
 
-    private CollectionRepository collectionRepository;
-    private EmbeddingRepository embeddingRepository;
+    private final CollectionRepository collectionRepository;
+    private final EmbeddingRepository embeddingRepository;
 
     private MetadataStorage(Connection connection) {
         this.collectionRepository = new CollectionRepositoryImpl(connection);
