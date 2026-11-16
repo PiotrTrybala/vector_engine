@@ -23,7 +23,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 
             stmt.setInt(1, id);
             try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next()) throw new RepositoryException("could not found user: " + id);
+                if (!result.next()) throw new RepositoryException("could not found group: " + id);
 
                 String name = result.getString("name");
                 String rawPerms = result.getString("perms");

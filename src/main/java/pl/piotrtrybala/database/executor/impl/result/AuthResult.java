@@ -36,6 +36,7 @@ public class AuthResult implements Result {
             Session session = this.instance.getStorage().create(user.get());
             LOGGER.info("created new session: {}", session);
         } catch (Exception e) {
+            LOGGER.error("failed to authenticate user: {}", e.getMessage());
             return "Failed to authenticate user".toCharArray();
         }
         return "OK".toCharArray();

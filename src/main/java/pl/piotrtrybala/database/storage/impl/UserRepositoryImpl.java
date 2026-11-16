@@ -1,5 +1,7 @@
 package pl.piotrtrybala.database.storage.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.permissions.Permissions;
 import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.RepositoryException;
@@ -11,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserRepositoryImpl implements UserRepository {
+
+    private static final Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class.getName());
+
     @Override
     public Optional<User> findById(Integer id) throws RepositoryException {
 
@@ -37,7 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
     }
     @Override
     public Optional<User> findByUsername(String username) throws RepositoryException {
-        String sql = "SELECT * FROM users WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE username = ?";
+        LOGGER.info("looking for user with username: {}", username);
         try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
             stmt.setString(1, username);
             try (ResultSet result = stmt.executeQuery()) {

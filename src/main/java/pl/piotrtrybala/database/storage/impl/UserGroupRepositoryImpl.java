@@ -49,7 +49,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
                 if (!result.next()) return Optional.empty();
 
                 int groupId = result.getInt("gid");
-                return groupRepository.findById(userId);
+                return groupRepository.findById(groupId);
             }
         } catch (SQLException e) {
             throw new RepositoryException("failed to retrieve group id: " + e.getMessage());

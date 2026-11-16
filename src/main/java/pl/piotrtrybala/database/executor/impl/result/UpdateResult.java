@@ -58,6 +58,10 @@ public class UpdateResult implements Result {
             }
         }
 
+        if (collection == null) {
+            return "No collection was selected".toCharArray();
+        }
+
         if (type == UpdateEntityType.METADATA) {
 
             if (where == null) {

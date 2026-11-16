@@ -1,5 +1,7 @@
 package pl.piotrtrybala.database.auth;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.storage.MetadataUtils;
 import pl.piotrtrybala.database.storage.RepositoryException;
@@ -21,6 +23,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class AuthenticationManager {
+
+    private static final Logger LOGGER = LogManager.getLogger(AuthenticationManager.class.getName());
 
     private final UserRepository userRepo;
     private final GroupRepository groupRepo;
@@ -69,9 +73,8 @@ public class AuthenticationManager {
     }
 
     public Optional<User> authenticateUser(String username, String password) throws Exception {
-        System.out.println("retrieving user: " + username);
+        LOGGER.info("authenticating user: {}", username);
         Optional<User> user = this.retrieveUser(username);
-        System.out.println("user found: " + user.toString());
         String passwordHash = MetadataUtils.hashPassword(password);
         if (user.isPresent() && !user.get().getPassword().equals(passwordHash)) {
             throw new Exception("failed to authenticate user");
