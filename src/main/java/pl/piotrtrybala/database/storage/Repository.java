@@ -1,21 +1,20 @@
 package pl.piotrtrybala.database.storage;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public interface Repository<T, ID, S> {
+public interface Repository<T, ID> {
 
-    Optional<T> findById(ID id) throws SQLException;
+    Optional<T> findById(ID id) throws RepositoryException;
 
-    List<T> findAll() throws SQLException;
+    List<T> findAll() throws RepositoryException;
 
-    List<T> search(S options) throws SQLException;
+    <S> List<T> search(S options) throws RepositoryException;
 
-    ID insert(T entity) throws SQLException;
+    ID insert(T entity) throws RepositoryException;
 
-    boolean update(T entity) throws SQLException;
+    boolean update(T entity) throws RepositoryException;
 
-    boolean delete(ID id) throws SQLException;
+    boolean delete(ID id) throws RepositoryException;
 
 }

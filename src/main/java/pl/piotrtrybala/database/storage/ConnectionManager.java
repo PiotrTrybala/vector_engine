@@ -3,6 +3,7 @@ package pl.piotrtrybala.database.storage;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -27,6 +28,10 @@ public class ConnectionManager {
 
     public static Connection getConnection() throws SQLException {
         return source.getConnection();
+    }
+
+    public static DataSource getDataSource() {
+        return source;
     }
 
     public static void shutdown() {
