@@ -4,7 +4,7 @@ import pl.piotrtrybala.database.query.Command;
 import pl.piotrtrybala.database.query.CommandClassifier;
 import pl.piotrtrybala.database.query.CommandException;
 import pl.piotrtrybala.database.query.CommandHandler;
-import pl.piotrtrybala.database.query.types.UpdateQuery;
+import pl.piotrtrybala.database.query.types.UpdateCommand;
 
 public class UpdateCommandHandler implements CommandHandler {
     @Override
@@ -14,6 +14,6 @@ public class UpdateCommandHandler implements CommandHandler {
 
     @Override
     public Command parse(String query) throws CommandException {
-        return new UpdateQuery(query);
+        return new UpdateCommand(query);
     }
 }

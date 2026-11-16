@@ -1,13 +1,13 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.SelectQuery;
+import pl.piotrtrybala.database.query.types.SelectCommand;
 
 public class SelectResult implements Result {
 
-    private final SelectQuery command;
+    private final SelectCommand command;
 
-    public SelectResult(SelectQuery command) {
+    public SelectResult(SelectCommand command) {
         this.command = command;
     }
 

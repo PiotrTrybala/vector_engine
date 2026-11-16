@@ -4,7 +4,7 @@ import pl.piotrtrybala.database.query.Command;
 import pl.piotrtrybala.database.query.CommandClassifier;
 import pl.piotrtrybala.database.query.CommandException;
 import pl.piotrtrybala.database.query.CommandHandler;
-import pl.piotrtrybala.database.query.types.ShowQuery;
+import pl.piotrtrybala.database.query.types.ShowCommand;
 
 public class ShowCommandHandler implements CommandHandler {
     @Override
@@ -14,6 +14,6 @@ public class ShowCommandHandler implements CommandHandler {
 
     @Override
     public Command parse(String query) throws CommandException {
-        return new ShowQuery(query);
+        return new ShowCommand(query);
     }
 }

@@ -4,7 +4,7 @@ import pl.piotrtrybala.database.query.Command;
 import pl.piotrtrybala.database.query.CommandClassifier;
 import pl.piotrtrybala.database.query.CommandException;
 import pl.piotrtrybala.database.query.CommandHandler;
-import pl.piotrtrybala.database.query.types.HandshakeQuery;
+import pl.piotrtrybala.database.query.types.HandshakeCommand;
 
 public class HandshakeCommandHandler implements CommandHandler {
     @Override
@@ -14,6 +14,6 @@ public class HandshakeCommandHandler implements CommandHandler {
 
     @Override
     public Command parse(String query) {
-        return new HandshakeQuery();
+        return new HandshakeCommand();
     }
 }

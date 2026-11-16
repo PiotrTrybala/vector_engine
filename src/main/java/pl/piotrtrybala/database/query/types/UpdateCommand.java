@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class UpdateQuery implements Command {
+public class UpdateCommand implements Command {
 
     private final UpdateEntityType type;
 
@@ -19,7 +19,7 @@ public class UpdateQuery implements Command {
 
     private Expression whereClause;
 
-    public UpdateQuery(String query) throws CommandException {
+    public UpdateCommand(String query) throws CommandException {
         List<String> parts = CommandUtils.preprocess(query);
 
         this.type = UpdateEntityType.valueOf(parts.get(1).toUpperCase());

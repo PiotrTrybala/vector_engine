@@ -5,16 +5,16 @@ import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.enums.UpdateEntityType;
 import pl.piotrtrybala.database.query.expression.Expression;
-import pl.piotrtrybala.database.query.types.UpdateQuery;
+import pl.piotrtrybala.database.query.types.UpdateCommand;
 import pl.piotrtrybala.database.storage.types.User;
 
 import java.util.HashMap;
 
 public class UpdateResult implements Result {
 
-    private final UpdateQuery command;
+    private final UpdateCommand command;
 
-    public UpdateResult(UpdateQuery command) {
+    public UpdateResult(UpdateCommand command) {
         this.command = command;
     }
 

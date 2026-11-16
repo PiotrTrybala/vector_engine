@@ -3,10 +3,10 @@ package pl.piotrtrybala.database.query.types;
 import pl.piotrtrybala.database.query.Command;
 import pl.piotrtrybala.database.query.enums.QueryType;
 
-public class HandshakeQuery implements Command {
+public class HandshakeCommand implements Command {
 
 
-    public HandshakeQuery() {}
+    public HandshakeCommand() {}
 
     @Override
     public String toString() {

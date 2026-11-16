@@ -15,7 +15,7 @@ import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.storage.types.Embedding;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.enums.EmbeddingType;
-import pl.piotrtrybala.database.query.types.InsertQuery;
+import pl.piotrtrybala.database.query.types.InsertCommand;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -24,9 +24,9 @@ public class InsertResult implements Result {
 
     private static final Logger LOGGER = LogManager.getLogger(InsertResult.class.getName());
 
-    private final InsertQuery query;
+    private final InsertCommand query;
 
-    public InsertResult(InsertQuery query) {
+    public InsertResult(InsertCommand query) {
         this.query = query;
     }
 

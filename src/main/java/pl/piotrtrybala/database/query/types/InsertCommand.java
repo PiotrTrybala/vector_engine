@@ -9,7 +9,7 @@ import pl.piotrtrybala.database.query.enums.QueryType;
 import java.util.Arrays;
 import java.util.List;
 
-public class InsertQuery implements Command {
+public class InsertCommand implements Command {
 
     private final static int COLLECTION_NAME_INDEX = 2;
     private final static int TYPE_INDEX = 4;
@@ -18,7 +18,7 @@ public class InsertQuery implements Command {
     private final EmbeddingType type;
     private final byte[] data;
 
-    public InsertQuery(String query) throws CommandException {
+    public InsertCommand(String query) throws CommandException {
         List<String> parts = CommandUtils.preprocess(query);
 
         this.collectionName = parts.get(COLLECTION_NAME_INDEX).trim();

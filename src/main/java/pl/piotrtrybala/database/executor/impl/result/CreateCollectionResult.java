@@ -9,16 +9,16 @@ import pl.piotrtrybala.database.storage.repositories.CollectionRepository;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.CreateCollectionQuery;
+import pl.piotrtrybala.database.query.types.CreateCommand;
 
 import java.sql.SQLException;
 
 public class CreateCollectionResult implements Result {
 
     private final SessionStorage sessionStorage;
-    private final CreateCollectionQuery query;
+    private final CreateCommand query;
 
-    public CreateCollectionResult(CreateCollectionQuery query) {
+    public CreateCollectionResult(CreateCommand query) {
         this.sessionStorage = AuthenticationManager.getInstance().getStorage();
         this.query = query;
     }

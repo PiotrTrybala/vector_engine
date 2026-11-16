@@ -7,16 +7,16 @@ import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.UseCollectionQuery;
+import pl.piotrtrybala.database.query.types.UseCommand;
 
 import java.sql.SQLException;
 
 public class UseCollectionResult implements Result {
 
     private final SessionStorage sessionStorage;
-    private final UseCollectionQuery query;
+    private final UseCommand query;
 
-    public UseCollectionResult(UseCollectionQuery query) {
+    public UseCollectionResult(UseCommand query) {
         this.sessionStorage = AuthenticationManager.getInstance().getStorage();
         this.query = query;
     }

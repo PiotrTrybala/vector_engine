@@ -6,11 +6,11 @@ import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
 
-public class CreateCollectionQuery implements Command {
+public class CreateCommand implements Command {
 
     private final String name;
 
-    public CreateCollectionQuery(String query) {
+    public CreateCommand(String query) {
         List<String> parts = CommandUtils.preprocess(query);
 
         this.name = parts.getLast().trim();

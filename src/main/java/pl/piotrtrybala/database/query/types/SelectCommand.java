@@ -10,7 +10,7 @@ import pl.piotrtrybala.database.query.expression.Expression;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectQuery implements Command {
+public class SelectCommand implements Command {
 
     private final SelectType type;
 
@@ -22,7 +22,7 @@ public class SelectQuery implements Command {
 
     private final int limit;
 
-    public SelectQuery(String query) throws CommandException {
+    public SelectCommand(String query) throws CommandException {
         List<String> tokens = CommandUtils.preprocess(query);
 
         this.type = CommandUtils.parseSelectType(tokens);

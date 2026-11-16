@@ -6,12 +6,12 @@ import pl.piotrtrybala.database.query.enums.QueryType;
 
 import java.util.List;
 
-public class AuthQuery implements Command {
+public class AuthCommand implements Command {
 
     private final String username;
     private final String password;
 
-    public AuthQuery(String query) {
+    public AuthCommand(String query) {
         List<String> parts = CommandUtils.preprocess(query);
 
         int USERNAME_INDEX = 1;
@@ -20,7 +20,7 @@ public class AuthQuery implements Command {
         this.password = parts.get(PASSWORD_INDEX).trim();
     }
 
-    public AuthQuery(String username, String password) {
+    public AuthCommand(String username, String password) {
         this.username = username;
         this.password = password;
     }

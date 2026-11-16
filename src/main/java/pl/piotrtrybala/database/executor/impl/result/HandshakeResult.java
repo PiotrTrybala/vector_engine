@@ -1,11 +1,11 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.HandshakeQuery;
+import pl.piotrtrybala.database.query.types.HandshakeCommand;
 
 public class HandshakeResult implements Result {
 
-    public HandshakeResult(HandshakeQuery query) {
+    public HandshakeResult(HandshakeCommand query) {
     }
 
     @Override
