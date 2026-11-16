@@ -33,32 +33,14 @@ public class CommandClassifier {
     public static boolean isUpdateQuery(String query) throws CommandException {
         List<String> tokens = CommandUtils.preprocess(query);
 
-        if (!Keyword.match(tokens.getFirst(), Keyword.UPDATE)) return false;
-        if (!Keyword.match(tokens.get(2), Keyword.VALUE)) return false;
-
-//        int whereIndex = -1;
-//        for (int i = 2; i < tokens.size(); i++) {
-//            if (Keyword.is(tokens.get(i), Keyword.WHERE)) {
-//                if (whereIndex == -1) {
-//                    whereIndex = i;
-//                }
-//            }
-//        }
-        int whereIndex = CommandUtils.findKeywordIndex(tokens, Keyword.WHERE);
-
-        return whereIndex != -1;
+        return Keyword.match(tokens.getFirst(), Keyword.UPDATE) &&
+                Keyword.match(tokens.get(2), Keyword.TYPE) &&
+                Keyword.match(tokens.get(4), Keyword.VALUE);
     }
 
     public static boolean isSelectQuery(String query) throws CommandException {
         List<String> tokens = CommandUtils.preprocess(query);
 
-//        int selectIndex = -1;
-//        for (int i = 0; i < tokens.size(); i++) {
-//            if (Keyword.is(tokens.get(i), Keyword.SELECT)) {
-//                selectIndex = i;
-//                break;
-//            }
-//        }
         int selectIndex = CommandUtils.findKeywordIndex(tokens, Keyword.SELECT);
 
         return selectIndex == 0 && tokens.size() >= 4;

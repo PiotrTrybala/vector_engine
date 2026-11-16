@@ -11,12 +11,12 @@ import pl.piotrtrybala.database.query.types.UseCommand;
 
 import java.sql.SQLException;
 
-public class UseCollectionResult implements Result {
+public class UseResult implements Result {
 
     private final SessionStorage sessionStorage;
     private final UseCommand query;
 
-    public UseCollectionResult(UseCommand query) {
+    public UseResult(UseCommand query) {
         this.sessionStorage = AuthenticationManager.getInstance().getStorage();
         this.query = query;
     }

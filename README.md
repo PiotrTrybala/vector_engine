@@ -112,7 +112,7 @@ Result:
 
 
 
-        UPDATE <METADATA | EMBEDDING> VALUE <BEGIN `<content>` END | [key:value as int,key:value as string, key:value as double, key:value as boolean] WHERE <expression | vector=<embedding> OR id = <value> >;
+        UPDATE <collection_name> TYPE <METADATA | EMBEDDING> VALUE <BEGIN `<content>` END | [key:value as int,key:value as string, key:value as double, key:value as boolean] WHERE <expression | vector=<embedding> OR id = <value> >;
 
 
 

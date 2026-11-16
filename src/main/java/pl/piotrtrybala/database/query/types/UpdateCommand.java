@@ -14,6 +14,8 @@ public class UpdateCommand implements Command {
 
     private final UpdateEntityType type;
 
+    private final String collectionName;
+
     private HashMap<String, Object> metadata = new HashMap<>();
     private byte[] data = null;
 
@@ -22,7 +24,9 @@ public class UpdateCommand implements Command {
     public UpdateCommand(String query) throws CommandException {
         List<String> parts = CommandUtils.preprocess(query);
 
-        this.type = UpdateEntityType.valueOf(parts.get(1).toUpperCase());
+        this.collectionName = parts.get(1).trim();
+
+        this.type = UpdateEntityType.valueOf(parts.get(3).toUpperCase());
 
         if (this.type == UpdateEntityType.EMBEDDING) {
             this.data = CommandUtils.parseEmbeddingData(parts);
@@ -31,6 +35,10 @@ public class UpdateCommand implements Command {
         }
 
         this.where = Expression.parse(CommandUtils.skipUntilKeyword(parts, Keyword.WHERE));
+    }
+
+    public String getCollectionName() {
+        return collectionName;
     }
 
     public UpdateEntityType getType() {

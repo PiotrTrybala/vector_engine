@@ -6,6 +6,7 @@ import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.query.enums.UpdateEntityType;
 import pl.piotrtrybala.database.query.expression.Expression;
 import pl.piotrtrybala.database.query.types.UpdateCommand;
+import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.User;
 
 import java.util.HashMap;
@@ -30,16 +31,34 @@ public class UpdateResult implements Result {
         UpdateEntityType type = command.getType();
         HashMap<String, Object> metadata = command.getMetadata();
         byte[] data = command.getData();
-        Expression expression = command.getWhereClause();
+        Expression expression = command.getWhere();
 
 
 
         if (type == UpdateEntityType.METADATA) {
+
+
+
+            if (expression == null) {
+
+                MetadataStorage.getInstance().getEmbeddingRepository().list();
+
+                // update all
+            } else {
+                // match expression
+                // can match both id and vector
+            }
+
+
             return "OK".toCharArray();
         }
 
         // UpdateEntityType.EMBEDDING
 
-        return "OK".toCharArray();
+        // only id (modify only content of one embedding)
+
+
+
+        return "Not implemented".toCharArray();
     }
 }
