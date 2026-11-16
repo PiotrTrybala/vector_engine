@@ -16,3 +16,4 @@ public interface Repository<T, ID> {
     boolean delete(ID id) throws RepositoryException;
 
 }
+

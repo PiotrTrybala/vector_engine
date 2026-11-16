@@ -1,28 +1,18 @@
 package pl.piotrtrybala.database.storage.repositories;
 
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
+import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.Repository;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Embedding;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
-public interface EmbeddingRepository {
-
-    List<Embedding> list(int collectionId) throws RepositoryException;
-
-
-    Embedding retrieve(int id) throws RepositoryException;
-
-    Embedding retrieve(int collectionId, String name) throws RepositoryException;
-
-    Embedding create(int collectionId, byte[] data, HashMap<String, Object> metadata) throws RepositoryException;
-
-    Embedding save(Embedding embedding) throws RepositoryException;
-
-    Embedding update(Embedding embedding) throws RepositoryException;
-
-    void delete(int id) throws RepositoryException;
-
-    void delete(int collectionId, String contentHash) throws RepositoryException;
-
+public interface EmbeddingRepository extends Repository<Embedding, Integer> {
+    List<Embedding> findAll(int collectionId) throws RepositoryException;
 }

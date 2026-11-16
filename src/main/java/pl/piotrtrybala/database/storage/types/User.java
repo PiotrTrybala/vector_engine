@@ -27,12 +27,6 @@ public class User {
     private static final String CHARSET = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
     private static final int PASSWORD_LENGTH = 16;
 
-    public User(UserRepository repo, UserGroupRepository uGroupRepo) {
-        this.repo = repo;
-        this.uGroupRepo = uGroupRepo;
-        this.permissions = new Permissions();
-    }
-
     public User(int id, String username, String password, boolean root, Permissions permissions, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.username = username;
@@ -46,23 +40,6 @@ public class User {
 
     public void assignGroup(Group group) {
         this.group = group;
-    }
-
-    public void flush() throws SQLException {
-        User saved = this.repo.save(this);
-
-        if (this.group != null) {
-            this.uGroupRepo.save(saved);
-        }
-    }
-
-    public void update() throws SQLException {
-        User user = this.repo.update(this);
-
-        if (this.group != null) {
-            this.uGroupRepo.save(user);
-        }
-
     }
 
     public static String generatePassword() {

@@ -16,8 +16,8 @@ public class MetadataStorage {
     private final EmbeddingRepository embeddingRepository;
 
     private MetadataStorage(Connection connection) {
-        this.collectionRepository = new CollectionRepositoryImpl(connection);
-        this.embeddingRepository = new EmbeddingRepositoryImpl(connection);
+        this.collectionRepository = new CollectionRepositoryImpl();
+        this.embeddingRepository = new EmbeddingRepositoryImpl();
     }
 
     public static synchronized void initialize() {

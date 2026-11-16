@@ -3,8 +3,9 @@ package pl.piotrtrybala.database.storage.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
-import pl.piotrtrybala.database.storage.repositories.EmbeddingRepository;
+import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.repositories.EmbeddingRepository;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Embedding;
 
@@ -12,272 +13,134 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class EmbeddingRepositoryImpl implements EmbeddingRepository {
 
-    private final Connection connection;
     private final Logger LOGGER = LogManager.getLogger(EmbeddingRepositoryImpl.class.getName());
 
-    public EmbeddingRepositoryImpl(Connection connection) {
-        this.connection = connection;
+    public EmbeddingRepositoryImpl() {
     }
 
     @Override
-    public List<Embedding> list(int collectionId) throws RepositoryException {
-
-        String sql = "SELECT * FROM embeddings WHERE cid = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            List<Embedding> embeddings = new ArrayList<>();
-            stmt.setInt(1, collectionId);
-
-            ResultSet result = stmt.executeQuery();
-            while(result.next()) {
-                int id=  result.getInt("id");
-                byte[] content = result.getBytes("content");
-                String contentHash = result.getString("content_hash");
-                HashMap<String, Object> metadata = MetadataUtils.parse(result.getBytes("metadata"));
-                String metadataHash = result.getString("metadata_hash");
-                Timestamp createdAt = result.getTimestamp("created_at");
-                Timestamp updatedAt = result.getTimestamp("updated_at");
-
-                embeddings.add(new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt));
-            }
-            return embeddings;
-        } catch(SQLException e) {
-            throw new RepositoryException("failed to retrieve collections");
-        }
-    }
-
-    @Override
-    public Embedding retrieve(int id) throws RepositoryException {
-
+    public Optional<Embedding> findById(Integer id) throws RepositoryException {
         String sql = "SELECT * FROM embeddings WHERE id = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
             ResultSet result = stmt.executeQuery();
 
             if (result.next()) {
-                int collectionId =  result.getInt("cid");
+                int collectionId = result.getInt("cid");
                 byte[] content = result.getBytes("content");
                 String contentHash = result.getString("content_hash");
                 HashMap<String, Object> metadata = MetadataUtils.parse(result.getBytes("metadata"));
                 String metadataHash = result.getString("metadata_hash");
-                Timestamp createdAt = result.getTimestamp("created_at");
-                Timestamp updatedAt = result.getTimestamp("updated_at");
+                java.sql.Timestamp createdAt = result.getTimestamp("created_at");
+                java.sql.Timestamp updatedAt = result.getTimestamp("updated_at");
 
-                return new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt);
+                return Optional.of(new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt));
             } else {
                 throw new RepositoryException("embedding could not be found");
             }
 
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             throw new RepositoryException("failed to retrieve embedding with id: " + id);
         }
     }
 
     @Override
-    public Embedding retrieve(int collectionId, String contentHash) throws RepositoryException {
-        String sql = "SELECT * FROM embeddings WHERE cid = ? AND content_hash = ?;";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setInt(1, collectionId);
-            stmt.setString(2, contentHash);
-
-            ResultSet result = stmt.executeQuery();
-
-            if (result.next()) {
-                int id =  result.getInt("id");
-                byte[] content = result.getBytes("content");
-                HashMap<String, Object> metadata = MetadataUtils.parse(result.getBytes("metadata"));
-                String metadataHash = result.getString("metadata_hash");
-                Timestamp createdAt = result.getTimestamp("created_at");
-                Timestamp updatedAt = result.getTimestamp("updated_at");
-
-                return new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt);
-            } else {
-                throw new RepositoryException("embedding could not be found");
-            }
-
-        } catch(SQLException e) {
-            throw new RepositoryException("failed to retrieve embedding with cid: " + collectionId);
-        }
+    public List<Embedding> findAll() throws RepositoryException {
+        return List.of();
     }
 
     @Override
-    public Embedding create(int collectionId, byte[] data, HashMap<String, Object> metadata) throws RepositoryException {
+    public List<Embedding> findAll(int collectionId) throws RepositoryException {
+        String sql = "SELECT * FROM embeddings WHERE cid = ?";
 
-        String sql = "INSERT INTO embeddings(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+            List<Embedding> embeddings = new ArrayList<>();
+            stmt.setInt(1, collectionId);
 
-        try {
-            connection.getAutoCommit();
-            connection.setAutoCommit(false);
+            try (ResultSet result = stmt.executeQuery()) {
+                while (result.next()) {
+                    int id = result.getInt("id");
+                    byte[] content = result.getBytes("content");
+                    String contentHash = result.getString("content_hash");
+                    HashMap<String, Object> metadata = MetadataUtils.parse(result.getBytes("metadata"));
+                    String metadataHash = result.getString("metadata_hash");
+                    Timestamp createdAt = result.getTimestamp("created_at");
+                    Timestamp updatedAt = result.getTimestamp("updated_at");
 
-            int id;
-            String contentHash = EmbeddingUtils.sha256hash(data);
-            byte[] parsedMetadata = MetadataUtils.save(metadata);
-            String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
-            Timestamp createdAt;
-            Timestamp updatedAt;
-
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, collectionId);
-                stmt.setBytes(2, data);
-                stmt.setString(3, contentHash);
-                stmt.setBytes(4, parsedMetadata);
-                stmt.setString(5, metadataHash);
-
-                try (ResultSet inserted = stmt.executeQuery()) {
-                    if (inserted.next()) {
-                        id = inserted.getInt("id");
-                        createdAt = inserted.getTimestamp("created_at");
-                        updatedAt = inserted.getTimestamp("updated_at");
-                    } else {
-                        connection.rollback();
-                        throw new RepositoryException("failed to create embedding: no row returned");
-                    }
+                    embeddings.add(new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt));
                 }
             }
 
-            connection.commit();
-            return new Embedding(id, collectionId, data, contentHash, metadata, metadataHash, createdAt, updatedAt);
+            return embeddings;
         } catch (SQLException e) {
-            LOGGER.error("failed to commit transaction: {}", e.getMessage());
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RepositoryException("failed to ");
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                LOGGER.error("failed to insert embedding: {}", e.getMessage());
-            }
+            throw new RepositoryException("failed to retrieve embeddings");
         }
-
-        return null;
     }
 
     @Override
-    public Embedding save(Embedding embedding) throws RepositoryException {
-        return this.create(
-                embedding.getCollectionId(),
-                embedding.getContent(),
-                embedding.getMetadata()
-                );
+    public Integer insert(Embedding entity) throws RepositoryException {
+        String sql = "INSERT INTO embeddings(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
+
+        byte[] content = entity.getContent();
+        HashMap<String, Object> metadata = entity.getMetadata();
+        String contentHash = EmbeddingUtils.sha256hash(content);
+        byte[] parsedMetadata = MetadataUtils.save(metadata);
+        String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
+
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, entity.getCollectionId());
+            stmt.setBytes(2, entity.getContent());
+            stmt.setString(3, contentHash);
+            stmt.setBytes(4, parsedMetadata);
+            stmt.setString(5, metadataHash);
+
+            try (ResultSet inserted = stmt.executeQuery()) {
+                if (!inserted.next()) {
+                    throw new RepositoryException("Failed to create embedding: no row returned");
+                }
+                return inserted.getInt("id");
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("failed to insert new embedding: " + e.getMessage());
+        }
     }
 
     @Override
-    public Embedding update(Embedding embedding) throws RepositoryException {
+    public boolean update(Embedding entity) throws RepositoryException {
         String sql = "UPDATE embeddings SET collectionId = ?, content = ?, content_hash = ?, metadata = ?, metadata_hash = ? WHERE id = ?";
-        try {
-            connection.getAutoCommit();
-            connection.setAutoCommit(false);
+        String contentHash = EmbeddingUtils.sha256hash(entity.getContent());
+        byte[] parsedMetadata = MetadataUtils.save(entity.getMetadata());
+        String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
 
-            String contentHash = EmbeddingUtils.sha256hash(embedding.getContent());
-            byte[] parsedMetadata = MetadataUtils.save(embedding.getMetadata());
-            String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, entity.getCollectionId());
+            stmt.setBytes(2, entity.getContent());
+            stmt.setString(3, contentHash);
+            stmt.setBytes(4, parsedMetadata);
+            stmt.setString(5, metadataHash);
+            stmt.setInt(6, entity.getId());
 
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, embedding.getCollectionId());
-                stmt.setBytes(2, embedding.getContent());
-                stmt.setString(3, contentHash);
-                stmt.setBytes(4, parsedMetadata);
-                stmt.setString(5, metadataHash);
-                stmt.setInt(6, embedding.getId());
-
-                stmt.executeUpdate();
-
-            } catch(SQLException e) {
-                LOGGER.error("failed to update embedding: {}", e.getMessage());
-                throw new RepositoryException("failed to update embedding");
-            }
-
-            connection.commit();
-            return embedding;
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RepositoryException("failed to rollback: " + e.getMessage());
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                LOGGER.error("failed to execute auto commit: {}", e.getMessage());
-            }
+            throw new RepositoryException("failed to update embedding");
         }
-        return null;
     }
 
     @Override
-    public void delete(int id) throws RepositoryException {
+    public boolean delete(Integer id) throws RepositoryException {
         String sql = "DELETE FROM embeddings WHERE id = ?;";
-        try {
-            connection.getAutoCommit();
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, id);
-                stmt.executeUpdate();
-
-            } catch(SQLException e) {
-                LOGGER.error("failed to update embedding: {}", e.getMessage());
-                throw new RepositoryException("failed to update embedding");
-            }
-
-            connection.commit();
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RepositoryException("failed to rollback: " + e.getMessage());
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                LOGGER.error("failed to execute auto commit: {}", e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public void delete(int collectionId, String contentHash) throws RepositoryException {
-        String sql = "DELETE FROM embeddings WHERE cid = ? AND content_hash = ?;";
-        try {
-            connection.getAutoCommit();
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, collectionId);
-                stmt.setString(2, contentHash);
-                stmt.executeUpdate();
-
-            } catch(SQLException e) {
-                LOGGER.error("failed to update embedding: {}", e.getMessage());
-                throw new RepositoryException("failed to update embedding");
-            }
-
-            connection.commit();
-        } catch (SQLException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                throw new RepositoryException("failed to rollback: " + e.getMessage());
-            }
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                LOGGER.error("failed to execute auto commit: {}", e.getMessage());
-            }
+            throw new RepositoryException("failed to update embedding");
         }
     }
 }

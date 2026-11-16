@@ -20,12 +20,6 @@ public class Embedding {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    private EmbeddingRepository repository;
-
-    public Embedding(EmbeddingRepository repository) {
-        this.repository = repository;
-    }
-
     public Embedding(int id, int collectionId, byte[] content, String contentHash, HashMap<String, Object> metadata, String metadataHash, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.collectionId = collectionId;
@@ -37,13 +31,6 @@ public class Embedding {
         this.updatedAt = updatedAt;
     }
 
-    public void flush() throws RepositoryException {
-        this.repository.save(this);
-    }
-
-    public void update() throws RepositoryException {
-        this.repository.update(this);
-    }
 
     public int getId() {
         return id;

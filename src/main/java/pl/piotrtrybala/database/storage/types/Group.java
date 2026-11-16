@@ -14,10 +14,7 @@ public class Group {
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
-    private GroupRepository repo;
-
-    public Group(GroupRepository repo) {
-        this.repo = repo;
+    public Group() {
         this.permissions = new Permissions();
     }
 
@@ -35,14 +32,6 @@ public class Group {
 
     public void removePermission(String permission) {
         this.permissions.remove(permission);
-    }
-
-    public void flush() throws SQLException {
-        this.repo.save(this);
-    }
-
-    public void update() throws SQLException {
-        this.repo.update(this);
     }
 
     @Override

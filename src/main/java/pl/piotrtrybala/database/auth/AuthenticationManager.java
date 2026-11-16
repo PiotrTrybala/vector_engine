@@ -83,11 +83,4 @@ public class AuthenticationManager {
         return user;
     }
 
-    public User createUser(String username, String password) {
-        User user = new User(userRepo, userGroupRepo);
-        user.setUsername(username);
-        user.setPassword(password);
-        return user;
-    }
-
 }

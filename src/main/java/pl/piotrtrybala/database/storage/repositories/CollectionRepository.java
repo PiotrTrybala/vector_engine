@@ -1,27 +1,15 @@
 package pl.piotrtrybala.database.storage.repositories;
 
+import pl.piotrtrybala.database.storage.Repository;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.Searchable;
 import pl.piotrtrybala.database.storage.types.Collection;
 
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-public interface CollectionRepository {
-
-    List<Collection> list(int userId) throws SQLException;
-
-    <T> List<Collection> search(int userId, T options);
-
-    Collection retrieve(int id) throws SQLException;
-
-    Collection retrieve(int userId, String name) throws SQLException;
-
-    Collection create(int userId, String name) throws SQLException;
-
-    Collection save(Collection collection) throws SQLException;
-
-    Collection update(Collection collection) throws SQLException;
-
-    void delete(int id) throws SQLException;
-
-    void delete(int userId, String name) throws SQLException;
+public interface CollectionRepository extends Repository<Collection, Integer> {
+    Optional<Collection> findById(int userId, String name) throws RepositoryException;
+    List<Collection> findAll(int userId) throws RepositoryException;
+    void delete(int userId, String name) throws RepositoryException;
 }
