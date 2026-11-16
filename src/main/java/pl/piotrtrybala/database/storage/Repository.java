@@ -9,8 +9,6 @@ public interface Repository<T, ID> {
 
     List<T> findAll() throws RepositoryException;
 
-    <S> List<T> search(S options) throws RepositoryException;
-
     ID insert(T entity) throws RepositoryException;
 
     boolean update(T entity) throws RepositoryException;

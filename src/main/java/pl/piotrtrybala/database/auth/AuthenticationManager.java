@@ -2,6 +2,7 @@ package pl.piotrtrybala.database.auth;
 
 import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Group;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.SessionStorage;
@@ -16,6 +17,7 @@ import pl.piotrtrybala.database.storage.impl.UserRepositoryImpl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class AuthenticationManager {
 
@@ -28,7 +30,7 @@ public class AuthenticationManager {
     private static AuthenticationManager instance;
 
     private AuthenticationManager(Connection connection) {
-        this.userRepo = new UserRepositoryImpl(connection);
+        this.userRepo = new UserRepositoryImpl();
         this.groupRepo = new GroupRepositoryImpl(connection);
         this.userGroupRepo = new UserGroupRepositoryImpl(connection);
         this.storage = new SessionStorageImpl();
@@ -67,9 +69,9 @@ public class AuthenticationManager {
         return group;
     }
 
-    public User retrieveUser(int id) throws SQLException {
-        User user = this.userRepo.retrieve(id);
-        return this.retrieveUser(user.getUsername());
+    public User retrieveUser(int id) throws RepositoryException {
+        Optional<User> user = this.userRepo.findById(id);
+        return this.retrieveUser(user.get().getUsername());
     }
 
     public User authenticateUser(String username, String password) throws Exception {
