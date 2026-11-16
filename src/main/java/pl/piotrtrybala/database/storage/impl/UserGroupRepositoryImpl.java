@@ -1,5 +1,10 @@
 package pl.piotrtrybala.database.storage.impl;
 
+import pl.piotrtrybala.database.storage.ConnectionManager;
+import pl.piotrtrybala.database.storage.RepositoryException;
+import pl.piotrtrybala.database.storage.repositories.GroupRepository;
+import pl.piotrtrybala.database.storage.repositories.UserRepository;
+import pl.piotrtrybala.database.storage.types.Group;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
 
@@ -7,57 +12,70 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class UserGroupRepositoryImpl implements UserGroupRepository {
 
-    private final Connection connection;
+    private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
 
-    public UserGroupRepositoryImpl(Connection connection) {
-        this.connection = connection;
+    public UserGroupRepositoryImpl(UserRepository userRepository, GroupRepository groupRepository) {
+        this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Override
-    public int retrieveGroupId(int userId) throws SQLException {
+    public Optional<User> getUserByGroupId(int groupId) throws RepositoryException {
+        String sql = "SELECT gid FROM u_groups WHERE gid = ?;";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, groupId);
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) return Optional.empty();
 
-        // one group per user
-
-        String sql = "SELECT gid FROM u_groups WHERE uid = ?;";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, userId);
-            ResultSet result = stmt.executeQuery();
-
-            if (result.next()) {
-                return result.getInt("gid");
-            } else {
-                return -1;
+                int userId = result.getInt("uid");
+                return userRepository.findById(userId);
             }
         } catch (SQLException e) {
-            throw new SQLException("failed to retrieve group id: " + e.getMessage());
+            throw new RepositoryException("failed to retrieve group id: " + e.getMessage());
         }
     }
 
     @Override
-    public void save(User user) throws SQLException {
+    public Optional<Group> getGroupByUserId(int userId) throws RepositoryException {
+        String sql = "SELECT gid FROM u_groups WHERE uid = ?;";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) return Optional.empty();
+
+                int groupId = result.getInt("gid");
+                return groupRepository.findById(userId);
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("failed to retrieve group id: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean insertUserGroup(User user) throws RepositoryException {
 
         if (user.getGroup() == null) {
-            throw new SQLException("group is null");
+            throw new RepositoryException("group is not set for this user");
         }
 
         int userId = user.getId();
-        if (this.retrieveGroupId(userId) != -1) {
-            return;
+        Optional<Group> group = this.getGroupByUserId(userId);
+        if (group.isEmpty()) {
+            throw new RepositoryException("user is already in this group");
         }
 
-        int groupId = user.getGroup().getId();
-
-        String sql = "INSERT INTO u_groups (uid, gid) VALUES (?, ?);";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "INSERT INTO u_groups(uid, gid) VALUES (?, ?);";
+        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
             stmt.setInt(1, userId);
-            stmt.setInt(2, groupId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException("failed to add user to group: " + e.getMessage());
+            stmt.setInt(2, group.get().getId());
+            return stmt.executeUpdate() == 1;
+        } catch(SQLException e) {
+            throw new RepositoryException("failed to assign user to group: " + e.getMessage());
         }
     }
 }

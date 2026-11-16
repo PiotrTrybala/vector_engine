@@ -2,19 +2,14 @@ package pl.piotrtrybala.database.storage.impl;
 
 import pl.piotrtrybala.database.auth.permissions.Permissions;
 import pl.piotrtrybala.database.storage.ConnectionManager;
-import pl.piotrtrybala.database.storage.Repository;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Group;
 import pl.piotrtrybala.database.storage.repositories.GroupRepository;
-import pl.piotrtrybala.database.storage.types.search.GroupSearchOptions;
 
-import javax.swing.text.html.Option;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static jdk.nio.zipfs.ZipFileAttributeView.AttrID.group;
 
 public class GroupRepositoryImpl implements GroupRepository {
 
@@ -56,7 +51,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()) {
-                if (!result.next()) throw new RepositoryException("could not found user: " + id);
+                if (!result.next()) throw new RepositoryException("could not found user: " + name);
 
                 int id = result.getInt("id");
                 String rawPerms = result.getString("perms");
