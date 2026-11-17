@@ -6,7 +6,7 @@ import pl.piotrtrybala.database.auth.AuthenticationManager;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.AuthCommand;
+import pl.piotrtrybala.database.command.types.AuthCommand;
 
 import java.util.Optional;
 

@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.SelectCommand;
+import pl.piotrtrybala.database.command.types.SelectCommand;
 
 public class SelectResult implements Result {
 

@@ -8,9 +8,8 @@ import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.UseCommand;
+import pl.piotrtrybala.database.command.types.UseCommand;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class UseResult implements Result {

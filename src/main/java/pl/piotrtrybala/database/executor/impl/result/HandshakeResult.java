@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.executor.impl.result;
 
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.HandshakeCommand;
+import pl.piotrtrybala.database.command.types.HandshakeCommand;
 
 public class HandshakeResult implements Result {
 

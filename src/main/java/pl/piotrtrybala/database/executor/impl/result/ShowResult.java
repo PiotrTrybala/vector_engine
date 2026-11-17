@@ -9,10 +9,9 @@ import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.storage.types.Embedding;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.enums.UseTargetType;
-import pl.piotrtrybala.database.query.types.ShowCommand;
+import pl.piotrtrybala.database.command.enums.UseTargetType;
+import pl.piotrtrybala.database.command.types.ShowCommand;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ShowResult implements Result {

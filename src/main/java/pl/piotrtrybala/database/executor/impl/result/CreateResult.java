@@ -10,9 +10,7 @@ import pl.piotrtrybala.database.storage.repositories.CollectionRepository;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.CreateCommand;
-
-import java.sql.SQLException;
+import pl.piotrtrybala.database.command.types.CreateCommand;
 
 public class CreateResult implements Result {
 

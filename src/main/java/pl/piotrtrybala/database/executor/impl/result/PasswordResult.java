@@ -5,8 +5,7 @@ import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.AuthenticationManager;
 import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.types.PasswordCommand;
-import pl.piotrtrybala.database.storage.MetadataStorage;
+import pl.piotrtrybala.database.command.types.PasswordCommand;
 import pl.piotrtrybala.database.storage.types.User;
 
 public class PasswordResult implements Result {

@@ -1,6 +1,6 @@
 package pl.piotrtrybala.database.executor.types;
 
-import pl.piotrtrybala.database.query.Command;
+import pl.piotrtrybala.database.command.Command;
 
 public class Payload {
 

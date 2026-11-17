@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.embeddings.embedder.impl.EmbeddingIndexImpl;
 import pl.piotrtrybala.database.embeddings.embedder.impl.TestEmbedder;
-import pl.piotrtrybala.database.query.enums.EmbeddingType;
+import pl.piotrtrybala.database.command.enums.EmbeddingType;
 
 import java.util.HashMap;
 import java.util.Map;

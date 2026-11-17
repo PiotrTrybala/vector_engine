@@ -9,9 +9,9 @@ import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.Parser;
-import pl.piotrtrybala.database.query.Command;
-import pl.piotrtrybala.database.query.CommandException;
+import pl.piotrtrybala.database.command.Parser;
+import pl.piotrtrybala.database.command.Command;
+import pl.piotrtrybala.database.command.CommandException;
 
 import java.io.*;
 import java.net.ServerSocket;

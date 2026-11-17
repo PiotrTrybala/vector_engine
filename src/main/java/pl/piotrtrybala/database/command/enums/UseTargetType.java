@@ -1,0 +1,25 @@
+package pl.piotrtrybala.database.command.enums;
+
+public enum UseTargetType {
+    COLLECTIONS("COLLECTIONS"), // all user collections
+    USER("USER"), // current user
+    COLLECTION("COLLECTION"),
+    EMBEDDINGS("EMBEDDINGS"),;// current collection
+
+    private final String target;
+
+    UseTargetType(String target) {
+        this.target = target;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    @Override
+    public String toString() {
+        return "UseTargetType{" +
+                "target='" + target + '\'' +
+                '}';
+    }
+}

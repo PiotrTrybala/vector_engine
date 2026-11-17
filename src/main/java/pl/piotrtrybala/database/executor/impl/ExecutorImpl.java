@@ -8,8 +8,8 @@ import pl.piotrtrybala.database.executor.impl.result.*;
 import pl.piotrtrybala.database.executor.types.Error;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.query.Command;
-import pl.piotrtrybala.database.query.enums.QueryType;
+import pl.piotrtrybala.database.command.Command;
+import pl.piotrtrybala.database.command.enums.QueryType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
