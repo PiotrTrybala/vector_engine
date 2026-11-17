@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findById(Integer id) throws RepositoryException {
 
         String sql = "SELECT * FROM users WHERE id = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             try (ResultSet result = stmt.executeQuery()) {
                 if (!result.next()) throw new RepositoryException("could not found user: " + id);
@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByUsername(String username) throws RepositoryException {
         String sql = "SELECT * FROM users WHERE username = ?";
         LOGGER.info("looking for user with username: {}", username);
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             try (ResultSet result = stmt.executeQuery()) {
                 if (!result.next()) throw new RepositoryException("could not found user: " + username);
@@ -73,7 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Integer insert(User entity) throws RepositoryException {
         String sql = "INSERT INTO users(username, password, root, perms) VALUES (?, ?, ?, ?) RETURNING id;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, entity.getUsername());
             stmt.setString(2, entity.getPassword());
             stmt.setBoolean(3, entity.isRoot());
@@ -95,16 +95,14 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean update(User entity) throws RepositoryException {
 
         String sql = "UPDATE users SET username = ?, password = ?, root = ?, perms = ? WHERE id = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, entity.getUsername());
             stmt.setString(2, entity.getPassword());
             stmt.setBoolean(3, entity.isRoot());
             stmt.setString(4, entity.getPermissions().save());
             stmt.setInt(5, entity.getId());
 
-            stmt.executeUpdate();
-            return true;
-
+            return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
             throw new RepositoryException("failed to create user: " + e.getMessage());
         }
@@ -113,7 +111,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(Integer id) throws RepositoryException {
         String sql = "DELETE FROM users WHERE id = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -123,7 +121,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     public void delete(String username) throws RepositoryException {
         String sql = "DELETE FROM users WHERE username = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, username);
             stmt.executeUpdate();
         } catch (SQLException e) {

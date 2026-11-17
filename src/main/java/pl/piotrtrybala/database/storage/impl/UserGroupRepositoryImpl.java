@@ -27,7 +27,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     @Override
     public Optional<User> getUserByGroupId(int groupId) throws RepositoryException {
         String sql = "SELECT gid FROM u_groups WHERE gid = ?;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, groupId);
             try (ResultSet result = stmt.executeQuery()) {
                 if (!result.next()) return Optional.empty();
@@ -43,7 +43,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
     @Override
     public Optional<Group> getGroupByUserId(int userId) throws RepositoryException {
         String sql = "SELECT gid FROM u_groups WHERE uid = ?;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             try (ResultSet result = stmt.executeQuery()) {
                 if (!result.next()) return Optional.empty();
@@ -70,7 +70,7 @@ public class UserGroupRepositoryImpl implements UserGroupRepository {
         }
 
         String sql = "INSERT INTO u_groups(uid, gid) VALUES (?, ?);";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             stmt.setInt(2, group.get().getId());
             return stmt.executeUpdate() == 1;

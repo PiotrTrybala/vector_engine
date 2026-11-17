@@ -20,7 +20,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
 
         String sql = "SELECT * FROM collections WHERE id = ?";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             try (ResultSet result = stmt.executeQuery()) {
@@ -40,7 +40,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     @Override
     public Optional<Collection> findById(int userId, String name) throws RepositoryException {
         String sql = "SELECT * FROM collections WHERE uid = ? AND name = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             stmt.setString(2, name);
 
@@ -66,7 +66,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public List<Collection> findAll(int userId) throws RepositoryException {
 
         String sql = "SELECT * FROM collections WHERE uid = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             List<Collection> collections = new ArrayList<>();
 
             stmt.setInt(1, userId);
@@ -89,7 +89,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     public Integer insert(Collection entity) throws RepositoryException {
         String sql = "INSERT INTO collections(uid, name) VALUES (?, ?) RETURNING id, created_at, updated_at;";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, entity.getUserId());
             stmt.setString(2, entity.getName());
@@ -107,7 +107,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     @Override
     public boolean update(Collection entity) throws RepositoryException {
         String sql = "UPDATE collections SET uid = ? WHERE id = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, entity.getUserId());
             stmt.setString(2, entity.getName());
             stmt.setInt(3, entity.getId());
@@ -131,7 +131,7 @@ public class CollectionRepositoryImpl implements CollectionRepository {
     @Override
     public void delete(int userId, String name) throws RepositoryException {
         String sql = "DELETE FROM collection WHERE uid = ? AND name = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             stmt.setString(2, name);
             stmt.executeUpdate();

@@ -19,7 +19,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     public Optional<Group> findById(Integer id) throws RepositoryException {
         String sql = "SELECT * FROM groups WHERE id = ?";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             try (ResultSet result = stmt.executeQuery()) {
@@ -47,7 +47,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     public Optional<Group> findByName(String name) throws RepositoryException {
         String sql = "SELECT * FROM groups WHERE name = ?";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, name);
             try (ResultSet result = stmt.executeQuery()) {
@@ -75,7 +75,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public List<Group> findAll() throws RepositoryException {
         String sql = "SELECT * FROM groups;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             List<Group> groups = new ArrayList<>();
             try(ResultSet result = stmt.executeQuery()) {
                 while(result.next()) {
@@ -103,7 +103,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public Integer insert(Group entity) throws RepositoryException {
         String sql = "INSERT INTO groups(name, perms) VALUES (?, ?) RETURNING id;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, entity.getName());
             stmt.setString(2, entity.getPermissions().save());
 
@@ -119,7 +119,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public boolean update(Group entity) throws RepositoryException {
         String sql = "UPDATE groups SET name = ?, perms = ? WHERE id = ?;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, entity.getName());
             stmt.setString(2, entity.getPermissions().save());
             stmt.setInt(3, entity.getId());
@@ -133,7 +133,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public boolean delete(Integer id) throws RepositoryException {
         String sql = "DELETE FROM groups WHERE id = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)){
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setInt(1, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
@@ -143,7 +143,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 
     public boolean delete(String name) throws RepositoryException {
         String sql = "DELETE FROM groups WHERE name = ?";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)){
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)){
             stmt.setString(1, name);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {

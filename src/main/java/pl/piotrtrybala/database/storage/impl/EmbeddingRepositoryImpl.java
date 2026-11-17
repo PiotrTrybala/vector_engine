@@ -26,7 +26,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     public Optional<Embedding> findById(Integer id) throws RepositoryException {
         String sql = "SELECT * FROM embeddings WHERE id = ?";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
 
@@ -60,7 +60,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     public List<Embedding> findAll(int collectionId) throws RepositoryException {
         String sql = "SELECT * FROM embeddings WHERE cid = ?";
 
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             List<Embedding> embeddings = new ArrayList<>();
             stmt.setInt(1, collectionId);
 
@@ -94,7 +94,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
         byte[] parsedMetadata = MetadataUtils.save(metadata);
         String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
 
-        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, entity.getCollectionId());
             stmt.setBytes(2, entity.getContent());
             stmt.setString(3, contentHash);
@@ -114,7 +114,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
 
     @Override
     public boolean update(Embedding entity) throws RepositoryException {
-        String sql = "UPDATE embeddings SET collectionId = ?, content = ?, content_hash = ?, metadata = ?, metadata_hash = ? WHERE id = ?";
+        String sql = "UPDATE embeddings SET cid = ?, content = ?, content_hash = ?, metadata = ?, metadata_hash = ? WHERE id = ?";
         String contentHash = EmbeddingUtils.sha256hash(entity.getContent());
         byte[] parsedMetadata = MetadataUtils.save(entity.getMetadata());
         String metadataHash = EmbeddingUtils.sha256hash(parsedMetadata);
@@ -129,6 +129,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
 
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {
+            LOGGER.error("failed to update embedding: {}", e.getMessage());
             throw new RepositoryException("failed to update embedding");
         }
     }
@@ -136,7 +137,7 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     @Override
     public boolean delete(Integer id) throws RepositoryException {
         String sql = "DELETE FROM embeddings WHERE id = ?;";
-        try (PreparedStatement stmt = ConnectionManager.getConnection().prepareStatement(sql)) {
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() == 1;
         } catch (SQLException e) {

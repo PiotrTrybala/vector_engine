@@ -26,7 +26,6 @@ public class UpdateResult implements Result {
         this.command = command;
     }
 
-
     @Override
     public char[] getResult() {
 

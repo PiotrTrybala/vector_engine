@@ -25,9 +25,9 @@ public class ExecutorImpl implements Executor {
             this.resultType = result;
         }
 
-        public Result dispatch(Command query) {
+        public Result dispatch(Command command) {
             try {
-                return resultType.getConstructor(query.getClass()).newInstance(query);
+                return resultType.getConstructor(command.getClass()).newInstance(command);
             } catch(InvocationTargetException e) {
                 Throwable cause = e.getCause();
                 if (cause instanceof RuntimeException) {
@@ -35,7 +35,7 @@ public class ExecutorImpl implements Executor {
                 }
                 return new Error(ExecutorErrorType.INVALID_RESULT_TYPE);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-                LOGGER.error("error with dispatching {}: {}", query.getQueryType().toString(), e.getMessage());
+                LOGGER.error("error with dispatching {}: {}", command.getQueryType().toString(), e.getMessage());
                 return new Error(ExecutorErrorType.INVALID_RESULT_TYPE);
             }
         }
@@ -56,6 +56,7 @@ public class ExecutorImpl implements Executor {
         this.queryHandlers.put(QueryType.SHOW, new Handler(ShowResult.class));
         this.queryHandlers.put(QueryType.INSERT, new Handler(InsertResult.class));
         this.queryHandlers.put(QueryType.PASSWORD, new Handler(PasswordResult.class));
+        this.queryHandlers.put(QueryType.UPDATE, new Handler(UpdateResult.class));
     }
 
     @Override
