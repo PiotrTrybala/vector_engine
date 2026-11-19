@@ -16,7 +16,7 @@ public class SelectCommand implements Command {
 
     private final List<String> metadata;
 
-    private final String collection;
+    private final String collectionName;
 
     private Expression where = null;
 
@@ -33,7 +33,7 @@ public class SelectCommand implements Command {
             this.metadata = new ArrayList<>();
         }
 
-        this.collection = CommandUtils.parseCollectionName(tokens);
+        this.collectionName = CommandUtils.parseCollectionName(tokens);
 
         this.where = Expression.parse(CommandUtils.retrieveExpressionTokens(tokens));
 
@@ -48,11 +48,11 @@ public class SelectCommand implements Command {
         return metadata;
     }
 
-    public String getCollection() {
-        return collection;
+    public String getCollectionName() {
+        return collectionName;
     }
 
-    public Expression getExpression() {
+    public Expression getWhere() {
         return where;
     }
 
@@ -65,7 +65,7 @@ public class SelectCommand implements Command {
         return "SelectQuery{" +
                 "type=" + type +
                 ", metadata=" + metadata +
-                ", collection='" + collection + '\'' +
+                ", collectionName='" + collectionName + '\'' +
                 ", where=" + where +
                 ", limit=" + limit +
                 '}';
