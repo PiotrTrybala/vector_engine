@@ -3,18 +3,23 @@ package pl.piotrtrybala.database.engine.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
+import pl.piotrtrybala.database.command.Command;
+import pl.piotrtrybala.database.command.CommandException;
+import pl.piotrtrybala.database.command.CommandParser;
+import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
+import pl.piotrtrybala.database.executor.blocking.ExecutorImpl;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,6 +31,7 @@ public class AsyncEngineImpl implements Engine {
 
     private final EntrypointConfig.EngineConfig config;
     private ExecutorService workerPool;
+    private CommandParser parser;
     private Executor executor;
 
     public AsyncEngineImpl(EntrypointConfig.EngineConfig config) {
@@ -37,6 +43,7 @@ public class AsyncEngineImpl implements Engine {
         this.workerPool = Executors.newFixedThreadPool(
                 config.processingWorkerPoolSize()
         );
+        this.parser = new CommandParserImpl();
         this.executor = new ExecutorImpl();
     }
 
@@ -51,13 +58,13 @@ public class AsyncEngineImpl implements Engine {
             serverChannel.configureBlocking(false);
             serverChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-            while(true) {
+            while (true) {
                 selector.select();
 
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = selectionKeys.iterator();
 
-                while(iterator.hasNext()) {
+                while (iterator.hasNext()) {
                     SelectionKey key = iterator.next();
                     iterator.remove();
 
@@ -107,14 +114,41 @@ public class AsyncEngineImpl implements Engine {
 
             buffer.flip();
 
-            // process query
+            List<Command> commands;
+            try {
+                commands = parser.parse(StandardCharsets.UTF_8.decode(buffer).array());
+            } catch (CommandException e) {
+                LOGGER.error("failed to parse commands: {}", e.getMessage());
+//                writer.write(e.getMessage());
+//                writer.flush();
+            } catch (Exception e) {
+                LOGGER.error("failed to execute commands: {}", e.getMessage());
+//                context.write(e.getMessage().);
+//                writer.flush();
+            }
 
             buffer.clear();
 
             workerPool.submit(() -> {
                 // implement executor logic here
+
+                try {
+
+
+
+                } catch(Exception e) {
+
+                } finally {
+                    try {
+                        if (key.isValid()) {
+                            key.selector().wakeup();
+                            this.enableRead(key);
+                        }
+                    } catch(Exception ignored) {}
+                }
+
             });
-        } catch(IOException e) {
+        } catch (IOException e) {
             LOGGER.warn("connection error with client: {}", e.getMessage());
             this.closeClient(context);
         }
@@ -127,14 +161,15 @@ public class AsyncEngineImpl implements Engine {
                     key.interestOps(key.interestOps() | SelectionKey.OP_READ);
                 }
             }
-        } catch(CancelledKeyException ignored) {}
+        } catch (CancelledKeyException ignored) {
+        }
     }
 
     private void closeClient(Context context) {
         try {
             LOGGER.info("closing client connection");
             context.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.error("failed to close client: {}", e.getMessage());
         }
     }

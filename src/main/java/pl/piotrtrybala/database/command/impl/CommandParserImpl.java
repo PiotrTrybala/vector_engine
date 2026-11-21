@@ -1,16 +1,13 @@
 package pl.piotrtrybala.database.command.impl;
 
-import pl.piotrtrybala.database.command.Command;
-import pl.piotrtrybala.database.command.CommandException;
-import pl.piotrtrybala.database.command.CommandHandler;
-import pl.piotrtrybala.database.command.Parser;
+import pl.piotrtrybala.database.command.*;
 import pl.piotrtrybala.database.command.handlers.*;
 
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandParserImpl implements Parser<Command> {
+public class CommandParserImpl implements CommandParser {
 
     private final List<CommandHandler> handlers;
 

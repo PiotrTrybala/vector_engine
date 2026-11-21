@@ -1,15 +1,16 @@
-package pl.piotrtrybala.database.executor.types;
+package pl.piotrtrybala.database.executor.blocking;
 
+import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.enums.ExecutorErrorType;
+import pl.piotrtrybala.database.executor.types.Result;
 
 public class Error implements Result {
 
-    private ExecutorErrorType error;
+    private final ExecutorErrorType error;
 
     public Error(ExecutorErrorType error) {
         this.error = error;
     }
-
 
     @Override
     public char[] getResult() {

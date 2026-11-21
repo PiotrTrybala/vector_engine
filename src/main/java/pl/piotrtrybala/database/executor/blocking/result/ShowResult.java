@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.executor.impl.result;
+package pl.piotrtrybala.database.executor.blocking.result;
 
 import pl.piotrtrybala.database.auth.AuthenticationManager;
 import pl.piotrtrybala.database.storage.types.User;

@@ -1,11 +1,10 @@
-package pl.piotrtrybala.database.executor.impl;
+package pl.piotrtrybala.database.executor.blocking;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.executor.Executor;
+import pl.piotrtrybala.database.executor.blocking.result.HandshakeResult;
 import pl.piotrtrybala.database.executor.enums.ExecutorErrorType;
-import pl.piotrtrybala.database.executor.impl.result.*;
-import pl.piotrtrybala.database.executor.types.Error;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.command.Command;
@@ -15,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExecutorImpl implements Executor {
+public class ExecutorImpl implements Executor<Result> {
 
     private static class Handler {
 
@@ -50,27 +49,27 @@ public class ExecutorImpl implements Executor {
         this.queryHandlers = new HashMap<>();
 
         this.queryHandlers.put(QueryType.HANDSHAKE, new Handler(HandshakeResult.class));
-        this.queryHandlers.put(QueryType.AUTH, new Handler(AuthResult.class));
-        this.queryHandlers.put(QueryType.CREATE_COLLECTION, new Handler(CreateResult.class));
-        this.queryHandlers.put(QueryType.USE_COLLECTION, new Handler(UseResult.class));
-        this.queryHandlers.put(QueryType.SHOW, new Handler(ShowResult.class));
-        this.queryHandlers.put(QueryType.INSERT, new Handler(InsertResult.class));
-        this.queryHandlers.put(QueryType.PASSWORD, new Handler(PasswordResult.class));
-        this.queryHandlers.put(QueryType.UPDATE, new Handler(UpdateResult.class));
+//        this.queryHandlers.put(QueryType.AUTH, new Handler(AuthResult.class));
+//        this.queryHandlers.put(QueryType.CREATE_COLLECTION, new Handler(CreateResult.class));
+//        this.queryHandlers.put(QueryType.USE_COLLECTION, new Handler(UseResult.class));
+//        this.queryHandlers.put(QueryType.SHOW, new Handler(ShowResult.class));
+//        this.queryHandlers.put(QueryType.INSERT, new Handler(InsertResult.class));
+//        this.queryHandlers.put(QueryType.PASSWORD, new Handler(PasswordResult.class));
+//        this.queryHandlers.put(QueryType.UPDATE, new Handler(UpdateResult.class));
     }
 
     @Override
     public Result process(Payload payload) {
         LOGGER.info("processing query...");
-        Command query = payload.getQuery();
+        Command command = payload.getCommand();
 
-        LOGGER.info("dispatching {}", query.getQueryType().toString());
+        LOGGER.info("dispatching {}", command.getQueryType().toString());
 
-        Handler handler = this.queryHandlers.get(query.getQueryType());
+        Handler handler = this.queryHandlers.get(command.getQueryType());
         if (handler == null) {
             return null;
         }
 
-        return handler.dispatch(query);
+        return handler.dispatch(command);
     }
 }

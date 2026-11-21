@@ -3,12 +3,12 @@ package pl.piotrtrybala.database.engine.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
-import pl.piotrtrybala.database.command.Parser;
+import pl.piotrtrybala.database.command.CommandParser;
 import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
+import pl.piotrtrybala.database.executor.blocking.ExecutorImpl;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
 import pl.piotrtrybala.database.command.Command;
@@ -25,8 +25,8 @@ public class EngineImpl implements Engine {
     private final EntrypointConfig.EngineConfig config;
     private static final Logger LOGGER = LogManager.getLogger(EngineImpl.class.getName());
 
-    private Executor executor;
-    private Parser parser;
+    private Executor<Result> executor;
+    private CommandParser parser;
     private ServerSocket serverSocket;
 
     public EngineImpl() {
@@ -94,27 +94,26 @@ public class EngineImpl implements Engine {
 
                 LOGGER.info("received buffer: {}", buffer);
 
-                List<Command> queries;
                 try {
-                    queries = parser.parse(buffer);
-                    for (Command query : queries) {
-                        System.out.println(query.toString());
-                    }
-                    LOGGER.info("parsed {} queries", queries.size());
-                    for (Command query : queries) {
-                        LOGGER.info("starting processing {}", query.getQueryType().toString());
-                        Result result = executor.process(new Payload(query));
+
+                    List<Command> commands = parser.parse(buffer);
+                    for (Command command : commands) {
+                        LOGGER.info("executing {} command", command.getQueryType().toString());
+                        long start = System.currentTimeMillis();
+                        Result result = this.executor.process(new Payload(command));
+                        long duration = System.currentTimeMillis() - start;
                         char[] output = result.getResult();
-                        LOGGER.info("executor processed with result");
+                        LOGGER.info("executor finished processing in {}s", duration / 1000);
+
                         writer.write(output);
                         writer.flush();
                     }
                 } catch(CommandException e) {
-                    LOGGER.error("failed to parse query: {}", e.getMessage());
+                    LOGGER.error("failed to parse commands: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();
-                } catch (Exception e) {
-                    LOGGER.error("failed to execute query: {}", e.getMessage());
+                } catch(Exception e) {
+                    LOGGER.error("failed to execute commands: {}", e.getMessage());
                     writer.write(e.getMessage());
                     writer.flush();
                 }

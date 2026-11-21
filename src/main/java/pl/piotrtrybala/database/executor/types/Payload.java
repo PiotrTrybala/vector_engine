@@ -4,20 +4,20 @@ import pl.piotrtrybala.database.command.Command;
 
 public class Payload {
 
-    private final Command query;
+    private final Command command;
 
-    public Payload(Command query) {
-        this.query = query;
+    public Payload(Command command) {
+        this.command = command;
     }
 
-    public Command getQuery() {
-        return query;
+    public Command getCommand() {
+        return command;
     }
 
     @Override
     public String toString() {
         return "ExecutorPayload{" +
-                "query=" + query +
+                "command=" + command +
                 '}';
     }
 }

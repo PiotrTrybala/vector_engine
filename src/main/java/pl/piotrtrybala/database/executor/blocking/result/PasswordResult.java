@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.executor.impl.result;
+package pl.piotrtrybala.database.executor.blocking.result;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
