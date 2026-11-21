@@ -1,4 +1,8 @@
 package pl.piotrtrybala.database.executor;
 
-public interface Worker {
+public class Worker implements Runnable {
+    @Override
+    public void run() {
+
+    }
 }

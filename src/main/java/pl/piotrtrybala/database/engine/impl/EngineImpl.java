@@ -3,13 +3,14 @@ package pl.piotrtrybala.database.engine.impl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
+import pl.piotrtrybala.database.command.Parser;
+import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.impl.ExecutorImpl;
 import pl.piotrtrybala.database.executor.types.Payload;
 import pl.piotrtrybala.database.executor.types.Result;
-import pl.piotrtrybala.database.command.Parser;
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandException;
 
@@ -40,7 +41,7 @@ public class EngineImpl implements Engine {
 
     public EngineImpl(EntrypointConfig.EngineConfig config) {
         this.config = config;
-        this.parser = new Parser();
+        this.parser = new CommandParserImpl();
         try {
             init();
         } catch(EngineException e) {
