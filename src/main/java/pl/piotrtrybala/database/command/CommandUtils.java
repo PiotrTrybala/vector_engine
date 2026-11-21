@@ -18,35 +18,44 @@ public class CommandUtils {
 
     public static byte[] parseEmbeddingData(List<String> tokens) throws CommandException {
 
-        int dataIndex = -1;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.BEGIN)) dataIndex = i;
+        int beginKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.BEGIN);
+        int endKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.END);
+
+        if (beginKeywordIndex == -1) {
+            throw new CommandException("begin keyword was not found");
         }
 
-        if (dataIndex + 1 > tokens.size()) throw new CommandException("invalid expression");
-
-        String data = tokens.get(dataIndex + 1);
-
-        if (data.startsWith("`") && data.endsWith("`")) {
-            return StandardCharsets.UTF_8.encode(data.substring(1, data.length() - 1)).array();
+        if (endKeywordIndex == -1) {
+            throw new CommandException("end keyword was not found");
         }
 
-        throw new CommandException("invalid data expression");
+        if (beginKeywordIndex > endKeywordIndex) {
+            throw new CommandException("begin keyword must be before end keyword");
+        }
+
+        if (beginKeywordIndex + 1 > tokens.size()) {
+            throw new CommandException("begin keyword at the end of command");
+        }
+
+        String data = tokens.get(beginKeywordIndex + 1);
+
+        if (!data.startsWith("`") || !data.endsWith("`")) {
+            throw new CommandException("invalid data definition");
+        }
+
+        return StandardCharsets.UTF_8.encode(data.substring(1, data.length() - 1)).array();
     }
 
     public static HashMap<String, Object> parseMetadata(List<String> tokens) throws CommandException {
         HashMap<String, Object> metadata = new HashMap<>();
 
-        int metadataIndex = -1;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.VALUE)) metadataIndex = i;
+        int metadataKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.VALUE);
+
+        if (metadataKeywordIndex + 1 > tokens.size()) {
+            throw new CommandException("value keyword at the end of command");
         }
 
-        if (metadataIndex + 1 > tokens.size()) throw new CommandException("invalid expression");
-
-        String data = tokens.get(metadataIndex + 1);
-
-        System.out.println("metadata tokens = " + data);
+        String data = tokens.get(metadataKeywordIndex + 1);
 
         if (!data.startsWith("[") || !data.endsWith("]")) {
             throw new CommandException("invalid open expression");
@@ -63,7 +72,9 @@ public class CommandUtils {
             String rawValue = kv[1].trim();
 
             String[] valueParts = rawValue.split(" ");
-            if (valueParts.length != 3) throw new CommandException("invalid value expression: " + rawValue);
+            if (valueParts.length != 3) {
+                throw new CommandException("value definition is incorrectly defined: " + rawValue);
+            }
 
             if (!Keyword.match(valueParts[1], Keyword.AS)) {
                 throw new CommandException("invalid keyword: " + valueParts[1]);
@@ -73,7 +84,7 @@ public class CommandUtils {
             try {
                 valueType = MetadataValueType.valueOf(valueParts[2].toUpperCase());
             } catch (Exception e) {
-                throw new CommandException("invalid value type: " + valueParts[2]);
+                throw new CommandException("undefined kv value type: " + valueParts[2]);
             }
 
             String value = valueParts[0].trim();
@@ -94,7 +105,6 @@ public class CommandUtils {
                     }
                     break;
                 case TEXT:
-
                     if (!value.startsWith("\"") || !value.endsWith("\"")) {
                         throw new CommandException("invalid text value: " + value);
                     }
@@ -122,22 +132,25 @@ public class CommandUtils {
     }
 
     public static List<String> parseMetadataKeys(List<String> tokens) throws CommandException {
-        int metadataIndex = -1;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.METADATA)) {
-                metadataIndex = i;
-                break;
-            }
+
+        int metadataKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.METADATA);
+
+        if (metadataKeywordIndex == -1) {
+            throw new CommandException("metadata keyword was not found");
         }
 
-        if (metadataIndex + 1 >= tokens.size() || metadataIndex == -1) {
-            throw new CommandException("invalid metadata select");
+        if (metadataKeywordIndex + 1 >= tokens.size()) {
+            throw new CommandException("metadata keyword at the of the command");
         }
 
-        String keys = tokens.get(metadataIndex + 1);
+        String keys = tokens.get(metadataKeywordIndex + 1);
 
-        if (!keys.startsWith("[") || !keys.endsWith("]")) {
-            throw new CommandException("invalid metadata definition: not closed");
+        if (!keys.startsWith("[")) {
+            throw new CommandException("incorrectly opened metadata");
+        }
+
+        if (!keys.endsWith("]")) {
+            throw new CommandException("inccorectly closed metadata");
         }
 
         return Arrays.stream(keys.substring(1, keys.length() - 1)
@@ -147,19 +160,17 @@ public class CommandUtils {
     }
 
     public static String parseCollectionName(List<String> tokens) throws CommandException {
-        int fromIndex = -1;
-        for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.FROM)) {
-                fromIndex = i;
-                break;
-            }
+        int fromKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.FROM);
+
+        if (fromKeywordIndex == -1) {
+            throw new CommandException("from keyword was not found");
         }
 
-        if (fromIndex + 1 >= tokens.size() || fromIndex == -1) {
-            throw new CommandException("invalid from definition");
+        if (fromKeywordIndex + 1 >= tokens.size()) {
+            throw new CommandException("from keyword at the end of command");
         }
 
-        return tokens.get(fromIndex + 1).trim();
+        return tokens.get(fromKeywordIndex + 1).trim();
     }
 
     public static List<String> retrieveExpressionTokens(List<String> tokens) throws CommandException {
@@ -187,20 +198,17 @@ public class CommandUtils {
 
     public static int parseLimit(List<String> tokens) throws CommandException {
 
-        int limitIndex = -1;
+        int limitKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.LIMIT);
 
-        for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.LIMIT)) {
-                limitIndex = i;
-                break;
-            }
+        if (limitKeywordIndex == -1) {
+            return DEFAULT_LIMIT;
         }
 
-        if (limitIndex + 1 >= tokens.size() || limitIndex == -1) {
-            throw new CommandException("invalid limit definition");
+        if (limitKeywordIndex + 1 >= tokens.size()) {
+            throw new CommandException("");
         }
 
-        String limitToken = tokens.get(limitIndex + 1);
+        String limitToken = tokens.get(limitKeywordIndex + 1);
 
         try {
             return Integer.parseInt(limitToken.trim());
@@ -240,7 +248,7 @@ public class CommandUtils {
 
     public static int findKeywordIndex(List<String> tokens, Keyword keyword) {
         for (int i = 0; i < tokens.size(); i++) {
-            if (Keyword.is(tokens.get(i), Keyword.WHERE)) {
+            if (Keyword.is(tokens.get(i), keyword)) {
                 return i;
             }
         }
