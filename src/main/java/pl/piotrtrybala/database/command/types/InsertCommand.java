@@ -4,7 +4,7 @@ import pl.piotrtrybala.database.command.CommandException;
 import pl.piotrtrybala.database.command.enums.EmbeddingType;
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandUtils;
-import pl.piotrtrybala.database.command.enums.QueryType;
+import pl.piotrtrybala.database.command.enums.CommandType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class InsertCommand implements Command {
     }
 
     @Override
-    public QueryType getQueryType() {
-        return QueryType.INSERT;
+    public CommandType getQueryType() {
+        return CommandType.INSERT;
     }
 }

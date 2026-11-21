@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.command.types;
 
 import pl.piotrtrybala.database.command.Command;
-import pl.piotrtrybala.database.command.enums.QueryType;
+import pl.piotrtrybala.database.command.enums.CommandType;
 
 public class HandshakeCommand implements Command {
 
@@ -14,7 +14,7 @@ public class HandshakeCommand implements Command {
     }
 
     @Override
-    public QueryType getQueryType() {
-        return QueryType.HANDSHAKE;
+    public CommandType getQueryType() {
+        return CommandType.HANDSHAKE;
     }
 }

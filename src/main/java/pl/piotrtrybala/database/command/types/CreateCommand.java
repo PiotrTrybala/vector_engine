@@ -2,7 +2,7 @@ package pl.piotrtrybala.database.command.types;
 
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandUtils;
-import pl.piotrtrybala.database.command.enums.QueryType;
+import pl.piotrtrybala.database.command.enums.CommandType;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class CreateCommand implements Command {
     }
 
     @Override
-    public QueryType getQueryType() {
-        return QueryType.CREATE_COLLECTION;
+    public CommandType getQueryType() {
+        return CommandType.CREATE_COLLECTION;
     }
 }

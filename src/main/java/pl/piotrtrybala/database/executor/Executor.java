@@ -1,8 +1,7 @@
 package pl.piotrtrybala.database.executor;
 
-import pl.piotrtrybala.database.executor.types.Payload;
-import pl.piotrtrybala.database.executor.types.Result;
+import pl.piotrtrybala.database.executor.sync.Payload;
 
 public interface Executor<T> {
-    T process(Payload payload);
+    T execute(Payload payload);
 }

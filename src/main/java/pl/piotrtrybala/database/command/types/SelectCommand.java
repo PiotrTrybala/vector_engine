@@ -3,7 +3,7 @@ package pl.piotrtrybala.database.command.types;
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandException;
 import pl.piotrtrybala.database.command.CommandUtils;
-import pl.piotrtrybala.database.command.enums.QueryType;
+import pl.piotrtrybala.database.command.enums.CommandType;
 import pl.piotrtrybala.database.command.enums.SelectType;
 import pl.piotrtrybala.database.command.expression.Expression;
 
@@ -72,7 +72,7 @@ public class SelectCommand implements Command {
     }
 
     @Override
-    public QueryType getQueryType() {
-        return QueryType.SELECT;
+    public CommandType getQueryType() {
+        return CommandType.SELECT;
     }
 }

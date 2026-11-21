@@ -2,7 +2,7 @@ package pl.piotrtrybala.database.command.types;
 
 import pl.piotrtrybala.database.command.*;
 import pl.piotrtrybala.database.command.enums.Keyword;
-import pl.piotrtrybala.database.command.enums.QueryType;
+import pl.piotrtrybala.database.command.enums.CommandType;
 import pl.piotrtrybala.database.command.enums.UpdateEntityType;
 import pl.piotrtrybala.database.command.expression.Expression;
 
@@ -68,7 +68,7 @@ public class UpdateCommand implements Command {
     }
 
     @Override
-    public QueryType getQueryType() {
-        return QueryType.UPDATE;
+    public CommandType getQueryType() {
+        return CommandType.UPDATE;
     }
 }

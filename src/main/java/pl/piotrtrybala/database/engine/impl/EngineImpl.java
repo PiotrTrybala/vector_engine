@@ -8,9 +8,9 @@ import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.blocking.ExecutorImpl;
-import pl.piotrtrybala.database.executor.types.Payload;
-import pl.piotrtrybala.database.executor.types.Result;
+import pl.piotrtrybala.database.executor.sync.ExecutorImpl;
+import pl.piotrtrybala.database.executor.sync.Payload;
+import pl.piotrtrybala.database.executor.Result;
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandException;
 
@@ -100,7 +100,7 @@ public class EngineImpl implements Engine {
                     for (Command command : commands) {
                         LOGGER.info("executing {} command", command.getQueryType().toString());
                         long start = System.currentTimeMillis();
-                        Result result = this.executor.process(new Payload(command));
+                        Result result = this.executor.execute(new Payload(command));
                         long duration = System.currentTimeMillis() - start;
                         char[] output = result.getResult();
                         LOGGER.info("executor finished processing in {}s", duration / 1000);

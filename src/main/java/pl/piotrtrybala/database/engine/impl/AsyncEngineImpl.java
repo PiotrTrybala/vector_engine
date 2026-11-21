@@ -10,14 +10,17 @@ import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
+import pl.piotrtrybala.database.executor.ContextResult;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.blocking.ExecutorImpl;
+import pl.piotrtrybala.database.executor.sync.Payload;
+import pl.piotrtrybala.database.executor.async.ContextExecutor;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +35,7 @@ public class AsyncEngineImpl implements Engine {
     private final EntrypointConfig.EngineConfig config;
     private ExecutorService workerPool;
     private CommandParser parser;
-    private Executor executor;
+    private Executor<ContextResult> executor;
 
     public AsyncEngineImpl(EntrypointConfig.EngineConfig config) {
         this.config = config;
@@ -44,7 +47,7 @@ public class AsyncEngineImpl implements Engine {
                 config.processingWorkerPoolSize()
         );
         this.parser = new CommandParserImpl();
-        this.executor = new ExecutorImpl();
+        this.executor = new ContextExecutor();
     }
 
     @Override
@@ -114,7 +117,7 @@ public class AsyncEngineImpl implements Engine {
 
             buffer.flip();
 
-            List<Command> commands;
+            List<Command> commands = new ArrayList<>();
             try {
                 commands = parser.parse(StandardCharsets.UTF_8.decode(buffer).array());
             } catch (CommandException e) {
@@ -129,12 +132,16 @@ public class AsyncEngineImpl implements Engine {
 
             buffer.clear();
 
+            List<Command> finalCommands = commands;
             workerPool.submit(() -> {
-                // implement executor logic here
-
                 try {
 
+                    for (Command command : finalCommands) {
 
+                        ContextResult result = this.executor.execute(new Payload(command));
+                        char[] output = result.getResult(context);
+
+                    }
 
                 } catch(Exception e) {
 

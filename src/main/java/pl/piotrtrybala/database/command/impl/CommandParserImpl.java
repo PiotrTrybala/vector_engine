@@ -2,26 +2,27 @@ package pl.piotrtrybala.database.command.impl;
 
 import pl.piotrtrybala.database.command.*;
 import pl.piotrtrybala.database.command.handlers.*;
+import pl.piotrtrybala.database.command.handlers.CommandParser;
 
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandParserImpl implements CommandParser {
+public class CommandParserImpl implements pl.piotrtrybala.database.command.CommandParser {
 
-    private final List<CommandHandler> handlers;
+    private final List<CommandParser> handlers;
 
     public CommandParserImpl() {
         this.handlers = List.of(
-                new AuthCommandHandler(),
-                new CreateCommandHandler(),
-                new HandshakeCommandHandler(),
-                new InsertCommandHandler(),
-                new SelectCommandHandler(),
-                new ShowCommandHandler(),
-                new UpdateCommandHandler(),
-                new UseCommandHandler(),
-                new PasswordCommandHandler()
+                new AuthCommandParser(),
+                new CreateCommandParser(),
+                new HandshakeCommandParser(),
+                new InsertCommandParser(),
+                new SelectCommandParser(),
+                new ShowCommandParser(),
+                new UpdateCommandParser(),
+                new UseCommandParser(),
+                new PasswordCommandParser()
         );
     }
 
@@ -55,7 +56,7 @@ public class CommandParserImpl implements CommandParser {
         for (String rawCmd : rawCmds) {
             boolean matchedCmdHandler = false;
 
-            for (CommandHandler handler : handlers) {
+            for (CommandParser handler : handlers) {
                 if (handler.canParse(rawCmd)) {
                     cmds.add(handler.parse(rawCmd));
                     matchedCmdHandler = true;
