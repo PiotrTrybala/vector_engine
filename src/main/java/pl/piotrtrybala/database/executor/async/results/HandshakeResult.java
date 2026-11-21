@@ -2,14 +2,14 @@ package pl.piotrtrybala.database.executor.async.results;
 
 import pl.piotrtrybala.database.command.types.HandshakeCommand;
 import pl.piotrtrybala.database.engine.Context;
-import pl.piotrtrybala.database.executor.ContextResult;
+import pl.piotrtrybala.database.executor.async.AsyncResult;
 
-public class HandshakeResult implements ContextResult {
+public class HandshakeResult implements AsyncResult {
 
-    public HandshakeResult(HandshakeCommand command) {}
+    public HandshakeResult() {}
 
     @Override
-    public char[] getResult(Context context) {
+    public char[] getResult() {
         return "OK".toCharArray();
     }
 }

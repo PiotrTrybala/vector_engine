@@ -10,10 +10,10 @@ import pl.piotrtrybala.database.command.impl.CommandParserImpl;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
-import pl.piotrtrybala.database.executor.ContextResult;
+import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.sync.Payload;
-import pl.piotrtrybala.database.executor.async.ContextExecutor;
+import pl.piotrtrybala.database.executor.async.AsyncExecutor;
+import pl.piotrtrybala.database.executor.async.Payload;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -35,7 +35,7 @@ public class AsyncEngineImpl implements Engine {
     private final EntrypointConfig.EngineConfig config;
     private ExecutorService workerPool;
     private CommandParser parser;
-    private Executor<ContextResult> executor;
+    private Executor<AsyncResult, pl.piotrtrybala.database.executor.async.Payload> executor;
 
     public AsyncEngineImpl(EntrypointConfig.EngineConfig config) {
         this.config = config;
@@ -47,7 +47,7 @@ public class AsyncEngineImpl implements Engine {
                 config.processingWorkerPoolSize()
         );
         this.parser = new CommandParserImpl();
-        this.executor = new ContextExecutor();
+        this.executor = new AsyncExecutor();
     }
 
     @Override
@@ -138,8 +138,8 @@ public class AsyncEngineImpl implements Engine {
 
                     for (Command command : finalCommands) {
 
-                        ContextResult result = this.executor.execute(new Payload(command));
-                        char[] output = result.getResult(context);
+                        AsyncResult result = this.executor.execute(new Payload(context, command));
+                        char[] output = result.getResult();
 
                     }
 

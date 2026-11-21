@@ -1,10 +1,8 @@
 package pl.piotrtrybala.database.executor.async;
 
-import pl.piotrtrybala.database.engine.Context;
-import pl.piotrtrybala.database.executor.ContextResult;
 import pl.piotrtrybala.database.executor.enums.ExecutorError;
 
-public class Error implements ContextResult {
+public class Error implements AsyncResult {
 
     private final ExecutorError error;
 
@@ -13,7 +11,7 @@ public class Error implements ContextResult {
     }
 
     @Override
-    public char[] getResult(Context context) {
+    public char[] getResult() {
         String builder = "failed to execute query: " +
                 this.error.getReason();
 

@@ -3,15 +3,13 @@ package pl.piotrtrybala.database.executor.async.results;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.AuthenticationManager;
-import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.command.types.AuthCommand;
-import pl.piotrtrybala.database.engine.Context;
-import pl.piotrtrybala.database.executor.ContextResult;
+import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.storage.types.User;
 
 import java.util.Optional;
 
-public class AuthResult implements ContextResult {
+public class AuthResult implements AsyncResult {
 
     private static final Logger LOGGER = LogManager.getLogger(AuthResult.class.getName());
 

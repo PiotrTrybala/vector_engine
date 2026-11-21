@@ -25,7 +25,7 @@ public class EngineImpl implements Engine {
     private final EntrypointConfig.EngineConfig config;
     private static final Logger LOGGER = LogManager.getLogger(EngineImpl.class.getName());
 
-    private Executor<Result> executor;
+    private Executor<Result, Payload> executor;
     private CommandParser parser;
     private ServerSocket serverSocket;
 

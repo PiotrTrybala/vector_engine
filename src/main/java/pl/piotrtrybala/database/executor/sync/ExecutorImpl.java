@@ -13,7 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExecutorImpl implements Executor<Result> {
+public class ExecutorImpl implements Executor<Result, Payload> {
 
     private static class Handler {
 
