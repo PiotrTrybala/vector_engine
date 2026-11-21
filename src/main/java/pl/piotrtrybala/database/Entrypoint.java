@@ -7,6 +7,7 @@ import pl.piotrtrybala.database.embeddings.embedder.EmbeddingIndex;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
+import pl.piotrtrybala.database.engine.impl.AsyncEngineImpl;
 import pl.piotrtrybala.database.engine.impl.EngineImpl;
 import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.MetadataStorage;
@@ -47,7 +48,12 @@ public class Entrypoint {
         if (instance == null) {
             instance = new Entrypoint();
             instance.config = config;
-            instance.engine = new EngineImpl(config.getEngineConfig());
+            instance.engine = new AsyncEngineImpl(config.getEngineConfig());
+            try {
+                instance.engine.init();
+            } catch (EngineException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

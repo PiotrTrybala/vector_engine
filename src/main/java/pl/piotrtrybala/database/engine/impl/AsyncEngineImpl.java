@@ -7,6 +7,7 @@ import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.CommandException;
 import pl.piotrtrybala.database.command.CommandParser;
 import pl.piotrtrybala.database.command.impl.CommandParserImpl;
+import pl.piotrtrybala.database.embeddings.embedder.EmbeddingUtils;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
@@ -108,53 +109,54 @@ public class AsyncEngineImpl implements Engine {
         ByteBuffer buffer = ByteBuffer.allocate(config.maxQueryBufferSize());
 
         try {
-
             int bytesRead = channel.read(buffer);
             if (bytesRead == -1) {
                 closeClient(context);
                 return;
             }
-
             buffer.flip();
-
-            List<Command> commands = new ArrayList<>();
             try {
-                commands = parser.parse(StandardCharsets.UTF_8.decode(buffer).array());
+                List<Command> commands = parser.parse(StandardCharsets.UTF_8.decode(buffer).array());
+                workerPool.submit(() -> {
+                    try {
+                        for (Command command : commands) {
+                            AsyncResult result = this.executor.execute(new Payload(context, command));
+                            char[] output = result.getResult();
+                            context.write(EmbeddingUtils.toBytes(output));
+                            context.flush();
+                        }
+                    } catch(IOException e) {
+                        LOGGER.error("could not write data to client: {}", e.getMessage());
+                    } catch(Exception e) {
+                        LOGGER.error("failed to execute command: " + e.getMessage());
+                        try {
+                            context.write(EmbeddingUtils.toBytes(e.getMessage().toCharArray()));
+                            context.flush();
+                        } catch (IOException ex) {
+                            LOGGER.error("could not write data to client: {}", e.getMessage());
+                        }
+                    } finally {
+                        try {
+                            if (key.isValid()) {
+                                key.selector().wakeup();
+                                this.enableRead(key);
+                            }
+                        } catch(Exception ignored) {
+                            LOGGER.error("exception: {}", ignored.getMessage());
+                        }
+                    }
+                });
             } catch (CommandException e) {
                 LOGGER.error("failed to parse commands: {}", e.getMessage());
-//                writer.write(e.getMessage());
-//                writer.flush();
+                context.write(EmbeddingUtils.toBytes(e.getMessage().toCharArray()));
+                context.flush();
             } catch (Exception e) {
                 LOGGER.error("failed to execute commands: {}", e.getMessage());
-//                context.write(e.getMessage().);
-//                writer.flush();
+                context.write(EmbeddingUtils.toBytes(e.getMessage().toCharArray()));
+                context.flush();
             }
 
             buffer.clear();
-
-            List<Command> finalCommands = commands;
-            workerPool.submit(() -> {
-                try {
-
-                    for (Command command : finalCommands) {
-
-                        AsyncResult result = this.executor.execute(new Payload(context, command));
-                        char[] output = result.getResult();
-
-                    }
-
-                } catch(Exception e) {
-
-                } finally {
-                    try {
-                        if (key.isValid()) {
-                            key.selector().wakeup();
-                            this.enableRead(key);
-                        }
-                    } catch(Exception ignored) {}
-                }
-
-            });
         } catch (IOException e) {
             LOGGER.warn("connection error with client: {}", e.getMessage());
             this.closeClient(context);

@@ -103,7 +103,7 @@ public class EngineImpl implements Engine {
                         Result result = this.executor.execute(new Payload(command));
                         long duration = System.currentTimeMillis() - start;
                         char[] output = result.getResult();
-                        LOGGER.info("executor finished processing in {}s", duration / 1000);
+                        LOGGER.info("executor finished processing in {}s", (float) duration / 1000);
 
                         writer.write(output);
                         writer.flush();

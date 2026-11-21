@@ -3,6 +3,8 @@ package pl.piotrtrybala.database.executor.async.results;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.auth.session.Session;
+import pl.piotrtrybala.database.auth.session.SessionStorage;
 import pl.piotrtrybala.database.command.types.AuthCommand;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.storage.types.User;
@@ -20,7 +22,6 @@ public class AuthResult implements AsyncResult {
     }
 
 
-
     @Override
     public char[] getResult() {
 
@@ -32,7 +33,8 @@ public class AuthResult implements AsyncResult {
             if (user.isEmpty()) {
                 return "User is not found".toCharArray();
             }
-            context.createSession(user.get());
+
+            AuthenticationManager.getInstance().getStorage().create(user.get());
 
         } catch (Exception e) {
             LOGGER.error("failed to authenticate user: {}", e.getMessage());

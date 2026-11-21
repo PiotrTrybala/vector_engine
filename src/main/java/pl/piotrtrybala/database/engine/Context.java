@@ -6,7 +6,6 @@ import pl.piotrtrybala.database.auth.session.Session;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.storage.types.User;
 
-import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -76,7 +75,7 @@ public class Context {
         }
     }
 
-    public boolean flush() throws IOException {
+    public void flush() throws IOException {
         writeLock.lock();
         try {
             while(!writeQueue.isEmpty()) {
@@ -84,12 +83,11 @@ public class Context {
                 int written = channel.write(buffer);
                 if (written == 0 || buffer.hasRemaining()) {
                     enableWrite();
-                    return false;
+                    return;
                 }
                 writeQueue.pollFirst();
             }
             disableWrite();
-            return true;
         } finally {
             writeLock.unlock();
         }
