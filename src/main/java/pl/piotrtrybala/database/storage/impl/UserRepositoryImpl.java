@@ -2,7 +2,7 @@ package pl.piotrtrybala.database.storage.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.security.permissions.Permissions;
 import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;

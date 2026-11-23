@@ -1,11 +1,10 @@
 package pl.piotrtrybala.database.storage.types;
 
-import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.security.permissions.Permissions;
 import pl.piotrtrybala.database.storage.MetadataUtils;
 import pl.piotrtrybala.database.storage.repositories.UserGroupRepository;
 import pl.piotrtrybala.database.storage.repositories.UserRepository;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Random;
 

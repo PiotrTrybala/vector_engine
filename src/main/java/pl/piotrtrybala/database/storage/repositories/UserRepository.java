@@ -1,11 +1,9 @@
 package pl.piotrtrybala.database.storage.repositories;
 
-import pl.piotrtrybala.database.auth.permissions.Permissions;
 import pl.piotrtrybala.database.storage.Repository;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 public interface UserRepository extends Repository<User, Integer> {

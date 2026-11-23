@@ -1,6 +1,6 @@
 package pl.piotrtrybala.database.storage.impl;
 
-import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.security.permissions.Permissions;
 import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Group;

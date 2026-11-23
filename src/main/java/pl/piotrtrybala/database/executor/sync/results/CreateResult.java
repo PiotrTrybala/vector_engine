@@ -1,11 +1,11 @@
 package pl.piotrtrybala.database.executor.sync.results;
 
-import pl.piotrtrybala.database.auth.AuthenticationManager;
-import pl.piotrtrybala.database.auth.permissions.Permissions;
+import pl.piotrtrybala.database.security.AuthenticationManager;
+import pl.piotrtrybala.database.security.permissions.Permissions;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;
-import pl.piotrtrybala.database.auth.session.Session;
-import pl.piotrtrybala.database.auth.session.SessionStorage;
+import pl.piotrtrybala.database.security.session.Session;
+import pl.piotrtrybala.database.security.session.SessionManager;
 import pl.piotrtrybala.database.storage.repositories.CollectionRepository;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
@@ -14,7 +14,7 @@ import pl.piotrtrybala.database.command.types.CreateCommand;
 
 public class CreateResult implements Result {
 
-    private final SessionStorage sessionStorage;
+    private final SessionManager sessionStorage;
     private final CreateCommand query;
 
     public CreateResult(CreateCommand query) {
@@ -25,7 +25,7 @@ public class CreateResult implements Result {
     @Override
     public char[] getResult() {
 
-        if (!this.sessionStorage.has(null)) {
+        if (this.sessionStorage.has(null)) {
             return "User is not authentiated".toCharArray();
         }
 

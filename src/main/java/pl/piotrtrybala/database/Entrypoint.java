@@ -2,13 +2,11 @@ package pl.piotrtrybala.database;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.auth.AuthenticationManager;
-import pl.piotrtrybala.database.embeddings.embedder.EmbeddingIndex;
+import pl.piotrtrybala.database.security.AuthenticationManager;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Engine;
 import pl.piotrtrybala.database.engine.EngineException;
 import pl.piotrtrybala.database.engine.impl.AsyncEngineImpl;
-import pl.piotrtrybala.database.engine.impl.EngineImpl;
 import pl.piotrtrybala.database.storage.ConnectionManager;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 

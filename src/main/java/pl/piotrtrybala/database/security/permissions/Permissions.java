@@ -1,4 +1,4 @@
-package pl.piotrtrybala.database.auth.permissions;
+package pl.piotrtrybala.database.security.permissions;
 
 import java.util.HashMap;
 import java.util.List;

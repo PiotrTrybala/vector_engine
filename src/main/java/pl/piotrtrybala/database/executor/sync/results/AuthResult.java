@@ -2,9 +2,9 @@ package pl.piotrtrybala.database.executor.sync.results;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pl.piotrtrybala.database.auth.AuthenticationManager;
+import pl.piotrtrybala.database.security.AuthenticationManager;
 import pl.piotrtrybala.database.storage.types.User;
-import pl.piotrtrybala.database.auth.session.Session;
+import pl.piotrtrybala.database.security.session.Session;
 import pl.piotrtrybala.database.executor.Result;
 import pl.piotrtrybala.database.command.types.AuthCommand;
 

@@ -1,9 +1,7 @@
 package pl.piotrtrybala.database.storage.types;
 
-import pl.piotrtrybala.database.auth.permissions.Permissions;
-import pl.piotrtrybala.database.storage.repositories.GroupRepository;
+import pl.piotrtrybala.database.security.permissions.Permissions;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class Group {

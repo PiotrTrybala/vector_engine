@@ -1,7 +1,7 @@
 package pl.piotrtrybala.database.executor.sync.results;
 
-import pl.piotrtrybala.database.auth.AuthenticationManager;
-import pl.piotrtrybala.database.auth.session.Session;
+import pl.piotrtrybala.database.security.AuthenticationManager;
+import pl.piotrtrybala.database.security.session.Session;
 import pl.piotrtrybala.database.command.enums.SelectType;
 import pl.piotrtrybala.database.command.expression.Expression;
 import pl.piotrtrybala.database.executor.Result;
