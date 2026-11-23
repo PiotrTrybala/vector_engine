@@ -27,9 +27,9 @@ public class GroupRepositoryImpl implements GroupRepository {
 
                 String name = result.getString("name");
                 String rawPerms = result.getString("perms");
-                Permissions permissions = null;
+                Permissions permissions = new Permissions();
                 try {
-                    permissions = Permissions.parse(rawPerms);
+                    permissions = (Permissions) permissions.parse(rawPerms);
                 } catch(Exception e) {
                     throw new RepositoryException("failed to parse permissions: " + e.getMessage());
                 }
@@ -55,9 +55,9 @@ public class GroupRepositoryImpl implements GroupRepository {
 
                 int id = result.getInt("id");
                 String rawPerms = result.getString("perms");
-                Permissions permissions = null;
+                Permissions permissions = new Permissions();
                 try {
-                    permissions = Permissions.parse(rawPerms);
+                    permissions = (Permissions) permissions.parse(rawPerms);
                 } catch(Exception e) {
                     throw new RepositoryException("failed to parse permissions: " + e.getMessage());
                 }
@@ -82,9 +82,9 @@ public class GroupRepositoryImpl implements GroupRepository {
                     int id = result.getInt("id");
                     String name = result.getString("name");
                     String rawPerms = result.getString("perms");
-                    Permissions permissions = null;
+                    Permissions permissions = new Permissions();
                     try {
-                        permissions = Permissions.parse(rawPerms);
+                        permissions = (Permissions) permissions.parse(rawPerms);
                     } catch(Exception e) {
                         throw new RepositoryException("failed to parse permissions: " + e.getMessage());
                     }

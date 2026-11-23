@@ -32,60 +32,61 @@ public class InsertResult implements Result {
     @Override
     public char[] getResult() {
 
-        String collectionName = query.getCollectionName();
-        EmbeddingType embeddingType = query.getType();
-        byte[] data = this.query.getData();
-
-        Embedder embedder = null;
-        try {
-            embedder = EmbeddingManager.getInstance().getEmbedder(embeddingType);
-        } catch (EmbedderException e) {
-            String message = "This data type is not supported: " + embeddingType.getType();
-            return message.toCharArray();
-        }
-
-        if (!AuthenticationManager.getInstance().getStorage().has(null)) {
-            return "User is not authenticated".toCharArray();
-        }
-
-        Session session = AuthenticationManager.getInstance().getStorage().retrieve(null);
-
-        User user = session.getUser();
-        Collection selectedCollection = session.getCurrentCollection();
-        if (selectedCollection == null) {
-            try {
-                Optional<Collection> collection = MetadataStorage.getInstance().getCollectionRepository().findById(user.getId(), collectionName);
-                if (collection.isPresent()) {
-                    selectedCollection = collection.get();
-                }
-            } catch (RepositoryException e) {
-                String message = "This collection does not exists: " + collectionName;
-                return message.toCharArray();
-            }
-        }
-
-        if (selectedCollection == null) {
-            return "Collection was not found".toCharArray();
-        }
-
-        int id;
-
-        try {
-            float[] vector = embedder.create(data);
-            id = MetadataStorage.getInstance().getEmbeddingRepository().insert(
-                    new Embedding(selectedCollection.getId(),
-                            data,
-                            new HashMap<>())
-            );
-
-            Optional<Embedding> emb = MetadataStorage.getInstance().getEmbeddingRepository().findById(id);
-            emb.ifPresent(embedding -> EmbeddingManager.getInstance().getIndex().add(embedding.getId(), vector));
-        } catch (RepositoryException e) {
-            LOGGER.error("could not add embedding: {}", e.getMessage());
-            return "Failed to insert new embedding".toCharArray();
-        }
-
-        String message = "New embedding added, id = " + id;
-        return message.toCharArray();
+//        String collectionName = query.getCollectionName();
+//        EmbeddingType embeddingType = query.getType();
+//        byte[] data = this.query.getData();
+//
+//        Embedder embedder = null;
+//        try {
+//            embedder = EmbeddingManager.getInstance().getEmbedder(embeddingType);
+//        } catch (EmbedderException e) {
+//            String message = "This data type is not supported: " + embeddingType.getType();
+//            return message.toCharArray();
+//        }
+//
+//        if (!AuthenticationManager.getInstance().getStorage().has(null)) {
+//            return "User is not authenticated".toCharArray();
+//        }
+//
+//        Session session = AuthenticationManager.getInstance().getStorage().retrieve(null);
+//
+//        User user = session.getUser();
+//        Collection selectedCollection = session.getCurrentCollection();
+//        if (selectedCollection == null) {
+//            try {
+//                Optional<Collection> collection = MetadataStorage.getInstance().getCollectionRepository().findById(user.getId(), collectionName);
+//                if (collection.isPresent()) {
+//                    selectedCollection = collection.get();
+//                }
+//            } catch (RepositoryException e) {
+//                String message = "This collection does not exists: " + collectionName;
+//                return message.toCharArray();
+//            }
+//        }
+//
+//        if (selectedCollection == null) {
+//            return "Collection was not found".toCharArray();
+//        }
+//
+//        int id;
+//
+//        try {
+//            float[] vector = embedder.create(data);
+//            id = MetadataStorage.getInstance().getEmbeddingRepository().insert(
+//                    new Embedding(selectedCollection.getId(),
+//                            data,
+//                            new HashMap<>())
+//            );
+//
+//            Optional<Embedding> emb = MetadataStorage.getInstance().getEmbeddingRepository().findById(id);
+//            emb.ifPresent(embedding -> EmbeddingManager.getInstance().getIndex().add(embedding.getId(), vector));
+//        } catch (RepositoryException e) {
+//            LOGGER.error("could not add embedding: {}", e.getMessage());
+//            return "Failed to insert new embedding".toCharArray();
+//        }
+//
+//        String message = "New embedding added, id = " + id;
+//        return message.toCharArray();
+        return "OK".toCharArray();
     }
 }

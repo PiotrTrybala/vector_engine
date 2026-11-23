@@ -24,21 +24,21 @@ public class AuthResult implements Result {
 
     @Override
     public char[] getResult() {
-        try {
-            Optional<User> user = this.instance.authenticateUser(
-                    query.getUsername(),
-                    query.getPassword()
-            );
-            if (user.isEmpty()) {
-                return "User is not found".toCharArray();
-            }
-
-            Session session = this.instance.getStorage().create(user.get());
-            LOGGER.info("created new session: {}", session);
-        } catch (Exception e) {
-            LOGGER.error("failed to authenticate user: {}", e.getMessage());
-            return "Failed to authenticate user".toCharArray();
-        }
+//        try {
+//            Optional<User> user = this.instance.authenticateUser(
+//                    query.getUsername(),
+//                    query.getPassword()
+//            );
+//            if (user.isEmpty()) {
+//                return "User is not found".toCharArray();
+//            }
+//
+//            Session session = this.instance.getStorage().create(user.get());
+//            LOGGER.info("created new session: {}", session);
+//        } catch (Exception e) {
+//            LOGGER.error("failed to authenticate user: {}", e.getMessage());
+//            return "Failed to authenticate user".toCharArray();
+//        }
         return "OK".toCharArray();
     }
 }

@@ -25,46 +25,46 @@ public class SelectResult implements Result {
     @Override
     public char[] getResult() {
 
-        Session session = AuthenticationManager.getInstance().getStorage().retrieve(null);
-        if (session == null) {
-            return "User is not authenticated".toCharArray();
-        }
-        User user = session.getUser();
-        Collection collection = session.getCurrentCollection();
-
-        String collectionName = command.getCollectionName();
-        SelectType type = command.getType();
-        List<String> metadata = command.getMetadata();
-        Expression where = command.getWhere();
-        int limit = command.getLimit();
-
-        if (collection == null) {
-            try {
-                Optional<Collection> c = MetadataStorage.getInstance().getCollectionRepository().findById(
-                        user.getId(),
-                        collectionName
-                );
-                if (c.isPresent()) {
-                    collection = c.get();
-                }
-            } catch (RepositoryException e) {
-                String message = "Collection could not be found: " + collectionName;
-                return message.toCharArray();
-            }
-        }
-
-        if (collection == null) {
-            return "No collection was selected".toCharArray();
-        }
-
-        if (type == SelectType.METADATA) {
-
-
-
-            return "OK".toCharArray();
-        }
-
-        // TEXT SelectType
+//        Session session = AuthenticationManager.getInstance().getStorage().retrieve(null);
+//        if (session == null) {
+//            return "User is not authenticated".toCharArray();
+//        }
+//        User user = session.getUser();
+//        Collection collection = session.getCurrentCollection();
+//
+//        String collectionName = command.getCollectionName();
+//        SelectType type = command.getType();
+//        List<String> metadata = command.getMetadata();
+//        Expression where = command.getWhere();
+//        int limit = command.getLimit();
+//
+//        if (collection == null) {
+//            try {
+//                Optional<Collection> c = MetadataStorage.getInstance().getCollectionRepository().findById(
+//                        user.getId(),
+//                        collectionName
+//                );
+//                if (c.isPresent()) {
+//                    collection = c.get();
+//                }
+//            } catch (RepositoryException e) {
+//                String message = "Collection could not be found: " + collectionName;
+//                return message.toCharArray();
+//            }
+//        }
+//
+//        if (collection == null) {
+//            return "No collection was selected".toCharArray();
+//        }
+//
+//        if (type == SelectType.METADATA) {
+//
+//
+//
+//            return "OK".toCharArray();
+//        }
+//
+//        // TEXT SelectType
         return "OK".toCharArray();
     }
 }

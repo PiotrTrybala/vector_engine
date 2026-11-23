@@ -1,5 +1,6 @@
 package pl.piotrtrybala.database.storage.types;
 
+import pl.piotrtrybala.database.security.permissions.Permission;
 import pl.piotrtrybala.database.security.permissions.Permissions;
 
 import java.sql.Timestamp;
@@ -24,11 +25,11 @@ public class Group {
         this.updatedAt = updatedAt;
     }
 
-    public void addPermission(String permission) {
+    public void addPermission(Permission permission) {
         this.permissions.add(permission);
     }
 
-    public void removePermission(String permission) {
+    public void removePermission(Permission permission) {
         this.permissions.remove(permission);
     }
 

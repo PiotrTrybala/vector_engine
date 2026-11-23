@@ -39,7 +39,7 @@ public class AuthenticationManager {
         return instance;
     }
 
-    public void auth(String username, String password) throws Exception {
+    public Session auth(String username, String password) throws Exception {
         Optional<User> user = this.userManager.retrieve(username);
         String passwordHash = MetadataUtils.hashPassword(password);
 
@@ -51,6 +51,8 @@ public class AuthenticationManager {
         if (session.isEmpty()) {
             throw new Exception("failed to authenticate user session");
         }
+
+        return session.get();
     }
 
     public Optional<Session> retrieve(String sessionToken) throws Exception {

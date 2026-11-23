@@ -7,6 +7,8 @@ import pl.piotrtrybala.database.command.types.AuthCommand;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.AuthResult;
+import pl.piotrtrybala.database.security.AuthenticationManager;
+import pl.piotrtrybala.database.security.session.Session;
 import pl.piotrtrybala.database.storage.types.User;
 
 import java.util.Optional;
@@ -18,22 +20,14 @@ public class AuthCommandHandler implements CommandHandler {
     @Override
     public AsyncResult handle(Context context, Command command) {
         AuthCommand authCommand = (AuthCommand) command;
-
+        LOGGER.info("authenticating for user {} ", authCommand.getUsername());
         try {
-
-
-
+            Session session = AuthenticationManager.getInstance().auth(authCommand.getUsername(), authCommand.getPassword());
+            context.setSession(session);
         } catch(Exception e) {
             LOGGER.error("failed to authenticate user: {}", e.getMessage());
-            return new AsyncResult() {
-                @Override
-                public char[] getResult() {
-                    return "Failed to authenticate user".toCharArray();
-                }
-            };
+            return "Failed to authenticate user"::toCharArray;
         }
-
-
         return new AuthResult();
     }
 }

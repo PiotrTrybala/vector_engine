@@ -1,6 +1,6 @@
 package pl.piotrtrybala.database.command.enums;
 
-public enum UseTargetType {
+public enum UseTarget {
     COLLECTIONS("COLLECTIONS"), // all user collections
     USER("USER"), // current user
     COLLECTION("COLLECTION"),
@@ -8,7 +8,7 @@ public enum UseTargetType {
 
     private final String target;
 
-    UseTargetType(String target) {
+    UseTarget(String target) {
         this.target = target;
     }
 

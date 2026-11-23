@@ -28,7 +28,8 @@ public class UserRepositoryImpl implements UserRepository {
                 String password = result.getString("password");
                 boolean root = result.getBoolean("root");
                 String rawPerms = result.getString("perms");
-                Permissions permissions = Permissions.parse(rawPerms);
+                Permissions permissions = new Permissions();
+                permissions = (Permissions) permissions.parse(rawPerms);
                 Timestamp createdAt = result.getTimestamp("created_at");
                 Timestamp updatedAt = result.getTimestamp("updated_at");
 
@@ -52,7 +53,8 @@ public class UserRepositoryImpl implements UserRepository {
                 String password = result.getString("password");
                 boolean root = result.getBoolean("root");
                 String rawPerms = result.getString("perms");
-                Permissions permissions = Permissions.parse(rawPerms);
+                Permissions permissions = new Permissions();
+                permissions = (Permissions) permissions.parse(rawPerms);
                 Timestamp createdAt = result.getTimestamp("created_at");
                 Timestamp updatedAt = result.getTimestamp("updated_at");
 

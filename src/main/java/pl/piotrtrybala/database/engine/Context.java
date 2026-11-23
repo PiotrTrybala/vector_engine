@@ -48,8 +48,12 @@ public class Context {
         return this.session;
     }
 
+    public void setSession(Session session) {
+        this.session = session;
+    }
+
     public void createSession(User user) {
-        this.session = new Session(user);
+        this.session = Session.create(user);
     }
 
     public Collection getCurrentCollection() {

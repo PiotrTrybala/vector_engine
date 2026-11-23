@@ -13,41 +13,45 @@ import pl.piotrtrybala.database.executor.Result;
 import pl.piotrtrybala.database.command.types.CreateCommand;
 
 public class CreateResult implements Result {
-
-    private final SessionManager sessionStorage;
-    private final CreateCommand query;
-
-    public CreateResult(CreateCommand query) {
-        this.sessionStorage = AuthenticationManager.getInstance().getStorage();
-        this.query = query;
-    }
-
     @Override
     public char[] getResult() {
-
-        if (this.sessionStorage.has(null)) {
-            return "User is not authentiated".toCharArray();
-        }
-
-        Session session = this.sessionStorage.retrieve(null);
-        User user = session.getUser();
-
-        Permissions userPermissions = user.getPermissions();
-        Permissions groupPermissions = user.getGroup().getPermissions();
-
-        if (userPermissions.has("*.*") || groupPermissions.has("*.*") || userPermissions.has("collection.create") || groupPermissions.has("collection.create")) {
-            CollectionRepository repo = MetadataStorage.getInstance().getCollectionRepository();
-            int userId = user.getId();
-            String name = query.getName();
-            try {
-                MetadataStorage.getInstance().getCollectionRepository().insert(new Collection(userId, name));
-            } catch (RepositoryException e) {
-                return "Failed to create collection".toCharArray();
-            }
-        } else {
-            return "Not authorized".toCharArray();
-        }
-
-        return "OK".toCharArray();
+        return new char[0];
     }
+
+//    private final CreateCommand command;
+//
+//    public CreateResult(CreateCommand command) {
+//        this.command = command;
+//    }
+//
+//    @Override
+//    public char[] getResult() {
+//
+//        AuthenticationManager.getInstance().
+//
+//        if (this.sessionStorage.has(null)) {
+//            return "User is not authentiated".toCharArray();
+//        }
+//
+//        Session session = this.sessionStorage.retrieve(null);
+//        User user = session.getUser();
+//
+//        Permissions userPermissions = user.getPermissions();
+//        Permissions groupPermissions = user.getGroup().getPermissions();
+//
+//        if (userPermissions.has("*.*") || groupPermissions.has("*.*") || userPermissions.has("collection.create") || groupPermissions.has("collection.create")) {
+//            CollectionRepository repo = MetadataStorage.getInstance().getCollectionRepository();
+//            int userId = user.getId();
+//            String name = query.getName();
+//            try {
+//                MetadataStorage.getInstance().getCollectionRepository().insert(new Collection(userId, name));
+//            } catch (RepositoryException e) {
+//                return "Failed to create collection".toCharArray();
+//            }
+//        } else {
+//            return "Not authorized".toCharArray();
+//        }
+//
+//        return "OK".toCharArray();
+//    }
 }
