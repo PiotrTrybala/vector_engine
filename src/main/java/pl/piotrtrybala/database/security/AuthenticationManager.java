@@ -1,75 +1,61 @@
 package pl.piotrtrybala.database.security;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pl.piotrtrybala.database.EntrypointConfig;
+import pl.piotrtrybala.database.security.session.Session;
+import pl.piotrtrybala.database.security.session.impl.SessionManagerImpl;
+import pl.piotrtrybala.database.security.users.UserManagerImpl;
+import pl.piotrtrybala.database.storage.MetadataUtils;
+import pl.piotrtrybala.database.storage.types.User;
+
+import java.util.Optional;
+
 public class AuthenticationManager {
 
-//    private static final Logger LOGGER = LogManager.getLogger(AuthenticationManager.class.getName());
-//
-//    private final UserRepository userRepo;
-//    private final GroupRepository groupRepo;
-//    private final UserGroupRepository userGroupRepo;
-//
-//    private final SessionStorage storage;
-//
-//    private static AuthenticationManager instance;
-//
-//    private AuthenticationManager(Connection connection) {
-//        this.userRepo = new UserRepositoryImpl();
-//        this.groupRepo = new GroupRepositoryImpl();
-//        this.userGroupRepo = new UserGroupRepositoryImpl(this.userRepo, this.groupRepo);
-//        this.storage = new SessionStorageImpl();
-//    }
-//
-//    public SessionStorage getStorage() {
-//        return storage;
-//    }
-//
-//    public GroupRepository getGroupRepo() {
-//        return groupRepo;
-//    }
-//
-//    public UserRepository getUserRepo() {
-//        return userRepo;
-//    }
-//
-//    public static synchronized void initialize(EntrypointConfig.AuthConfig config) {
-//
-//        if (instance != null) {
-//            throw new IllegalStateException("AuthenticationManager is already initialized");
-//        }
-//        try {
-//            instance = new AuthenticationManager(ConnectionManager.getConnection());
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Could retrieve connection to metadata: " + e.getMessage());
-//        }
-//    }
-//
-//    public static synchronized AuthenticationManager getInstance() {
-//        if (instance == null) {
-//            throw new IllegalStateException("AuthenticationManager should be initialized");
-//        }
-//        return instance;
-//    }
-//
-//    public Optional<User> authenticateUser(String username, String password) throws Exception {
-//        LOGGER.info("authenticating user: {}", username);
-//        Optional<User> user = this.retrieveUser(username);
-//        String passwordHash = MetadataUtils.hashPassword(password);
-//        if (user.isPresent() && !user.get().getPassword().equals(passwordHash)) {
-//            throw new Exception("failed to authenticate user");
-//        }
-//
-//        return user;
-//    }
-//
-//    public Optional<User> retrieveUser(String username) throws RepositoryException {
-//        Optional<User> user = this.userRepo.findByUsername(username);
-//        if (user.isEmpty()) return Optional.empty();
-//
-//        Optional<Group> group = this.userGroupRepo.getGroupByUserId(user.get().getId());
-//        if (group.isEmpty()) return user;
-//
-//        user.get().setGroup(group.get());
-//        return user;
-//    }
+    private static final Logger LOGGER = LogManager.getLogger(AuthenticationManager.class.getName());
 
+    private final SessionManager<Session> sessionManager;
+    private final UserManager<User> userManager;
+
+    private static AuthenticationManager instance;
+
+    private AuthenticationManager() {
+        this.sessionManager = new SessionManagerImpl();
+        this.userManager = new UserManagerImpl();
+    }
+
+    public static synchronized void initialize(EntrypointConfig.AuthConfig config) {
+        if (instance != null) {
+            throw new IllegalStateException("AuthenticationManager is already initialized");
+        }
+        instance = new AuthenticationManager();
+    }
+
+    public static synchronized AuthenticationManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("AuthenticationManager should be initialized");
+        }
+        return instance;
+    }
+
+    public void auth(String username, String password) throws Exception {
+
+        Optional<User> user = this.userManager.retrieve(username);
+        String passwordHash = MetadataUtils.hashPassword(password);
+
+        if (user.isEmpty() || !user.get().getPassword().equals(passwordHash)) {
+            throw new Exception("failed to authenticate user");
+        }
+
+        Optional<Session> session = this.sessionManager.create(user.get());
+
+        if (session.isEmpty()) {
+            throw new Exception("failed to authenticate user session");
+        }
+    }
+
+    public Optional<Session> retrieve(String sessionToken) throws Exception {
+        return this.sessionManager.retrieve(sessionToken);
+    }
 }

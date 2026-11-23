@@ -2,18 +2,17 @@ package pl.piotrtrybala.database.security.session.impl;
 
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.security.session.Session;
-import pl.piotrtrybala.database.security.session.SessionManager;
+import pl.piotrtrybala.database.security.SessionManager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SessionStorageImpl implements SessionManager<Session> {
+public class SessionManagerImpl implements SessionManager<Session> {
 
     private final Map<String, Session> sessions;
 
-    public SessionStorageImpl() {
+    public SessionManagerImpl() {
         this.sessions = new ConcurrentHashMap<>();
     }
 
@@ -31,6 +30,12 @@ public class SessionStorageImpl implements SessionManager<Session> {
         }
         return Optional.empty();
     }
+
+    @Override
+    public Optional<Session> retrieve(String sessionToken) {
+        return Optional.of(this.sessions.get(sessionToken));
+    }
+
 
     @Override
     public Optional<Session> create(User user) {

@@ -4,10 +4,14 @@ import pl.piotrtrybala.database.storage.types.User;
 
 import java.util.Optional;
 
-public interface SessionManager<T> {
-    Optional<T> retrieve(String token);
-    Optional<T> retrieve(User user);
-    Optional<T> create(User user);
-    void revoke(String token);
+public interface SessionManager<S> {
+
+    Optional<S> retrieve(User user);
+    Optional<S> retrieve(String sessionToken);
+    Optional<S> create(User user);
+
+    boolean has(User user);
+    boolean valid(String sessionToken);
     void revoke(User user);
+
 }

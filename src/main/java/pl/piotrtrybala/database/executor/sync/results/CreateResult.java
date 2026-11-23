@@ -5,7 +5,7 @@ import pl.piotrtrybala.database.security.permissions.Permissions;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.User;
 import pl.piotrtrybala.database.security.session.Session;
-import pl.piotrtrybala.database.security.session.SessionManager;
+import pl.piotrtrybala.database.security.SessionManager;
 import pl.piotrtrybala.database.storage.repositories.CollectionRepository;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.types.Collection;
