@@ -1,58 +1,58 @@
 package pl.piotrtrybala.database.security.permissions;
 
+
+import pl.piotrtrybala.database.security.IPermissions;
+import pl.piotrtrybala.database.security.PermissionsException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Permissions {
+public class Permissions implements IPermissions<String, String> {
+    private final Map<String, Boolean> permissions = new HashMap<>();
 
-    private Map<String, Boolean> perms = new HashMap<>();
+    @Override
+    public IPermissions<String, String> parse(String permissions) throws PermissionsException {
 
-    public Permissions() {}
-
-    private Permissions(HashMap<String, Boolean> perms) {
-        this.perms = perms;
-    }
-
-    public static Permissions parse(String perms) throws Exception {
-
-        if (perms == null || perms.isEmpty()) {
-            throw new Exception("perms is emtpy");
+        if (permissions == null || permissions.isEmpty()) {
+            throw new PermissionsException("permissions was empty");
         }
 
-        List<String> parsed = List.of(perms.trim().split(","));
-
-        HashMap<String, Boolean> container = new HashMap<>();
-        for (String perm : parsed) {
-            container.put(perm, true);
+        List<String> permissionsList = List.of(permissions.split(","));
+        if (permissionsList.isEmpty()) {
+            throw new PermissionsException("permissions list is empty");
         }
-        return new Permissions(container);
-    }
 
-    public String save() {
-        int permsSize = perms.keySet().size();
-        return String.join(",", perms.keySet());
-    }
-
-    public void add(String perm) {
-        if (perm.isEmpty()) {
-            return;
+        Permissions p = new Permissions();
+        for (String permission : permissionsList) {
+            p.add(permission);
         }
-        this.perms.put(perm.trim(), true);
-    }
-
-    public void remove(String perm) {
-        perms.remove(perm);
-    }
-
-    public boolean has(String perm) {
-        return perms.containsKey(perm);
+        return p;
     }
 
     @Override
-    public String toString() {
-        return "Permissions{" +
-                "perms=" + perms.keySet() +
-                '}';
+    public String save() throws PermissionsException {
+        List<String> permissions = this.permissions.keySet().stream().toList();
+        if (permissions.size() == 1) {
+            return permissions.getFirst();
+        }
+        return String.join(",", permissions);
     }
+
+    @Override
+    public void add(String perm) {
+        this.permissions.put(perm, true);
+    }
+
+    @Override
+    public void remove(String perm) {
+        this.permissions.remove(perm);
+    }
+
+    @Override
+    public boolean has(String perm) {
+        return this.permissions.containsKey(perm);
+    }
+
+
 }

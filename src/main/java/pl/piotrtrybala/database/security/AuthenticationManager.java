@@ -40,7 +40,6 @@ public class AuthenticationManager {
     }
 
     public void auth(String username, String password) throws Exception {
-
         Optional<User> user = this.userManager.retrieve(username);
         String passwordHash = MetadataUtils.hashPassword(password);
 
@@ -49,7 +48,6 @@ public class AuthenticationManager {
         }
 
         Optional<Session> session = this.sessionManager.create(user.get());
-
         if (session.isEmpty()) {
             throw new Exception("failed to authenticate user session");
         }
