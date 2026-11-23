@@ -4,35 +4,36 @@ package pl.piotrtrybala.database.security.permissions;
 import pl.piotrtrybala.database.security.IPermissions;
 import pl.piotrtrybala.database.security.PermissionsException;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class Permissions implements IPermissions<String, String> {
-    private final Map<String, Boolean> permissions = new HashMap<>();
+public class Permissions implements IPermissions<String, Permission> {
+    private final Map<Permission, Boolean> permissions = new HashMap<>();
 
     @Override
-    public IPermissions<String, String> parse(String permissions) throws PermissionsException {
+    public IPermissions<String, Permission> parse(String permissions) throws PermissionsException {
 
         if (permissions == null || permissions.isEmpty()) {
             throw new PermissionsException("permissions was empty");
         }
 
-        List<String> permissionsList = List.of(permissions.split(","));
-        if (permissionsList.isEmpty()) {
-            throw new PermissionsException("permissions list is empty");
-        }
+        List<Permission> permissionList = Arrays.
+                stream(permissions.split(","))
+                .map(p -> {
+                    Optional<Permission> permission = Permission.from(p);
+                    if (permission.isEmpty()) throw new PermissionsException("undefined permission: " + p);
+                    return permission.get();
+                }).toList();
 
-        Permissions p = new Permissions();
-        for (String permission : permissionsList) {
-            p.add(permission);
+        Permissions perms = new Permissions();
+        for (Permission perm : permissionList) {
+            perms.add(perm);
         }
-        return p;
+        return perms;
     }
 
     @Override
     public String save() throws PermissionsException {
-        List<String> permissions = this.permissions.keySet().stream().toList();
+        List<String> permissions = this.permissions.keySet().stream().map(Permission::getPermission).toList();
         if (permissions.size() == 1) {
             return permissions.getFirst();
         }
@@ -40,17 +41,17 @@ public class Permissions implements IPermissions<String, String> {
     }
 
     @Override
-    public void add(String perm) {
+    public void add(Permission perm) {
         this.permissions.put(perm, true);
     }
 
     @Override
-    public void remove(String perm) {
+    public void remove(Permission perm) {
         this.permissions.remove(perm);
     }
 
     @Override
-    public boolean has(String perm) {
+    public boolean has(Permission perm) {
         return this.permissions.containsKey(perm);
     }
 
