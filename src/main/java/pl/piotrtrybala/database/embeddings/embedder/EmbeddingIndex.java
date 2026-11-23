@@ -12,22 +12,6 @@ public interface EmbeddingIndex {
 
     void save(String path) throws IOException;
 
-    class IndexSearchResult {
-        private final int id;
-        private final float score;
-
-        public IndexSearchResult(int id, float score) {
-            this.id = id;
-            this.score = score;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public float getScore() {
-            return score;
-        }
+    record IndexSearchResult(int id, float score) {
     }
-
 }

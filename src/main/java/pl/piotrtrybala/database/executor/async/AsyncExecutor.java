@@ -2,6 +2,7 @@ package pl.piotrtrybala.database.executor.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.enums.CommandType;
 import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.async.handlers.*;
@@ -23,6 +24,8 @@ public class AsyncExecutor implements Executor<AsyncResult, Payload> {
         this.handlers.put(CommandType.SHOW, new ShowCommandHandler());
         this.handlers.put(CommandType.USE_COLLECTION, new UseCommandHandler());
         this.handlers.put(CommandType.CREATE_COLLECTION, new CreateCommandHandler());
+        this.handlers.put(CommandType.INSERT, new InsertCommandHandler());
+        this.handlers.put(CommandType.PASSWORD, new PasswordCommandHandler());
     }
 
     @Override
