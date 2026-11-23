@@ -13,7 +13,7 @@ public class Permissions implements IPermissions<String, Permission> {
     public IPermissions<String, Permission> parse(String permissions) throws PermissionsException {
 
         if (permissions == null || permissions.isEmpty()) {
-            throw new PermissionsException("permissions was empty");
+            return new Permissions();
         }
 
         List<Permission> permissionList = Arrays.

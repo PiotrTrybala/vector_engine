@@ -4,10 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.command.enums.CommandType;
 import pl.piotrtrybala.database.executor.Executor;
-import pl.piotrtrybala.database.executor.async.handlers.AuthCommandHandler;
-import pl.piotrtrybala.database.executor.async.handlers.CommandHandler;
-import pl.piotrtrybala.database.executor.async.handlers.HandshakeCommandHandler;
-import pl.piotrtrybala.database.executor.async.handlers.ShowCommandHandler;
+import pl.piotrtrybala.database.executor.async.handlers.*;
 import pl.piotrtrybala.database.executor.enums.ExecutorError;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +21,7 @@ public class AsyncExecutor implements Executor<AsyncResult, Payload> {
         this.handlers.put(CommandType.HANDSHAKE, new HandshakeCommandHandler());
         this.handlers.put(CommandType.AUTH, new AuthCommandHandler());
         this.handlers.put(CommandType.SHOW, new ShowCommandHandler());
+        this.handlers.put(CommandType.USE_COLLECTION, new UseCommandHandler());
     }
 
     @Override

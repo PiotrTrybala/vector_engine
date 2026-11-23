@@ -40,12 +40,7 @@ public class ShowResult implements AsyncResult {
         }
 
         if (embeddings != null) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Found ").append(embeddings.size()).append( "embeddings: n");
-            for (Embedding embedding : embeddings) {
-                builder.append(embedding.getId()).append(" ");
-            }
-            return builder.toString().toCharArray();
+            return ("Found " + embeddings.size() + "embeddings: \n").toCharArray();
         }
 
         return "OK".toCharArray();

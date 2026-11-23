@@ -47,8 +47,11 @@ public class ShowCommandHandler implements CommandHandler {
             }
             return new ShowResult(null, null, collectionList, null);
         }
-
+        if (collection == null) {
+            return "Current collection is not selected"::toCharArray;
+        }
         List<Embedding> embeddings = null;
+
         try {
             embeddings = MetadataStorage.getInstance().getEmbeddingRepository().findAll(collection.getId());
         } catch(RepositoryException e) {
