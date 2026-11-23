@@ -110,14 +110,40 @@ Result:
 - <b>OK</b>: data was inserted
 - <b>InsertError</b>: there was a problem with inserting new data
 
+#### Update <i>(implemented)</i>
+Updates embedding's data
 
+Required permissions: <u>collection.update</u>
 
         UPDATE <collection_name> TYPE <METADATA | EMBEDDING> VALUE <BEGIN `<content>` END | [key:value as int,key:value as string, key:value as double, key:value as boolean] WHERE <expression | vector=<embedding> OR id = <value> >;
 
+Parameters:
+- collection_name: name of collection for data to be updated in
+- content_type: what type of content is updated. Supported
+  - <b>METADATA</b>: metadata
+  - <b>EMBEDDING</b>: content
+- content: when EMBEDDING type is selected, then new content
+- metadata: when METADATA type is selected, then new metadata
+- expression: expression to apply
 
+#### Select <i>(not implemented)</i>
+Selects embedding's data
 
+Required permissions: <u>collections.select</u>
 
-        SELECT <METADATA [key, ...] | TEXT> FROM <collection_name> WHERE vector=<embedding> OR id = [values] LIMIT <value>;
+        SELECT <METADATA [key, ...] | TEXT> 
+          FROM <collection_name> 
+          WHERE vector=<embedding> OR id = [values] 
+          LIMIT <value>;
+
+Parameters:
+- metadata: when selecting METADATA, select all metadata from similar vectors
+- text: when selecting TEXT, select text content of embedding
+- collection_name: name of collection where data is coming from
+- where:
+  - vector: vector to be searched
+  - id: select by id
+- value: limiting 
 
 //        Connection connection = ConnectionManager.getConnection();
 //

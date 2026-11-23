@@ -85,6 +85,36 @@ public class EmbeddingRepositoryImpl implements EmbeddingRepository {
     }
 
     @Override
+    public List<Embedding> findAllWithPaging(int collectionId, int limit, int offset) throws RepositoryException {
+        String sql = "SELECT * FROM embeddings WHERE cid = ? and id > ? limit ?";
+
+        try (Connection connection = ConnectionManager.getConnection(); PreparedStatement stmt = connection.prepareStatement(sql)) {
+            List<Embedding> embeddings = new ArrayList<>();
+            stmt.setInt(1, collectionId);
+            stmt.setInt(2, offset);
+            stmt.setInt(3, limit);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                while (result.next()) {
+                    int id = result.getInt("id");
+                    byte[] content = result.getBytes("content");
+                    String contentHash = result.getString("content_hash");
+                    HashMap<String, Object> metadata = MetadataUtils.parse(result.getBytes("metadata"));
+                    String metadataHash = result.getString("metadata_hash");
+                    Timestamp createdAt = result.getTimestamp("created_at");
+                    Timestamp updatedAt = result.getTimestamp("updated_at");
+
+                    embeddings.add(new Embedding(id, collectionId, content, contentHash, metadata, metadataHash, createdAt, updatedAt));
+                }
+            }
+
+            return embeddings;
+        } catch (SQLException e) {
+            throw new RepositoryException("failed to retrieve embeddings");
+        }
+    }
+
+    @Override
     public Integer insert(Embedding entity) throws RepositoryException {
         String sql = "INSERT INTO embeddings(cid, content, content_hash, metadata, metadata_hash) VALUES (?, ?, ?, ?, ?) RETURNING id, created_at, updated_at;";
 

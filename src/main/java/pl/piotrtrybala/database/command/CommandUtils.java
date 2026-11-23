@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 public class CommandUtils {
 
     public static int DEFAULT_LIMIT = 5;
+    public static int DEFAULT_OFFSET = 0;
 
     public static byte[] parseEmbeddingData(List<String> tokens) throws CommandException {
 
@@ -205,7 +206,7 @@ public class CommandUtils {
         }
 
         if (limitKeywordIndex + 1 >= tokens.size()) {
-            throw new CommandException("");
+            throw new CommandException("limit keyword at the end of sequence");
         }
 
         String limitToken = tokens.get(limitKeywordIndex + 1);
@@ -213,9 +214,32 @@ public class CommandUtils {
         try {
             return Integer.parseInt(limitToken.trim());
         } catch(NumberFormatException e) {
-            return DEFAULT_LIMIT;
+            throw new CommandException("invalid limit value: " + limitToken.trim());
         }
     }
+
+    public static int parseOffset(List<String> tokens) throws CommandException {
+
+        int offsetKeywordIndex = CommandUtils.findKeywordIndex(tokens, Keyword.OFFSET);
+
+        if (offsetKeywordIndex == -1) {
+            return DEFAULT_OFFSET;
+        }
+
+        if (offsetKeywordIndex + 1 >= tokens.size()) {
+            throw new CommandException("offset keyword at the end of sequence");
+        }
+
+        String offsetToken = tokens.get(offsetKeywordIndex + 1);
+
+        try {
+            return Integer.parseInt(offsetToken.trim());
+        } catch(NumberFormatException e) {
+            throw new CommandException("invalid offset value: " + offsetToken.trim());
+        }
+    }
+
+
 
     public static List<String> skipUntilKeyword(List<String> tokens, Keyword keyword) {
         List<String> output = new ArrayList<>();

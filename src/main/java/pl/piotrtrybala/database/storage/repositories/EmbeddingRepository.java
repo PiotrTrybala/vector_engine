@@ -15,4 +15,5 @@ import java.util.List;
 
 public interface EmbeddingRepository extends Repository<Embedding, Integer> {
     List<Embedding> findAll(int collectionId) throws RepositoryException;
+    List<Embedding> findAllWithPaging(int collectionId, int limit, int offset) throws RepositoryException;
 }

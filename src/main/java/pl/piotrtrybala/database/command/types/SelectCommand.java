@@ -22,6 +22,8 @@ public class SelectCommand implements Command {
 
     private final int limit;
 
+    private final int offset;
+
     public SelectCommand(String query) throws CommandException {
         List<String> tokens = CommandUtils.preprocess(query);
 
@@ -38,6 +40,8 @@ public class SelectCommand implements Command {
         this.where = Expression.parse(CommandUtils.retrieveExpressionTokens(tokens));
 
         this.limit = CommandUtils.parseLimit(tokens);
+
+        this.offset = CommandUtils.parseOffset(tokens);
     }
 
     public SelectType getType() {
@@ -60,6 +64,10 @@ public class SelectCommand implements Command {
         return limit;
     }
 
+    public int getOffset() {
+        return offset;
+    }
+
     @Override
     public String toString() {
         return "SelectQuery{" +
@@ -68,6 +76,7 @@ public class SelectCommand implements Command {
                 ", collectionName='" + collectionName + '\'' +
                 ", where=" + where +
                 ", limit=" + limit +
+                ", offset=" + offset +
                 '}';
     }
 

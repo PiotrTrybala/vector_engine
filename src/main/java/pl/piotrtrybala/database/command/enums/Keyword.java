@@ -28,7 +28,8 @@ public enum Keyword {
     SIMILAR("SIMILAR"),
     FROM("FROM"),
     SHOW("SHOW"),
-    PASSWORD("PASSWORD");
+    PASSWORD("PASSWORD"),
+    OFFSET("OFFSET"),;
 
     private final String keyword;
 
