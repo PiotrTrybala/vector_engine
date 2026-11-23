@@ -22,6 +22,7 @@ public class AsyncExecutor implements Executor<AsyncResult, Payload> {
         this.handlers.put(CommandType.AUTH, new AuthCommandHandler());
         this.handlers.put(CommandType.SHOW, new ShowCommandHandler());
         this.handlers.put(CommandType.USE_COLLECTION, new UseCommandHandler());
+        this.handlers.put(CommandType.CREATE_COLLECTION, new CreateCommandHandler());
     }
 
     @Override

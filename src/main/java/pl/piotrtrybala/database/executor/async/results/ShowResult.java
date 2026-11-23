@@ -40,7 +40,7 @@ public class ShowResult implements AsyncResult {
         }
 
         if (embeddings != null) {
-            return ("Found " + embeddings.size() + "embeddings: \n").toCharArray();
+            return ("Found " + embeddings.size() + " embeddings: \n").toCharArray();
         }
 
         return "OK".toCharArray();
