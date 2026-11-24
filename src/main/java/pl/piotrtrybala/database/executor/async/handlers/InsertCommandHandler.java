@@ -13,12 +13,15 @@ import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.InsertResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
 import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.PermissionMiddleware;
+import pl.piotrtrybala.database.security.permissions.Permission;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
 import pl.piotrtrybala.database.storage.types.Embedding;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class InsertCommandHandler implements CommandHandler{
@@ -67,6 +70,6 @@ public class InsertCommandHandler implements CommandHandler{
 
     @Override
     public Middleware<Context> getMiddleware() {
-        return new AuthMiddleware();
+        return new PermissionMiddleware(List.of(Permission.COLLECTION_INSERT));
     }
 }

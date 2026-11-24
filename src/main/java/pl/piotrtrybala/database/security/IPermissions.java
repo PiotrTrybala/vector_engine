@@ -14,4 +14,6 @@ public interface IPermissions<F, P> {
     boolean hasAny(List<P> permissions);
     boolean hasAll(List<P> permissions);
 
+    boolean isRoot();
+
 }

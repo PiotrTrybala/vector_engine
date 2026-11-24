@@ -12,6 +12,8 @@ public enum Permission {
     COLLECTION_CREATE("collection.create"),
     COLLECTION_INSERT("collection.insert"),
     COLLECTION_UPDATE("collection.update"),
+    COLLECTION_SELECT("collection.select"),
+    COLLECTION_SHOW("collection.show"),
     USER_ALL("user.*"),
     USER_CREATE("user.create"),
     USER_EDIT("user.edit"),;

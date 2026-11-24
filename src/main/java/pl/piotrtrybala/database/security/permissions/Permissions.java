@@ -74,5 +74,8 @@ public class Permissions implements IPermissions<String, Permission> {
         return count == permissions.size();
     }
 
-
+    @Override
+    public boolean isRoot() {
+        return this.has(Permission.ALL);
+    }
 }

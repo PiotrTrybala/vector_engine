@@ -10,7 +10,11 @@ import pl.piotrtrybala.database.executor.async.results.PasswordResult;
 import pl.piotrtrybala.database.security.AuthenticationManager;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
 import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.PermissionMiddleware;
+import pl.piotrtrybala.database.security.permissions.Permission;
 import pl.piotrtrybala.database.storage.RepositoryException;
+
+import java.util.List;
 
 public class PasswordCommandHandler implements CommandHandler{
 
@@ -36,6 +40,6 @@ public class PasswordCommandHandler implements CommandHandler{
 
     @Override
     public Middleware<Context> getMiddleware() {
-        return new AuthMiddleware();
+        return new PermissionMiddleware(List.of(Permission.USER_EDIT));
     }
 }

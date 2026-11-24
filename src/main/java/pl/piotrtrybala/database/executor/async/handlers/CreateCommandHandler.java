@@ -9,9 +9,13 @@ import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.CreateResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
 import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.PermissionMiddleware;
+import pl.piotrtrybala.database.security.permissions.Permission;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
+
+import java.util.List;
 
 public class CreateCommandHandler implements CommandHandler{
 
@@ -36,6 +40,6 @@ public class CreateCommandHandler implements CommandHandler{
 
     @Override
     public Middleware<Context> getMiddleware() {
-        return new AuthMiddleware();
+        return new PermissionMiddleware(List.of(Permission.COLLECTION_CREATE));
     }
 }

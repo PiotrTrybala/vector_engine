@@ -15,6 +15,8 @@ import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.SelectResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
 import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.PermissionMiddleware;
+import pl.piotrtrybala.database.security.permissions.Permission;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
@@ -102,6 +104,6 @@ public class SelectCommandHandler implements CommandHandler{
 
     @Override
     public Middleware<Context> getMiddleware() {
-        return new AuthMiddleware();
+        return new PermissionMiddleware(List.of(Permission.COLLECTION_SELECT));
     }
 }

@@ -21,10 +21,8 @@ public class PermissionMiddleware implements Middleware<Context> {
         Permissions userPermissions = context.getSession().getUser().getPermissions();
         Permissions groupPermissions = context.getSession().getUser().getGroup().getPermissions();
 
-
-
-
-        return false;
+        // check if user is root, then check if user has permissions, after that check group
+        return userPermissions.isRoot() || userPermissions.hasAll(permissions) || groupPermissions.hasAll(permissions);
     }
 
     @Override
