@@ -36,10 +36,6 @@ public class InsertCommandHandler implements CommandHandler{
             return ("This datatype is not supported: " + insertCommand.getType().toString())::toCharArray;
         }
 
-        if (!context.isAuthenticated()) {
-            return "User is not authenticated"::toCharArray;
-        }
-
         Collection currentCollection = context.getCurrentCollection();
         if (currentCollection == null) {
             try {

@@ -32,10 +32,6 @@ public class SelectCommandHandler implements CommandHandler{
     public AsyncResult handle(Context context, Command command) {
         SelectCommand selectCommand = (SelectCommand) command;
 
-        if (!context.isAuthenticated()) {
-            return "User is not authenticated"::toCharArray;
-        }
-
         Expression where = selectCommand.getWhere();
 
         int limit = selectCommand.getLimit();

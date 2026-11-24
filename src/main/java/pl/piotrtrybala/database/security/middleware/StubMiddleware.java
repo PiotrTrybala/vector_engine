@@ -13,4 +13,9 @@ public class StubMiddleware implements Middleware<Context> {
     public boolean deny(Context context) throws AuthException {
         return false;
     }
+
+    @Override
+    public String reason() {
+        return "Passed";
+    }
 }

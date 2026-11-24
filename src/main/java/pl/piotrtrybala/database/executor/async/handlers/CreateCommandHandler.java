@@ -16,10 +16,6 @@ public class CreateCommandHandler implements CommandHandler{
     public AsyncResult handle(Context context, Command command) {
         CreateCommand createCommand = (CreateCommand) command;
 
-        if (!context.isAuthenticated()) {
-            return "User is not authenticated"::toCharArray;
-        }
-
         try {
             MetadataStorage.getInstance().getCollectionRepository().insert(new Collection(
                context.getSession().getUser().getId(),

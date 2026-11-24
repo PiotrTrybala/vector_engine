@@ -13,4 +13,9 @@ public class AuthMiddleware implements Middleware<Context> {
     public boolean deny(Context context) throws AuthException {
         return !context.isAuthenticated();
     }
+
+    @Override
+    public String reason() {
+        return "User is not authenticated";
+    }
 }

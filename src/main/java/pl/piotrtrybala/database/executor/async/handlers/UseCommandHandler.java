@@ -24,10 +24,6 @@ public class UseCommandHandler implements CommandHandler {
 
         UseCommand useCommand = (UseCommand) command;
 
-        if (context.getSession() == null) {
-            return "User is not authenticated"::toCharArray;
-        }
-
         Optional<Collection> collection;
         try {
             collection = MetadataStorage.getInstance().getCollectionRepository().findById(

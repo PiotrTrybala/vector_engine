@@ -18,12 +18,7 @@ public class PasswordCommandHandler implements CommandHandler{
 
     @Override
     public AsyncResult handle(Context context, Command command) {
-
         PasswordCommand passwordCommand = (PasswordCommand) command;
-
-        if (!context.isAuthenticated()) {
-            return "User is not authenticated"::toCharArray;
-        }
 
         try {
             AuthenticationManager.getInstance().updatePassword(

@@ -29,10 +29,6 @@ public class UpdateCommandHandler implements CommandHandler {
 
         UpdateCommand updateCommand = (UpdateCommand) command;
 
-        if (!context.isAuthenticated()) {
-            return "User is not authenticated"::toCharArray;
-        }
-
         Collection currentCollection = context.getCurrentCollection();
         if (currentCollection == null) {
             try {

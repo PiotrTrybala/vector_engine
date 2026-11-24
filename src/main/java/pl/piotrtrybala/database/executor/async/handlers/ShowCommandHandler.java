@@ -23,10 +23,6 @@ public class ShowCommandHandler implements CommandHandler {
 
         UseTarget useTarget = showCommand.getUseTarget();
 
-        if (context.getSession() == null) {
-            return "Not authenticated"::toCharArray;
-        }
-
         Collection collection = context.getCurrentCollection();
 
         if (useTarget == UseTarget.COLLECTION) {

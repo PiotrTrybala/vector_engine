@@ -4,9 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.command.Command;
 import pl.piotrtrybala.database.command.enums.CommandType;
+import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.Executor;
 import pl.piotrtrybala.database.executor.async.handlers.*;
 import pl.piotrtrybala.database.executor.enums.ExecutorError;
+import pl.piotrtrybala.database.security.middleware.Middleware;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +44,10 @@ public class AsyncExecutor implements Executor<AsyncResult, Payload> {
             return new Error(ExecutorError.UNSUPPORTED_COMMAND_TYPE);
         }
 
-
+        Middleware<Context> middleware = handler.getMiddleware();
+        if (!middleware.deny(payload.getContext())) {
+            return middleware.reason()::toCharArray;
+        }
 
         return handler.handle(payload.getContext(), payload.getCommand());
     }
