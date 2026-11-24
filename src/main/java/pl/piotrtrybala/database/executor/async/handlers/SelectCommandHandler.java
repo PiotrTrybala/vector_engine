@@ -45,7 +45,7 @@ public class SelectCommandHandler implements CommandHandler{
         }
 
         if (where == null) {
-
+            LOGGER.info("select without where clause");
             SelectType selectType = selectCommand.getType();
 
             List<Embedding> embeddings;
@@ -55,6 +55,7 @@ public class SelectCommandHandler implements CommandHandler{
                         limit,
                         offset
                 );
+                LOGGER.info("retrieved list of {} embeddings", embeddings.size());
             } catch (RepositoryException e) {
                 LOGGER.error("could not retrieve embeddings: {}", e.getMessage());
                 return ("Could not retrieve embeddings")::toCharArray;
@@ -62,30 +63,19 @@ public class SelectCommandHandler implements CommandHandler{
 
             if (selectType == SelectType.METADATA) {
                 List<String> keys = selectCommand.getMetadata();
-                List<HashMap<String, Object>> metadataList = new ArrayList<>();
-                for (Embedding embedding : embeddings) {
-                    HashMap<String, Object> metadata = new HashMap<>();
-                    metadata.put("id", embedding.getId());
-                    HashMap<String, Object> embeddingMetadata = embedding.getMetadata();
-                    for (String key : keys) {
-                        metadata.put(key, embeddingMetadata.get(key));
-                    }
-                    metadataList.add(metadata);
-                }
+                List<HashMap<String, Object>> metadataList = ExecutorUtils.selectMetadataFromEmbeddings(
+                        embeddings,
+                        keys,
+                        true
+                );
                 return new SelectResult(metadataList, null);
             } else {
-                List<HashMap<String, Object>> embeddingsText = new ArrayList<>();
-                for (Embedding embedding : embeddings) {
-                    HashMap<String, Object> embeddingText = new HashMap<>();
-                    embeddingText.put("id", embedding.getId());
-                    embeddingText.put("text", embedding.getContent());
-                    embeddingsText.add(embeddingText);
-                }
+                List<HashMap<String, Object>> embeddingsText = ExecutorUtils.selectEmbeddingsText(embeddings);
                 return new SelectResult(embeddingsText, null);
             }
         } else {
+            LOGGER.info("select with where clause");
             Object vectorValue = where.getValue("vector");
-
             if (vectorValue != null) {
                 float[] vector = (float[]) vectorValue;
 
@@ -94,7 +84,6 @@ public class SelectCommandHandler implements CommandHandler{
                 List<Embedding> embeddings = new ArrayList<>();
 
                 for (EmbeddingIndex.IndexSearchResult result : results) {
-
                     try {
                         Optional<Embedding> embedding = MetadataStorage.getInstance().getEmbeddingRepository().findById(result.id());
                         embedding.ifPresent(embeddings::add);

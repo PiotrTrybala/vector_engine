@@ -55,5 +55,24 @@ public class Permissions implements IPermissions<String, Permission> {
         return this.permissions.containsKey(perm);
     }
 
+    @Override
+    public boolean hasAny(List<Permission> permissions) {
+        for (Permission permission : permissions) {
+            if (this.has(permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasAll(List<Permission> permissions) {
+        int count = 0;
+        for (Permission permission : permissions) {
+            if (this.has(permission)) count++;
+        }
+        return count == permissions.size();
+    }
+
 
 }

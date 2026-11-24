@@ -29,7 +29,7 @@ public class InsertCommandHandler implements CommandHandler{
     public AsyncResult handle(Context context, Command command) {
 
         InsertCommand insertCommand = (InsertCommand) command;
-
+        LOGGER.info("inserting new embedding into {}", insertCommand.getCollectionName());
         Embedder embedder = null;
         try {
             embedder = EmbeddingManager.getInstance().getEmbedder(insertCommand.getType());
@@ -40,6 +40,7 @@ public class InsertCommandHandler implements CommandHandler{
         Collection currentCollection = ExecutorUtils.selectCollection(context, insertCommand.getCollectionName());
 
         if (currentCollection == null) {
+            LOGGER.error("Could not find collection: {}", insertCommand.getCollectionName());
             return ("Could not find this collection: " + insertCommand.getCollectionName())::toCharArray;
         }
 
@@ -47,13 +48,15 @@ public class InsertCommandHandler implements CommandHandler{
 
         try {
             float[] vector = embedder.create(insertCommand.getData());
+            LOGGER.info("creating new embedding vector");
             id = MetadataStorage.getInstance().getEmbeddingRepository().insert(
                     new Embedding(
                             currentCollection.getId(),
                             insertCommand.getData(),
-                            new HashMap<>()
+                            ExecutorUtils.emptyMetadata()
                     )
             );
+            LOGGER.info("adding {} to index", id);
             EmbeddingManager.getInstance().getIndex().add(id, vector);
         } catch(RepositoryException e) {
             LOGGER.error("Could not insert embedding into collection: {}", e.getMessage());

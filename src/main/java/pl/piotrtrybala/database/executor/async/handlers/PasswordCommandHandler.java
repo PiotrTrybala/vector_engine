@@ -21,6 +21,7 @@ public class PasswordCommandHandler implements CommandHandler{
         PasswordCommand passwordCommand = (PasswordCommand) command;
 
         try {
+            LOGGER.info("changing password for {}", context.getSession().getUser().getUsername());
             AuthenticationManager.getInstance().updatePassword(
                     context.getSession().getUser(),
                     passwordCommand.getPassword()
