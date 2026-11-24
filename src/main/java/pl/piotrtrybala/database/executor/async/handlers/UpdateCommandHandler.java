@@ -7,6 +7,7 @@ import pl.piotrtrybala.database.command.enums.UpdateEntityType;
 import pl.piotrtrybala.database.command.expression.Expression;
 import pl.piotrtrybala.database.command.types.UpdateCommand;
 import pl.piotrtrybala.database.engine.Context;
+import pl.piotrtrybala.database.executor.ExecutorUtils;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.UpdateResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
@@ -29,20 +30,7 @@ public class UpdateCommandHandler implements CommandHandler {
 
         UpdateCommand updateCommand = (UpdateCommand) command;
 
-        Collection currentCollection = context.getCurrentCollection();
-        if (currentCollection == null) {
-            try {
-                Optional<Collection> collection = MetadataStorage.getInstance().getCollectionRepository().findById(
-                        context.getSession().getUser().getId(),
-                        updateCommand.getCollectionName()
-                );
-                if (collection.isPresent()) {
-                    currentCollection = collection.get();
-                }
-            } catch (RepositoryException e) {
-                return ("Could not find this collection: " + updateCommand.getCollectionName())::toCharArray;
-            }
-        }
+        Collection currentCollection = ExecutorUtils.selectCollection(context, updateCommand.getCollectionName());
 
         if (currentCollection == null) {
             return ("Could not find this collection: " + updateCommand.getCollectionName())::toCharArray;
@@ -54,7 +42,7 @@ public class UpdateCommandHandler implements CommandHandler {
 
             Expression where = updateCommand.getWhere();
             if (where == null) {
-                List<Embedding> embeddings = new ArrayList<>();
+                List<Embedding> embeddings;
                 try {
                     embeddings = MetadataStorage.getInstance().getEmbeddingRepository().findAll(
                             currentCollection.getId()

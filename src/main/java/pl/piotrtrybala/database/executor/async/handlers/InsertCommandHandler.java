@@ -8,6 +8,7 @@ import pl.piotrtrybala.database.embeddings.embedder.Embedder;
 import pl.piotrtrybala.database.embeddings.embedder.EmbedderException;
 import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Context;
+import pl.piotrtrybala.database.executor.ExecutorUtils;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.InsertResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
@@ -36,20 +37,7 @@ public class InsertCommandHandler implements CommandHandler{
             return ("This datatype is not supported: " + insertCommand.getType().toString())::toCharArray;
         }
 
-        Collection currentCollection = context.getCurrentCollection();
-        if (currentCollection == null) {
-            try {
-                Optional<Collection> collection = MetadataStorage.getInstance().getCollectionRepository().findById(
-                        context.getSession().getUser().getId(),
-                        insertCommand.getCollectionName()
-                );
-                if (collection.isPresent()) {
-                    currentCollection = collection.get();
-                }
-            } catch(RepositoryException e) {
-                return ("Could not find this collection: " + insertCommand.getCollectionName())::toCharArray;
-            }
-        }
+        Collection currentCollection = ExecutorUtils.selectCollection(context, insertCommand.getCollectionName());
 
         if (currentCollection == null) {
             return ("Could not find this collection: " + insertCommand.getCollectionName())::toCharArray;
