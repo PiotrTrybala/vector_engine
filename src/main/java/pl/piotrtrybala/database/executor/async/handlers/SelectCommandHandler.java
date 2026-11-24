@@ -12,6 +12,8 @@ import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.SelectResult;
+import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
+import pl.piotrtrybala.database.security.middleware.Middleware;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
@@ -123,5 +125,10 @@ public class SelectCommandHandler implements CommandHandler{
                 return "Operation is not supported yet"::toCharArray;
             }
         }
+    }
+
+    @Override
+    public Middleware<Context> getMiddleware() {
+        return new AuthMiddleware();
     }
 }

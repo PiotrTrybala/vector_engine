@@ -8,6 +8,8 @@ import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.PasswordResult;
 import pl.piotrtrybala.database.security.AuthenticationManager;
+import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
+import pl.piotrtrybala.database.security.middleware.Middleware;
 import pl.piotrtrybala.database.storage.RepositoryException;
 
 public class PasswordCommandHandler implements CommandHandler{
@@ -34,5 +36,10 @@ public class PasswordCommandHandler implements CommandHandler{
         }
 
         return new PasswordResult();
+    }
+
+    @Override
+    public Middleware<Context> getMiddleware() {
+        return new AuthMiddleware();
     }
 }

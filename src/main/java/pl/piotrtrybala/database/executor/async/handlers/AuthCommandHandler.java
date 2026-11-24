@@ -8,6 +8,8 @@ import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.AuthResult;
 import pl.piotrtrybala.database.security.AuthenticationManager;
+import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.StubMiddleware;
 import pl.piotrtrybala.database.security.session.Session;
 import pl.piotrtrybala.database.storage.types.User;
 
@@ -29,5 +31,10 @@ public class AuthCommandHandler implements CommandHandler {
             return "Failed to authenticate user"::toCharArray;
         }
         return new AuthResult();
+    }
+
+    @Override
+    public Middleware<Context> getMiddleware() {
+        return new StubMiddleware();
     }
 }

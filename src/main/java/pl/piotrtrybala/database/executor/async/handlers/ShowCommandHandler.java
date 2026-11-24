@@ -6,6 +6,8 @@ import pl.piotrtrybala.database.command.types.ShowCommand;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.ShowResult;
+import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
+import pl.piotrtrybala.database.security.middleware.Middleware;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
@@ -59,5 +61,10 @@ public class ShowCommandHandler implements CommandHandler {
         }
 
         return new ShowResult(null, null, null, embeddings);
+    }
+
+    @Override
+    public Middleware<Context> getMiddleware() {
+        return new AuthMiddleware();
     }
 }

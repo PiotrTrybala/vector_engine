@@ -10,6 +10,8 @@ import pl.piotrtrybala.database.embeddings.embedder.EmbeddingManager;
 import pl.piotrtrybala.database.engine.Context;
 import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.InsertResult;
+import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
+import pl.piotrtrybala.database.security.middleware.Middleware;
 import pl.piotrtrybala.database.storage.MetadataStorage;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.types.Collection;
@@ -74,5 +76,10 @@ public class InsertCommandHandler implements CommandHandler{
             return ("Could not insert embedding into collection: " + e.getMessage())::toCharArray;
         }
         return new InsertResult(id);
+    }
+
+    @Override
+    public Middleware<Context> getMiddleware() {
+        return new AuthMiddleware();
     }
 }
