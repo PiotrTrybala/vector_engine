@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import pl.piotrtrybala.database.EntrypointConfig;
 import pl.piotrtrybala.database.security.session.Session;
 import pl.piotrtrybala.database.security.session.impl.SessionManagerImpl;
-import pl.piotrtrybala.database.security.users.UserManagerImpl;
 import pl.piotrtrybala.database.storage.MetadataUtils;
 import pl.piotrtrybala.database.storage.RepositoryException;
 import pl.piotrtrybala.database.storage.impl.UserRepositoryImpl;
@@ -26,7 +25,6 @@ public class AuthenticationManager {
     private AuthenticationManager() {
         this.sessionManager = new SessionManagerImpl();
         this.userRepository = new UserRepositoryImpl();
-
     }
 
     public static synchronized void initialize(EntrypointConfig.AuthConfig config) {

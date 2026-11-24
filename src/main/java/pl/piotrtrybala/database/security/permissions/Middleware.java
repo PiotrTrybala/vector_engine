@@ -1,8 +1,6 @@
 package pl.piotrtrybala.database.security.permissions;
 
-public class Middleware {
-
-
-
-
+public interface Middleware<C> {
+    boolean allow(C context);
+    boolean deny(C context);
 }
