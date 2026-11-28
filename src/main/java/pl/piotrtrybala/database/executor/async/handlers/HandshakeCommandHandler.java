@@ -6,6 +6,7 @@ import pl.piotrtrybala.database.executor.async.AsyncResult;
 import pl.piotrtrybala.database.executor.async.results.HandshakeResult;
 import pl.piotrtrybala.database.security.middleware.AuthMiddleware;
 import pl.piotrtrybala.database.security.middleware.Middleware;
+import pl.piotrtrybala.database.security.middleware.StubMiddleware;
 
 public class HandshakeCommandHandler implements CommandHandler{
 
@@ -16,6 +17,6 @@ public class HandshakeCommandHandler implements CommandHandler{
 
     @Override
     public Middleware<Context> getMiddleware() {
-        return new AuthMiddleware();
+        return new StubMiddleware();
     }
 }

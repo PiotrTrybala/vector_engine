@@ -17,12 +17,19 @@ public class PermissionMiddleware implements Middleware<Context> {
 
     @Override
     public boolean allow(Context context) throws AuthException {
+        Permissions userPermissions = null;
+        if (context.getSession().getUser().getPermissions() != null) {
+            userPermissions = context.getSession().getUser().getPermissions();
+            return userPermissions.hasAll(permissions);
+        }
 
-        Permissions userPermissions = context.getSession().getUser().getPermissions();
-        Permissions groupPermissions = context.getSession().getUser().getGroup().getPermissions();
+        Permissions groupPermissions = null;
+        if (context.getSession().getUser().getGroup().getPermissions() != null) {
+            groupPermissions = context.getSession().getUser().getGroup().getPermissions();
+            return groupPermissions.hasAll(permissions);
+        }
 
-        // check if user is root, then check if user has permissions, after that check group
-        return userPermissions.isRoot() || userPermissions.hasAll(permissions) || groupPermissions.hasAll(permissions);
+        return context.getSession().getUser().isRoot();
     }
 
     @Override

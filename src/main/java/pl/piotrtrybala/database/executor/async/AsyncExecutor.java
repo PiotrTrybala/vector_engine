@@ -45,7 +45,7 @@ public class AsyncExecutor implements Executor<AsyncResult, Payload> {
         }
 
         Middleware<Context> middleware = handler.getMiddleware();
-        if (!middleware.deny(payload.getContext())) {
+        if (!middleware.allow(payload.getContext())) {
             return middleware.reason()::toCharArray;
         }
 

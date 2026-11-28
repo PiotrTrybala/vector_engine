@@ -5,7 +5,7 @@
 These are queries that Chonker supports:
 - HANDSHAKE [x]
 - AUTH [x]
-- PASSWORD [_]
+- PASSWORD [x]
 - CREATE COLLECTION [x]
 - USE COLLECTION [x]
 - SHOW [x]

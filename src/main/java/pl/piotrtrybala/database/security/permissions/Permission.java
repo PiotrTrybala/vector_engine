@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public enum Permission {
     ALL("*"),
+
     COLLECTION_ALL("collection.*"),
     COLLECTION_USE("collection.use"),
     COLLECTION_CREATE("collection.create"),
@@ -14,6 +15,7 @@ public enum Permission {
     COLLECTION_UPDATE("collection.update"),
     COLLECTION_SELECT("collection.select"),
     COLLECTION_SHOW("collection.show"),
+
     USER_ALL("user.*"),
     USER_CREATE("user.create"),
     USER_EDIT("user.edit"),;
@@ -29,9 +31,11 @@ public enum Permission {
     }
 
     private final String permission;
+    private final String parent;
 
     Permission(String permission) {
         this.permission = permission;
+        this.parent = permission.split("\\.")[0];
     }
 
     public String getPermission() {
@@ -44,4 +48,6 @@ public enum Permission {
         }
         return Optional.of(PERMISSION_MAP.get(permission));
     }
+
+
 }
